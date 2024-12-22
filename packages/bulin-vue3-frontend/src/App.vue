@@ -1,11 +1,11 @@
+<script setup>
+import vHeader from '@/components/Header.vue';
+</script>
+
 <template>
-  <v-header />
+  <vHeader />
   <router-view />
 </template>
-
-<script setup>
-import vHeader from '@/components/Header.vue'
-</script>
 
 <style lang="scss">
 @use './assets/css/main.css';

@@ -4,6 +4,14 @@ import vueJsx from '@vitejs/plugin-vue-jsx';
 import { resolve } from 'path';
 export default defineConfig({
   base: './',
+  // 设置scss的api类型为modern-compiler
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'modern-compiler',
+      },
+    },
+  },
   plugins: [vue(), vueJsx()],
   optimizeDeps: {},
   resolve: {
