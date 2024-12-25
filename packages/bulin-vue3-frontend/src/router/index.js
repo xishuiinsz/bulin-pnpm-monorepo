@@ -1,5 +1,6 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
 import Home from '@v/Home.vue';
+import { createRouter, createWebHashHistory } from 'vue-router';
+
 const pages = import.meta.glob('@p/**/page.js', {
   eager: true,
   import: 'default',
@@ -18,7 +19,7 @@ const routesPages = Object.values(pages).map((item) => {
   menuList.push({
     icon,
     index: path,
-    title: title,
+    title,
   });
   return {
     path: pathStr,
@@ -26,6 +27,14 @@ const routesPages = Object.values(pages).map((item) => {
     meta,
   };
 });
+
+function beforeEnterTp(to, _from) {
+  if (to.params?.id === '2') {
+    return true;
+  }
+  return { name: to.name, params: { id: 2 } };
+}
+
 const routes = [
   {
     path: '/',
@@ -51,6 +60,15 @@ const routes = [
           title: '表格',
         },
         component: () => import(/* webpackChunkName: "table" */ '@v/tableBaseData/entry.vue'),
+      },
+      {
+        path: 'table/:id',
+        name: 'detailTable',
+        beforeEnter: beforeEnterTp,
+        meta: {
+          title: '表格',
+        },
+        component: () => import(/* webpackChunkName: "table" */ '@v/tableBaseData/detailsForm.vue'),
       },
       {
         path: 'customerTable',
@@ -262,10 +280,12 @@ router.beforeEach((to, from, next) => {
   const role = localStorage.getItem('ms_username');
   if (!role && to.path !== '/login') {
     next('/login');
-  } else if (to.meta.permission) {
+  }
+  else if (to.meta.permission) {
     // 如果是管理员权限则可进入，这里只是简单的模拟管理员权限而已
     role === 'admin' ? next() : next('/403');
-  } else {
+  }
+  else {
     next();
   }
 });
