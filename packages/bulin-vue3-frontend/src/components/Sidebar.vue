@@ -142,7 +142,7 @@ const items = [
       },
       {
         index: '/myComponents/scrollDriveAnimation',
-        title: '滚动驱动动画',
+        title: '检测容器内图片加载',
       },
       ...menuList,
     ],

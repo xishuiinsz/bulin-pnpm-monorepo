@@ -171,7 +171,7 @@ const routes = [
         path: 'scrollDriveAnimation',
         name: 'ScrollDriveAnimation',
         meta: {
-          title: '滚动驱动动画',
+          title: ' 检测容器内图片加载',
         },
         component: () => import(/* webpackChunkName: "scrollDriveAnimation" */ '@/views/scrollDriveAnimation/index.vue'),
       },
