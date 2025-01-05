@@ -1,5 +1,6 @@
 import router from '@/router';
 import comeBack from './comeBack.vue';
+
 const route = {
   path: '/comeBack',
   name: 'ComeBack',
@@ -8,8 +9,10 @@ const route = {
   },
   component: comeBack,
 };
+
 router.addRoute(route);
-const refreshRoute = () => {
+
+function refreshRoute() {
   router.push({ name: 'ComeBack' });
-};
+}
 export default refreshRoute;

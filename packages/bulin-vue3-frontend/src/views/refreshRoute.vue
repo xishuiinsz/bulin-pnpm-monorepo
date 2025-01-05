@@ -1,3 +1,30 @@
+<script setup>
+import refreshRoute from '@u/refreshRoute';
+
+const myKey = 'loadCount';
+
+function refreshRouteClick() {
+  const count = getLoadCount();
+  const newCount = Number(count) + 1;
+  sessionStorage.setItem(myKey, newCount);
+  refreshRoute();
+}
+
+function getLoadCount() {
+  const count = sessionStorage.getItem(myKey);
+  if (!count) {
+    sessionStorage.setItem(myKey, 1);
+  }
+  return sessionStorage.getItem(myKey);
+}
+</script>
+
+<script>
+export default {
+  name: 'Permission',
+};
+</script>
+
 <template>
   <div>
     <div class="crumbs">
@@ -9,38 +36,14 @@
     </div>
     <div class="container">
       <h1>在某些场景下，需要使用js代码来刷新当前路由对应的组件</h1>
-      <p></p>
+      <p />
       <h3>当前页面加载{{ getLoadCount() }}次</h3>
-      <el-button @click="refreshRouteClick" type="primary">刷新路由</el-button>
+      <el-button type="primary" @click="refreshRouteClick">
+        刷新路由
+      </el-button>
     </div>
   </div>
 </template>
-
-<script setup>
-import refreshRoute from '@u/refreshRoute';
-
-const myKey = 'loadCount';
-
-const refreshRouteClick = () => {
-  const count = getLoadCount();
-  const newCount = Number(count) + 1;
-  sessionStorage.setItem(myKey, newCount);
-  refreshRoute();
-};
-
-const getLoadCount = () => {
-  const count = sessionStorage.getItem(myKey);
-  if (!count) {
-    sessionStorage.setItem(myKey, 1);
-  }
-  return sessionStorage.getItem(myKey);
-};
-</script>
-<script>
-export default {
-  name: 'permission',
-};
-</script>
 
 <style scoped>
 h1 {
