@@ -26,7 +26,7 @@ const tableList = [{ name: 'Chris', interest: 'HTML tables', age: '22' }, { name
       </el-breadcrumb>
     </div>
     <div class="container flex-fill">
-      <SimpleTable :columns-list="columnsList" :table-list="tableList" />
+      <SimpleTable class="thead-bordered-bottom" :columns-list="columnsList" :table-list="tableList" />
     </div>
   </div>
 </template>
