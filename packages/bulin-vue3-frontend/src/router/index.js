@@ -112,12 +112,12 @@ const routes = [
         component: () => import(/* webpackChunkName: "imgWaterfall" */ '@/views/imgWaterfall/imgWaterfall.vue'),
       },
       {
-        path: 'getNodeById',
-        name: 'GetNodeById',
+        path: 'simpleTable',
+        name: 'simpleTable',
         meta: {
-          title: '节点处理',
+          title: '简易表格',
         },
-        component: () => import(/* webpackChunkName: "sortArray" */ '@/views/GetNodeById/GetNodeById.vue'),
+        component: () => import(/* webpackChunkName: "SimpleTable" */ '@/views/simple-table/entry.vue'),
       },
       {
         path: 'echartsAndVue',

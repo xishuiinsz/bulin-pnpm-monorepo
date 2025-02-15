@@ -121,8 +121,8 @@ const items = [
         title: '图片瀑布流',
       },
       {
-        index: '/myComponents/getNodeById',
-        title: '节点处理',
+        index: '/myComponents/simpleTable',
+        title: '简易表格',
       },
       {
         index: '/myComponents/echartsAndVue',
