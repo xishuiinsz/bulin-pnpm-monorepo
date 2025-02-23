@@ -2,6 +2,10 @@
   align-items: center !important;
 }
 
+.color-853aff {
+  color: #853aff;
+}
+
 .cursor-pointer {
   cursor: pointer !important;
 }
@@ -38,9 +42,10 @@
   width: 100% !important;
 }
 
+.w300 {
+  width: 300px !important;
+}
+
 .width-fit-content {
   width: fit-content !important;
-}
-.color-853aff {
-  color: #853aff;
 }
