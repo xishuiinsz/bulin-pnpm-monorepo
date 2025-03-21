@@ -1,5 +1,6 @@
 {
   "name": "bulin-express",
+  "private": true,
   "version": "1.0.0",
   "description": "based on express.js and sqlite db",
   "main": "index.js",
@@ -20,18 +21,18 @@
   "homepage": "https://github.com/xishuiinsz/bulin-express#readme",
   "dependencies": {
     "art-template": "^4.13.2",
-    "better-sqlite3": "^9.2.2",
+    "better-sqlite3": "latest",
     "body-parser": "^1.20.2",
     "captchapng": "0.0.1",
     "chalk": "^4.1.2",
     "express": "^4.16.4",
     "express-fileupload": "^1.4.0",
-    "express-session": "^1.15.6",
+    "express-session": "latest",
     "lodash": "^4.17.21",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
     "eslint": "^8.25.0",
-    "nodemon": "^2.0.20"
+    "nodemon": "latest"
   }
 }

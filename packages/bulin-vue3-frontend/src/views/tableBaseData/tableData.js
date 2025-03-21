@@ -1,13 +1,13 @@
-import { h, reactive } from 'vue';
-import { ElImage, ElButton, ElMessage, ElMessageBox } from 'element-plus';
-import { User } from '@element-plus/icons-vue';
 import showDialog from '@/imperatives/showDialog.jsx';
 import showDrawer from '@/imperatives/showDrawer.js';
-import editForm from './editForm.vue';
+import { User } from '@element-plus/icons-vue';
+import { ElButton, ElImage, ElMessage, ElMessageBox } from 'element-plus';
+import { h, reactive } from 'vue';
 import detailsForm from './detailsForm.vue';
+import editForm from './editForm.vue';
 
 // 操作列之“编辑”点击事件
-const handleEdit = (row) => {
+function handleEdit(row) {
   let dialogInstance = null;
   const closeEvt = () => {
     dialogInstance?.destroy?.();
@@ -19,30 +19,30 @@ const handleEdit = (row) => {
     },
   };
   dialogInstance = showDialog(params);
-};
+}
 
 // 删除操作
-const handleDelete = (row, tableDataList) => {
+function handleDelete(row, tableDataList) {
   // 二次确认删除
   ElMessageBox.confirm('确定要删除吗？', '提示', {
     type: 'warning',
   })
     .then(() => {
-      const index = tableDataList.findIndex((item) => item === row);
+      const index = tableDataList.findIndex(item => item === row);
       ElMessage.success('删除成功');
       tableDataList.splice(index, 1);
     })
     .catch(() => {});
-};
+}
 
-const selectionChange = (rows) => {
+function selectionChange(rows) {
   console.log('selectionChange rows:', rows);
-};
-const filterChange = (data) => {
+}
+function filterChange(data) {
   console.log('filterChange data:', data);
-};
+}
 
-const nameClick = (data) => {
+function nameClick(data) {
   let drawerInstance = null;
   const params = {
     title: '用户详情',
@@ -52,7 +52,7 @@ const nameClick = (data) => {
     },
   };
   drawerInstance = showDrawer(params);
-};
+}
 
 export const tableColumnList = [
   { type: 'selection', width: 55 },
@@ -60,21 +60,21 @@ export const tableColumnList = [
   {
     prop: 'name',
     label: '用户名',
-    header: (row) =>
+    header: row =>
       h('span', { class: 'd-flex align-items-center' }, [
         row.label,
         h(User, { class: 'ml8', style: { width: '16px', height: '16px' } }),
       ]),
-    default: (row) => h('span', { class: 'cursor-pointer color-0d6efd', onClick: () => nameClick(row) }, row.name),
+    default: row => h('span', { class: 'cursor-pointer color-0d6efd', onClick: () => nameClick(row) }, row.name),
   },
-  { prop: 'money', label: '账户余额', sortable: true, default: (row) => `￥${row.money}` },
+  { prop: 'money', label: '账户余额', sortable: true, default: row => `￥${row.money}` },
   {
     prop: 'thumb',
     label: '头像(查看大图)',
     className: 'thumb-column',
     width: 120,
-    default: (row) =>
-      h(ElImage, { class: 'table-td-thumb', src: row.thumb, 'preview-src-list': [row.thumb], 'preview-teleported': true }),
+    default: row =>
+      h(ElImage, { 'class': 'table-td-thumb', 'src': row.thumb, 'preview-src-list': [row.thumb], 'preview-teleported': true }),
   },
   { prop: 'address', label: '地址' },
   {
@@ -90,7 +90,7 @@ export const tableColumnList = [
     prop: 'action',
     label: '操作',
     minWidth: '50',
-    default: (row) =>
+    default: row =>
       h('div', { class: 'buttons-wrap' }, [
         h(
           ElButton,

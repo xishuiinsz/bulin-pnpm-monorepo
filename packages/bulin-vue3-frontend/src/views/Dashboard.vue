@@ -1,3 +1,17 @@
+<script setup>
+import logsMarkdown from '@/logs.md?raw';
+import { marked } from 'marked';
+import { onMounted, reactive, ref } from 'vue';
+
+const name = window.localStorage.getItem('ms_username');
+const role = name === 'admin' ? '超级管理员' : '普通用户';
+const logs = ref('');
+
+onMounted(() => {
+  logs.value = marked(logsMarkdown);
+});
+</script>
+
 <template>
   <div>
     <el-row :gutter="20">
@@ -12,9 +26,11 @@
               src="../assets/img/img.jpg"
               class="user-avator"
               alt
-            />
+            >
             <div class="user-info-cont">
-              <div class="user-info-name">{{ name }}</div>
+              <div class="user-info-name">
+                {{ name }}
+              </div>
               <div>{{ role }}</div>
             </div>
           </div>
@@ -40,17 +56,15 @@
           <el-progress
             :percentage="71.3"
             color="#42b983"
-          ></el-progress
-          >JavaScript
+          />JavaScript
           <el-progress
             :percentage="24.1"
             color="#f1e05a"
-          ></el-progress
-          >CSS <el-progress :percentage="13.7"></el-progress>HTML
+          />CSS <el-progress :percentage="13.7" />HTML
           <el-progress
             :percentage="5.9"
             color="#f56c6c"
-          ></el-progress>
+          />
         </el-card>
       </el-col>
       <el-col :span="16">
@@ -64,140 +78,15 @@
           <div class="change-log">
             <div
               v-highlight
-              v-html="logs"
               class="markdown-content"
-            ></div>
+              v-html="logs"
+            />
           </div>
         </el-card>
       </el-col>
     </el-row>
   </div>
 </template>
-
-<script>
-  import { marked } from 'marked';
-  import { reactive, ref, onMounted } from 'vue';
-  import logsMarkdown from '@/logs.md?raw';
-  export default {
-    name: 'Dashboard',
-    setup() {
-      const name = window.localStorage.getItem('ms_username');
-      const role = name === 'admin' ? '超级管理员' : '普通用户';
-      const logs = ref('');
-      const data = reactive([
-        {
-          name: '2018/09/04',
-          value: 1083,
-        },
-        {
-          name: '2018/09/05',
-          value: 941,
-        },
-        {
-          name: '2018/09/06',
-          value: 1139,
-        },
-        {
-          name: '2018/09/07',
-          value: 816,
-        },
-        {
-          name: '2018/09/08',
-          value: 327,
-        },
-        {
-          name: '2018/09/09',
-          value: 228,
-        },
-        {
-          name: '2018/09/10',
-          value: 1065,
-        },
-      ]);
-      const options = {
-        type: 'bar',
-        title: {
-          text: '最近一周各品类销售图',
-        },
-        xRorate: 25,
-        labels: ['周一', '周二', '周三', '周四', '周五'],
-        datasets: [
-          {
-            label: '家电',
-            data: [234, 278, 270, 190, 230],
-          },
-          {
-            label: '百货',
-            data: [164, 178, 190, 135, 160],
-          },
-          {
-            label: '食品',
-            data: [144, 198, 150, 235, 120],
-          },
-        ],
-      };
-      const options2 = {
-        type: 'line',
-        title: {
-          text: '最近几个月各品类销售趋势图',
-        },
-        labels: ['6月', '7月', '8月', '9月', '10月'],
-        datasets: [
-          {
-            label: '家电',
-            data: [234, 278, 270, 190, 230],
-          },
-          {
-            label: '百货',
-            data: [164, 178, 150, 135, 160],
-          },
-          {
-            label: '食品',
-            data: [74, 118, 200, 235, 90],
-          },
-        ],
-      };
-      const todoList = reactive([
-        {
-          title: '今天要修复100个bug',
-          status: false,
-        },
-        {
-          title: '今天要修复100个bug',
-          status: false,
-        },
-        {
-          title: '今天要写100行代码加几个bug吧',
-          status: false,
-        },
-        {
-          title: '今天要修复100个bug',
-          status: false,
-        },
-        {
-          title: '今天要修复100个bug',
-          status: true,
-        },
-        {
-          title: '今天要写100行代码加几个bug吧',
-          status: true,
-        },
-      ]);
-      onMounted(() => {
-        logs.value = marked(logsMarkdown);
-      });
-      return {
-        name,
-        data,
-        options,
-        options2,
-        todoList,
-        role,
-        logs,
-      };
-    },
-  };
-</script>
 
 <style scoped>
   .el-row {
@@ -309,6 +198,7 @@
     height: 300px;
   }
 </style>
+
 <style lang="scss">
   .change-log {
     .markdown-content {

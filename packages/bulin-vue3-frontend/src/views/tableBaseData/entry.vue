@@ -1,50 +1,11 @@
-<template>
-  <div>
-    <div class="crumbs">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item>
-          <i class="el-icon-lx-cascades"></i>
-          基础表格
-        </el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
-    <div class="container">
-      <div class="handle-box">
-        <el-select v-model="query.address" placeholder="地址" class="handle-select mr10">
-          <el-option key="1" label="广东省" value="广东省"></el-option>
-          <el-option key="2" label="湖南省" value="湖南省"></el-option>
-        </el-select>
-        <el-input
-          @input="queryByName('test', 'test1')"
-          v-model="query.name"
-          placeholder="用户名"
-          class="handle-input mr10"
-        ></el-input>
-        <el-button type="primary" :icon="Search" @click="handleSearch">搜索</el-button>
-      </div>
-      <structuredTable class="my-table" :tableColumnList="tableColumnList" :tableOptions="tableOptions" />
-      <div class="pagination">
-        <el-pagination
-          background
-          layout="total, prev, pager, next"
-          :current-page="query.pageIndex"
-          :page-size="query.pageSize"
-          :total="pageTotal"
-          @current-change="handlePageChange"
-        ></el-pagination>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup>
-import { ref, reactive, h, computed } from 'vue';
-import { ElButton } from 'element-plus';
-import { Search } from '@element-plus/icons-vue';
-import { fetchData } from '@i/index';
 import { myDebounced } from '@/utils';
 import structuredTable from '@c/structuredTable/entry.jsx';
-import { tableOptions, tableColumnList, tableDataList } from './tableData.js';
+import { Search } from '@element-plus/icons-vue';
+import { fetchData } from '@i/index';
+import { ElButton } from 'element-plus';
+import { computed, h, reactive, ref } from 'vue';
+import { tableColumnList, tableDataList, tableOptions } from './tableData.js';
 
 const query = reactive({
   address: '',
@@ -54,24 +15,24 @@ const query = reactive({
 });
 const pageTotal = computed(() => tableDataList.length);
 // 获取表格数据
-const getData = () => {
+function getData() {
   fetchData(query).then((res) => {
     tableDataList.value = res.list;
     pageTotal.value = res.pageTotal || 50;
   });
-};
+}
 // getData()
 
 // 查询操作
-const handleSearch = () => {
+function handleSearch() {
   query.pageIndex = 1;
   getData();
-};
+}
 // 分页导航
-const handlePageChange = (val) => {
+function handlePageChange(val) {
   query.pageIndex = val;
   getData();
-};
+}
 
 // 表格编辑时弹窗和保存
 const editVisible = ref(false);
@@ -80,12 +41,12 @@ const form = reactive({
   name: '',
   address: '',
 });
-const saveEdit = () => {
+function saveEdit() {
   editVisible.value = false;
   const { id } = form;
-  const [editRow] = tableDataList.filter((item) => item.id === id);
+  const [editRow] = tableDataList.filter(item => item.id === id);
   editRow && Object.assign(editRow, form);
-};
+}
 </script>
 
 <script>
@@ -93,6 +54,47 @@ export default {
   name: 'BasetableDemo',
 };
 </script>
+
+<template>
+  <div>
+    <div class="crumbs">
+      <el-breadcrumb separator="/">
+        <el-breadcrumb-item>
+          <i class="el-icon-lx-cascades" />
+          基础表格
+        </el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <div class="container">
+      <div class="handle-box">
+        <el-select v-model="query.address" placeholder="地址" class="handle-select mr10">
+          <el-option key="1" label="广东省" value="广东省" />
+          <el-option key="2" label="湖南省" value="湖南省" />
+        </el-select>
+        <el-input
+          v-model="query.name"
+          placeholder="用户名"
+          class="handle-input mr10"
+          @input="queryByName('test', 'test1')"
+        />
+        <ElButton type="primary" :icon="Search" @click="handleSearch">
+          搜索
+        </ElButton>
+      </div>
+      <structuredTable class="my-table" :table-column-list="tableColumnList" :table-options="tableOptions" />
+      <div class="pagination">
+        <el-pagination
+          background
+          layout="total, prev, pager, next"
+          :current-page="query.pageIndex"
+          :page-size="query.pageSize"
+          :total="pageTotal"
+          @current-change="handlePageChange"
+        />
+      </div>
+    </div>
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .handle-box {
