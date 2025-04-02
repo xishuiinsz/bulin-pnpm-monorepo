@@ -16,6 +16,8 @@ const queryInit = {
   pageSize: 10,
 };
 
+const rowData = reactive({});
+
 const query = reactive({ ...queryInit });
 const tableData = ref([]);
 const pageTotal = ref(0);
@@ -114,6 +116,21 @@ async function saveEdit(data) {
     ElMessage.error((resp && resp.msg) || '操作失败');
   }
 }
+
+const map = new Map();
+
+const buttonRef = ref();
+const popoverRef = ref();
+
+function mouseenterEvt(data) {
+  Object.assign(rowData, { ...data });
+  const el = map.get(data);
+  buttonRef.value = el;
+}
+
+function closePopover(instance) {
+  instance.hide();
+}
 onMounted(getData);
 </script>
 
@@ -156,7 +173,11 @@ onMounted(getData);
           <el-table-column prop="customerId" label="客户编号" align="center" />
           <el-table-column prop="fullName" label="客户代表">
             <template #default="{ row }">
-              {{ row.firstName }} {{ row.lastName }}
+              <div @mouseenter.stop="mouseenterEvt(row)">
+                <div :ref="el => map.set(row, el)">
+                  {{ row.firstName }} {{ row.lastName }}
+                </div>
+              </div>
             </template>
           </el-table-column>
           <el-table-column prop="company" label="客户公司" />
@@ -171,10 +192,7 @@ onMounted(getData);
                 <el-button :text="true" icon="el-icon-edit" @click="handleEdit(scope.row)">
                   编辑
                 </el-button>
-                <el-button
-                  :text="true" icon="el-icon-delete" class="red"
-                  @click="handleDelete(scope.row)"
-                >
+                <el-button :text="true" icon="el-icon-delete" class="red" @click="handleDelete(scope.row)">
                   删除
                 </el-button>
               </div>
@@ -189,6 +207,14 @@ onMounted(getData);
         />
       </div>
     </div>
+    <el-popover ref="popoverRef" :virtual-ref="buttonRef" placement="right" trigger="hover" virtual-triggering>
+      <div>
+        <el-button @click="closePopover(popoverRef)">
+          关闭
+        </el-button>
+        <span> {{ rowData.company }} </span>
+      </div>
+    </el-popover>
   </div>
 </template>
 
