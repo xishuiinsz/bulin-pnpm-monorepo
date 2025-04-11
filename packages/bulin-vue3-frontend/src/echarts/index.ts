@@ -1,5 +1,4 @@
-import type { EChartsType } from 'echarts';
-
+import type { EChartsOption, EChartsType } from 'echarts';
 /** 引入柱状图and折线图图表，图表后缀都为 Chart  */
 import { BarChart, LineChart, PieChart } from 'echarts/charts';
 
@@ -21,10 +20,11 @@ import * as echarts from 'echarts/core';
 
 // 标签自动布局，全局过渡动画等特性
 import { LabelLayout, UniversalTransition } from 'echarts/features';
+
 // 引入 Canvas 渲染器，注意引入 CanvasRenderer 或者 SVGRenderer 是必须的一步
 import { CanvasRenderer } from 'echarts/renderers';
 import { isPlainObject } from 'lodash';
-import { onMounted, shallowRef } from 'vue';
+import { isRef, onMounted, onUnmounted, shallowRef, watch } from 'vue';
 // 注册必须的组件
 echarts.use([
   TitleComponent,
@@ -82,16 +82,28 @@ export function instanceInterceptor(instance) {
   return rest;
 }
 
-export function useEcharts({ options, params }) {
+export function useEcharts(...params) {
   const chartRef = shallowRef(null);
+  const [options, ...restParmas] = params;
   let chartInstance = null;
-  const renderChart = () => {
+  const renderChart = (data: EChartsOption) => {
     if (!chartInstance) {
-      chartInstance = echarts.init(chartRef.value);
+      chartInstance = echarts.init(chartRef.value, ...restParmas);
     }
-    chartInstance.setOption(options);
+    chartInstance.setOption(data);
   };
-  onMounted(renderChart);
+  const init = () => {
+    renderChart(isRef(options) ? options.value : options);
+    if (chartInstance) {
+      const resize = () => {
+        chartInstance.resize();
+      };
+      window.addEventListener('resize', resize);
+    }
+    const stop = watch(isRef(options) ? options : () => options, renderChart, { deep: true });
+    onUnmounted(stop);
+  };
+  onMounted(init);
   return { chartRef, renderChart, chartInstance };
 }
 

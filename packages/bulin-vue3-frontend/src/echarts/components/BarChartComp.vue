@@ -1,8 +1,6 @@
-<template>
-  <div class="h-100 bar-chart-comp" ref="chartRef"></div>
-</template>
 <script setup lang="ts">
 import { useEcharts } from '@/echarts/index';
+
 const options = {
   tooltip: {
     trigger: 'axis',
@@ -46,5 +44,9 @@ const options = {
     },
   ],
 };
-const { chartRef } = useEcharts({ options, params: [] });
+const { chartRef } = useEcharts(options);
 </script>
+
+<template>
+  <div ref="chartRef" class="h-100 bar-chart-comp" />
+</template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useEcharts } from '@/echarts/index';
+import { computed, reactive } from 'vue';
 
 const maxRadius = 60;
 const barWidth = 4;
@@ -69,14 +70,16 @@ const pieDatas = [
   },
 
 ];
-const series = [];
+const series = reactive([]);
+console.log(series);
+
 pieDatas.forEach((item, i) => {
   series.push({
     type: 'pie',
     clockWise: true, // 顺时加载
     hoverAnimation: false, // 鼠标移入变大
     radius: [`${maxRadius - i * (barGap + barWidth)}%`, `${maxRadius - (i + 1) * barWidth - i * barGap}%`],
-    center: ['30%', '50%'],
+    center: ['50%', '50%'],
     label: {
       show: false,
     },
@@ -116,7 +119,7 @@ pieDatas.forEach((item, i) => {
     clockWise: false, // 顺时加载
     hoverAnimation: false, // 鼠标移入变大
     radius: [`${maxRadius - i * (barGap + barWidth)}%`, `${maxRadius - (i + 1) * barWidth - i * barGap}%`],
-    center: ['30%', '50%'],
+    center: ['50%', '50%'],
     label: {
       show: false,
     },
@@ -142,24 +145,38 @@ pieDatas.forEach((item, i) => {
     }],
   });
 });
-const options = {
-  grid: {
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-  },
-  backgroundColor: '#fff',
-  tooltip: {
-    show: true,
-    trigger: 'item',
-  },
-  series,
-};
 
-const { chartRef } = useEcharts({ options, params: [] });
+const computingOptions = computed(() => {
+  const options = {
+    grid: {
+      left: 0,
+      right: 0,
+      top: 0,
+      bottom: 0,
+    },
+    backgroundColor: '#fff',
+    tooltip: {
+      show: true,
+      trigger: 'item',
+    },
+    series,
+  };
+  return options;
+});
+
+const { chartRef } = useEcharts(computingOptions);
 </script>
 
 <template>
-  <div ref="chartRef" class="w-100 h-100" />
+  <div class="w-100 h-100 p-4">
+    <div class="w-100 h-100 d-flex align-items-center gap-3">
+      <div ref="chartRef" class="w-100 h-100 flex-fill" />
+      <div>
+        <div v-for="item in pieDatas" :key="item.name" class="d-flex align-items-center mb-2">
+          <span class=" text-nowrap">{{ item.name }}</span>
+          <span class=" ms-2">{{ item.value }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
