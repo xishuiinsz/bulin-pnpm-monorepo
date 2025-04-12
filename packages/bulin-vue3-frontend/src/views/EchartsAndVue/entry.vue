@@ -2,6 +2,7 @@
 import BarChartComp from '@/echarts/components/BarChartComp.vue';
 import LineChartComp from '@/echarts/components/LineChartComp.vue';
 import MosquitoRepellentIncense from '@/echarts/components/MosquitoRepellentIncense.vue';
+import { ref } from 'vue';
 
 defineOptions({
   name: 'EchartsAndVue',
@@ -31,6 +32,34 @@ const lineChartOptions = {
     },
   ],
 };
+const mriList = ref([
+  {
+    value: 20,
+    name: '值为20',
+    color: '#4E9DFF',
+  },
+  {
+    value: 50,
+    name: '值为50',
+    color: '#36C4F7',
+  },
+  {
+    value: 65,
+    name: '值为65',
+    color: '#65D4AB',
+  },
+  {
+    value: 40,
+    name: '值为40',
+    color: '#9FFF8D',
+  },
+  {
+    value: 75,
+    name: '值为75',
+    color: '#FFE154',
+  },
+
+]);
 </script>
 
 <template>
@@ -58,7 +87,7 @@ const lineChartOptions = {
         </div>
         <div class="flex-fill flex-basis-0 d-flex gap-3">
           <div class="border border-danger rounded-2 flex-fill">
-            <MosquitoRepellentIncense />
+            <MosquitoRepellentIncense :chart-data="mriList" />
           </div>
         </div>
       </div>
