@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useEcharts } from '@/echarts/index';
+import * as echarts from 'echarts';
 import { computed } from 'vue';
 
 const props = defineProps<{
@@ -13,6 +14,16 @@ const props = defineProps<{
 const maxRadius = 60;
 const barWidth = 4;
 const barGap = 4;
+
+function getColor(color: string) {
+  if (Array.isArray(color)) {
+    return new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+      { offset: 0, color: color[0] },
+      { offset: 1, color: color[1] },
+    ]);
+  }
+  return color;
+}
 
 const computedOptions = computed(() => {
   const series = [];
@@ -41,11 +52,11 @@ const computedOptions = computed(() => {
           value: item.value,
           name: item.name,
           itemStyle: {
-            color: item.color,
+            color: getColor(item.color),
           },
         }, {
           value: 100 - item.value,
-          name: '',
+          name: 'undertone',
           itemStyle: {
             color: 'transparent',
           },

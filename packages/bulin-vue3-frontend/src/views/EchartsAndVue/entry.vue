@@ -34,9 +34,9 @@ const lineChartOptions = {
 };
 const mriList = ref([
   {
-    value: 20,
-    name: '值为20',
-    color: '#4E9DFF',
+    value: 90,
+    name: '值为90',
+    color: ['#3b86ff', '#7aadff'],
   },
   {
     value: 50,
