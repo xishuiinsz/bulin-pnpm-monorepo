@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { useEcharts } from '@/echarts/index';
-import * as echarts from 'echarts';
+import echarts, { useEcharts } from '@/echarts/index';
 import { computed } from 'vue';
 
 const props = defineProps<{
