@@ -1,5 +1,6 @@
 <script setup>
 import { inject } from 'vue';
+import ContentItem from './ContentItem.vue';
 
 const props = defineProps({
   node: {
@@ -20,38 +21,34 @@ const { nodeRemoveHandler } = providedData;
 </script>
 
 <template>
-  <ul class="and-or-tree-container">
-    <li class=" position-relative">
-      <div v-if="node.type === 'LEAF'" class="node-leaf">
-        <div class="node-leaf-content">
-          {{ node.value }}
+  <div class="and-or-tree-component">
+    <div class="and-or-tree-container">
+      <div class="and-or-tree-item mt-3 position-relative">
+        <div v-if="node.type === 'LEAF'" class="node-leaf w-100 px-2">
+          <ContentItem :node="node" @node-remove="nodeRemoveHandler" />
         </div>
-        <div>
-          <el-button type="danger" @click="nodeRemoveHandler(node)">
-            删除
-          </el-button>
+        <div v-else class="node-type position-absolute">
+          <div class="node-type-label cursor-pointer" @click="typeLabelClick(node)">
+            <el-button>
+              {{ node.type }}
+            </el-button>
+          </div>
         </div>
+        <template v-if="node.children">
+          <AndOrTree v-for="child in node.children" :key="child.id" :node="child" />
+        </template>
       </div>
-      <div v-else class="node-type position-absolute">
-        <div class="node-type-label cursor-pointer" @click="typeLabelClick(node)">
-          {{ node.type }}
-        </div>
-      </div>
-      <AndOrTree
-        v-for="child in node.children" v-if="node.children" :key="child.value || child.type"
-        :node="child"
-      />
-    </li>
-  </ul>
+    </div>
+  </div>
 </template>
 
 <style scoped>
-li {
-    list-style: none;
-    margin-top: 16px;
-}
+.and-or-tree-component {
+  .and-or-tree-component {
+    padding-left: 60px;
+  }
 
-.node-leaf {
+  .node-leaf {
     width: 200px;
     height: 48px;
     background-color: pink;
@@ -59,9 +56,9 @@ li {
     justify-content: space-between;
     align-items: center;
 
-}
+  }
 
-.node-type {
+  .node-type {
     left: 0;
     height: 100%;
     display: flex;
@@ -69,72 +66,71 @@ li {
     z-index: 1;
 
     &::before {
-        content: '';
-        height: 100%;
-        width: 1px;
-        position: absolute;
-        background-color: red;
-        left: 50%;
-        transform: translateX(-50%);
+      content: '';
+      height: 100%;
+      width: 1px;
+      position: absolute;
+      background-color: red;
+      left: 50%;
+      transform: translateX(-50%);
     }
-}
+  }
 
-.node-type-label {
+  .node-type-label {
     position: relative;
     z-index: 10;
-    background-color: red;
-}
+  }
 
-.tree ul {
+  .tree ul {
     list-style-type: none;
-    padding-left: 20px;
     position: relative;
-}
+  }
 
-.tree li {
+  .tree li {
     margin: 10px 0;
     position: relative;
-}
+  }
 
-.tree li::before {
+  .tree li::before {
     content: "";
     position: absolute;
     left: -15px;
     top: 50%;
     border-left: 1px solid #ccc;
     height: 100%;
-}
+  }
 
-.tree li::after {
+  .tree li::after {
     content: "";
     position: absolute;
     left: -15px;
     top: 50%;
     border-top: 1px solid #ccc;
     width: 15px;
-}
+  }
 
-.tree li:last-child::before {
+  .tree li:last-child::before {
     height: 50%;
-}
+  }
 
-.node {
+  .node {
     padding: 5px 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: #f9f9f9;
     display: inline-block;
-}
+  }
 
-.node.and {
+  .node.and {
     background-color: #d4edda;
-}
+  }
 
-.node.or {
+  .node.or {
     background-color: #f8d7da;
-}
+  }
 
-.node.leaf {
+  .node.leaf {
     background-color: #fff3cd;
+  }
 }
 </style>

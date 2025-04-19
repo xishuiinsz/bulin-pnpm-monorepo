@@ -7,29 +7,34 @@ import AndOrTree from './AndOrTree.vue';
 const letters = getFullLetters();
 const instance = getCurrentInstance();
 const treeData = reactive({
-  type: '或',
-  children: [
-    {
-      type: '与',
-      children: [
-        { type: 'LEAF', value: 'A' },
-        { type: 'LEAF', value: 'B' },
-      ],
-    },
-    {
-      type: '与',
-      children: [
-        { type: 'LEAF', value: 'C' },
-        {
-          type: '与',
-          children: [
-            { type: 'LEAF', value: 'D' },
-            { type: 'LEAF', value: 'E' },
-          ],
-        },
-      ],
-    },
-  ],
+  // type: '或',
+  // id: 1744981421208,
+  // children: [
+  //   {
+  //     type: '与',
+  //     id: 1744981421209,
+  //     children: [
+  //       { type: 'LEAF', value: 'A', id: 1744981421210 },
+  //       { type: 'LEAF', value: 'B', id: 1744981421211 },
+  //       { type: 'LEAF', value: 'B' },
+  //     ],
+  //   },
+  //   {
+  //     type: '与',
+  //     id: 1744981421212,
+  //     children: [
+  //       { type: 'LEAF', value: 'C', id: 1744981421213 },
+  //       {
+  //         type: '或',
+  //         id: 1744981421214,
+  //         children: [
+  //           { type: 'LEAF', value: 'D', id: 1744981421215 },
+  //           { type: 'LEAF', value: 'E', id: 1744981421216 },
+  //         ],
+  //       },
+  //     ],
+  //   },
+  // ],
 });
 
 /**
@@ -88,7 +93,6 @@ provide('providedData', providedData);
 function mousedown(e) {
   const dragSelecgtor = 'drag-drop-mode';
   const container = instance.proxy.$el;
-  console.log('container: ', container);
   container.classList.add(dragSelecgtor);
   let target = e.target;
   const elTagSelector = 'el-tag';
@@ -97,15 +101,14 @@ function mousedown(e) {
   }
 
   const cloneTarget = target.cloneNode(true);
-  console.log('mousedown cloneTarget', cloneTarget);
   Object.assign(cloneTarget.style, { 'position': 'fixed', 'pointer-events': 'none' });
   Object.assign(document.body.style, { 'user-select': 'none' });
   document.body.appendChild(cloneTarget);
   const mousemove = (event) => {
     Object.assign(document.body.style, { cursor: 'move' });
     Object.assign(cloneTarget.style, { left: `${event.pageX}px`, top: `${event.pageY}px` });
-    console.log('mousemove event: ', event);
   };
+
   const mouseup = () => {
     container.classList.remove(dragSelecgtor);
     document.body.removeChild(cloneTarget);
@@ -131,14 +134,21 @@ function mousedown(e) {
     </div>
     <div class="container w-100 overflow-hidden flex-fill">
       <div class="and-or-tree-content h-100 m-auto d-flex">
-        <div class="d-flex h-100 gap-4">
-          <div class="columns-list d-flex w300 flex-wrap gap-2">
+        <div class="d-flex w-100 h-100 gap-4">
+          <div
+            class="columns-list border-danger border border-1 rounded-2 p-3 align-items-center d-flex w300 flex-wrap gap-2"
+          >
             <el-tag v-for="letter in letters" :key="letter" type="primary" @mousedown.capture="mousedown">
               {{ letter }}
             </el-tag>
           </div>
-          <div class="and-or-tree-container">
-            <AndOrTree :node="treeData" />
+          <div class="and-or-tree-container border border-1 border-info rounded-2 flex-fill p-4">
+            <template v-if="Object.keys(treeData).length">
+              <AndOrTree :node="treeData" />
+            </template>
+            <div v-else class="text-center h-100 text-muted flex-fill d-flex align-items-center justify-content-center">
+              <span>请从左侧拖拽类目</span>
+            </div>
           </div>
         </div>
       </div>
