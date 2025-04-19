@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Position } from '@element-plus/icons-vue';
+import { getAncestorByClass } from '@/utils/dom';
 import Sortable from 'sortablejs';
 
 let instance
@@ -15,9 +16,9 @@ const init = (element: HTMLDivElement, data) => {
         }
     });
 }
-const mouseenter = (data) => {
+const mouseenter = (e, data) => {
     if (!instance) {
-        const container = document.querySelector('.el-table__body-wrapper tbody') as HTMLDivElement;
+        const container = getAncestorByClass(e.target, 'tbody') as HTMLDivElement;
         init(container, data)
     }
 }
@@ -27,7 +28,8 @@ const mouseenter = (data) => {
 <template>
     <el-table-column type="index" label="序号" width="120">
         <template #default="scope">
-            <div @mouseenter="mouseenter(scope)" class="drag-drop-handle cursor-pointer d-flex align-items-center">
+            <div @mouseenter="mouseenter($event, scope)"
+                class="drag-drop-handle cursor-pointer d-flex align-items-center">
                 <el-icon>
                     <Position />
                 </el-icon>
