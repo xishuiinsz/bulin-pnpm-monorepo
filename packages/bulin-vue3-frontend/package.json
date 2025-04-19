@@ -20,6 +20,7 @@
     "lodash": "^4.17.21",
     "marked": "^4.0.18",
     "md-editor-v3": "^2.2.0",
+    "sortablejs": "^1.15.6",
     "three": "^0.165.0",
     "three.interactive": "^1.7.0",
     "vue-cropperjs": "^5.0.0",
