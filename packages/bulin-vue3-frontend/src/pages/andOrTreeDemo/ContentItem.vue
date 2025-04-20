@@ -14,7 +14,8 @@ function nodeRemoveHandler(data) {
 </script>
 
 <template>
-  <div class="node-leaf-content w-100 d-flex justify-content-between align-items-center">
+  <div :data-id="node.id"
+    class="node-leaf-content bg-f5f5f5 w-100 h40 px-2 border d-flex justify-content-between align-items-center">
     <div>{{ node.value }}</div>
     <el-button type="danger" @click="nodeRemoveHandler(node)">
       删除

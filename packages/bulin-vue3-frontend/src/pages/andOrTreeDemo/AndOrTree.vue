@@ -9,49 +9,40 @@ const props = defineProps({
   },
 });
 const emit = defineEmits('nodeRemove');
-function typeLabelClick(data) {
-  const mapping = new Map([['或', '与'], ['与', '或']]);
-  const { type } = data;
-  const _type = mapping.get(type);
-  Object.assign(data, { type: _type });
-}
+
+
 
 const providedData = inject('providedData');
-const { nodeRemoveHandler } = providedData;
+const { nodeRemoveHandler, nodeType, typeLabelClick } = providedData;
 </script>
 
 <template>
   <div class="and-or-tree-component">
-    <div class="and-or-tree-container">
-      <div class="and-or-tree-item mt-3 position-relative">
-        <div v-if="node.type === 'LEAF'" class="node-leaf w-100 px-2">
-          <ContentItem :node="node" @node-remove="nodeRemoveHandler" />
-        </div>
-        <div v-else class="node-type position-absolute">
+    <div class="and-or-tree-item w-100 d-flex align-items-center gap-3 position-relative">
+      <div v-if="node.type === 'LEAF'" class="node-leaf w-100">
+        <ContentItem :node="node" @node-remove="nodeRemoveHandler" />
+      </div>
+      <template v-else>
+        <div class="node-type">
           <div class="node-type-label cursor-pointer" @click="typeLabelClick(node)">
             <el-button>
-              {{ node.type }}
+              {{ nodeType[node.type] }}
             </el-button>
           </div>
         </div>
-        <template v-if="node.children">
+        <div v-if="node.children" class="flex-fill d-flex flex-column gap-2">
           <AndOrTree v-for="child in node.children" :key="child.id" :node="child" />
-        </template>
-      </div>
+        </div>
+      </template>
     </div>
+
   </div>
 </template>
 
 <style scoped>
 .and-or-tree-component {
-  .and-or-tree-component {
-    padding-left: 60px;
-  }
 
   .node-leaf {
-    width: 200px;
-    height: 48px;
-    background-color: pink;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -59,11 +50,8 @@ const { nodeRemoveHandler } = providedData;
   }
 
   .node-type {
-    left: 0;
-    height: 100%;
     display: flex;
     align-items: center;
-    z-index: 1;
 
     &::before {
       content: '';
@@ -71,7 +59,7 @@ const { nodeRemoveHandler } = providedData;
       width: 1px;
       position: absolute;
       background-color: red;
-      left: 50%;
+      left: 20px;
       transform: translateX(-50%);
     }
   }
@@ -81,56 +69,5 @@ const { nodeRemoveHandler } = providedData;
     z-index: 10;
   }
 
-  .tree ul {
-    list-style-type: none;
-    position: relative;
-  }
-
-  .tree li {
-    margin: 10px 0;
-    position: relative;
-  }
-
-  .tree li::before {
-    content: "";
-    position: absolute;
-    left: -15px;
-    top: 50%;
-    border-left: 1px solid #ccc;
-    height: 100%;
-  }
-
-  .tree li::after {
-    content: "";
-    position: absolute;
-    left: -15px;
-    top: 50%;
-    border-top: 1px solid #ccc;
-    width: 15px;
-  }
-
-  .tree li:last-child::before {
-    height: 50%;
-  }
-
-  .node {
-    padding: 5px 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-    display: inline-block;
-  }
-
-  .node.and {
-    background-color: #d4edda;
-  }
-
-  .node.or {
-    background-color: #f8d7da;
-  }
-
-  .node.leaf {
-    background-color: #fff3cd;
-  }
 }
 </style>

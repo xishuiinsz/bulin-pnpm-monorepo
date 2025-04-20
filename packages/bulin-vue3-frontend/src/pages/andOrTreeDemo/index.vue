@@ -3,39 +3,26 @@ import { getAncestorByClass } from '@/utils/dom';
 import { getFullLetters } from '@u/index';
 import { getCurrentInstance, provide, reactive, ref } from 'vue';
 import AndOrTree from './AndOrTree.vue';
+import { uniqueId } from 'lodash';
+import { ElMessage } from 'element-plus';
 
 const letters = getFullLetters();
-const instance = getCurrentInstance();
+const nodeType = {
+  leaf: 'LEAF',
+  and: 'AND',
+  or: 'OR',
+  AND: '与',
+  OR: '或',
+}
+const maxLevel = 4;
 const treeData = reactive({
-  // type: '或',
-  // id: 1744981421208,
-  // children: [
-  //   {
-  //     type: '与',
-  //     id: 1744981421209,
-  //     children: [
-  //       { type: 'LEAF', value: 'A', id: 1744981421210 },
-  //       { type: 'LEAF', value: 'B', id: 1744981421211 },
-  //       { type: 'LEAF', value: 'B' },
-  //     ],
-  //   },
-  //   {
-  //     type: '与',
-  //     id: 1744981421212,
-  //     children: [
-  //       { type: 'LEAF', value: 'C', id: 1744981421213 },
-  //       {
-  //         type: '或',
-  //         id: 1744981421214,
-  //         children: [
-  //           { type: 'LEAF', value: 'D', id: 1744981421215 },
-  //           { type: 'LEAF', value: 'E', id: 1744981421216 },
-  //         ],
-  //       },
-  //     ],
-  //   },
-  // ],
+
 });
+
+const getUUID = () => {
+  const prefix = 'node-';
+  return uniqueId(prefix);
+}
 
 /**
  * 删除节点并自动优化逻辑树
@@ -87,19 +74,35 @@ function nodeRemoveHandler(node) {
   Object.assign(treeData, tree);
 }
 
-const providedData = { nodeRemoveHandler };
+function typeLabelClick(data) {
+  const _type = data.type === nodeType.and ? nodeType.or : nodeType.and;
+  Object.assign(data, { type: _type });
+}
+// 拖拽信号
+const dragDropFlag = ref(false);
+const providedData = { nodeRemoveHandler, nodeType, typeLabelClick, dragDropFlag };
 provide('providedData', providedData);
 
-function mousedown(e) {
-  const dragSelecgtor = 'drag-drop-mode';
-  const container = instance.proxy.$el;
-  container.classList.add(dragSelecgtor);
-  let target = e.target;
-  const elTagSelector = 'el-tag';
-  if (!target.classList.contains(elTagSelector)) {
-    target = getAncestorByClass(e.target, elTagSelector);
-  }
+const getNodeById = (id) => {
+  const _getNodeById = (node, id) => {
+    if (String(node.id) === String(id)) return node;
+    if (node.children) {
+      for (const child of node.children) {
+        const result = _getNodeById(child, id);
+        if (result) return result;
+      }
+    }
+    return null;
+  };
+  return _getNodeById(treeData, id);
+};
 
+function mousedown(e) {
+  const elTagSelector = 'drag-item';
+  dragDropFlag.value = true;
+  const target = getAncestorByClass(e.target, elTagSelector);
+  // 如果没有命中拖拽对象就退出。
+  if (!target) return;
   const cloneTarget = target.cloneNode(true);
   Object.assign(cloneTarget.style, { 'position': 'fixed', 'pointer-events': 'none' });
   Object.assign(document.body.style, { 'user-select': 'none' });
@@ -109,20 +112,89 @@ function mousedown(e) {
     Object.assign(cloneTarget.style, { left: `${event.pageX}px`, top: `${event.pageY}px` });
   };
 
-  const mouseup = () => {
-    container.classList.remove(dragSelecgtor);
+  const mouseup = (e) => {
+    dragDropFlag.value = false;
     document.body.removeChild(cloneTarget);
     document.removeEventListener('mousemove', mousemove);
     document.removeEventListener('mouseup', mouseup);
-    Object.assign(document.body.style, { cursor: 'default' });
+    Object.assign(document.body.style, { cursor: 'auto' });
+    const dropElement = getAncestorByClass(e.target, 'node-leaf-content');
+    if (dropElement) {
+      const dropId = dropElement.getAttribute('data-id');
+      const nodeItem = getNodeById(dropId);
+      if (nodeItem) {
+        if(nodeItem.level >= maxLevel) {
+          // 如果节点已经到达最大层级，直接返回
+          ElMessage.error('节点已到达最大层级，无法添加子节点');
+          return;
+        }
+        const cloneNode = {
+          type: nodeType.leaf,
+          value: nodeItem.value,
+          supperId: nodeItem.id,
+          level: nodeItem.level + 1,
+          id: getUUID(),
+        };
+        const newNode = {
+          type: nodeType.leaf,
+          value: target.innerText,
+          supperId: nodeItem.id,
+          level: nodeItem.level + 1,
+          id: getUUID(),
+        };
+        Reflect.deleteProperty(nodeItem, 'value');
+        Object.assign(nodeItem, { type: nodeType.and });
+        nodeItem.children = [cloneNode, newNode]
+      }
+      return;
+    }
+    const dropContainer = getAncestorByClass(e.target, 'and-or-tree-container');
+    if (dropContainer) {
+      if (Object.keys(treeData).length) {
+        // 如果树不为空，添加到树中
+        const newNode = {
+          type: nodeType.leaf,
+          value: target.innerText,
+          supperId: treeData.id,
+          level: treeData,
+          id: getUUID(),
+        };
+        // 如果为单叶
+        if (treeData.type === nodeType.leaf) {
+          const cloneNode = {
+            type: nodeType.leaf,
+            value: treeData.value,
+            supperId: treeData.id,
+            level: treeData.level + 1,
+            id: getUUID(),
+          };
+          Reflect.deleteProperty(treeData, 'value');
+          Object.assign(treeData, { type: nodeType.and });
+          treeData.children = [cloneNode, newNode]
+        } else {
+          treeData.children.push(newNode)
+        }
+
+      } else {
+        // 如果树为空，直接赋值
+        Object.assign(treeData, {
+          type: nodeType.leaf,
+          id: getUUID(),
+          supperId: null,
+          level: 1,
+          value: target.innerText,
+        });
+      }
+    }
   };
+
   document.addEventListener('mousemove', mousemove);
   document.addEventListener('mouseup', mouseup);
 }
 </script>
 
 <template>
-  <div class="and-or-tree w-100 h-100 d-flex flex-column overflow-hidden">
+  <div class="and-or-tree-demo w-100 h-100 d-flex flex-column overflow-hidden">
     <div class="crumbs">
       <div class="el-breadcrumb" aria-label="Breadcrumb" role="navigation">
         <span class="el-breadcrumb__item" aria-current="page" />
@@ -133,16 +205,16 @@ function mousedown(e) {
       </div>
     </div>
     <div class="container w-100 overflow-hidden flex-fill">
-      <div class="and-or-tree-content h-100 m-auto d-flex">
+      <div class="and-or-tree-subject h-100 m-auto d-flex">
         <div class="d-flex w-100 h-100 gap-4">
-          <div
-            class="columns-list border-danger border border-1 rounded-2 p-3 align-items-center d-flex w300 flex-wrap gap-2"
-          >
-            <el-tag v-for="letter in letters" :key="letter" type="primary" @mousedown.capture="mousedown">
+          <div @mousedown="mousedown"
+            class="columns-list border-danger border border-1 rounded-2 p-3 align-items-center d-flex w300 flex-wrap gap-2">
+            <el-tag class="drag-item" v-for="letter in letters" :key="letter" type="primary">
               {{ letter }}
             </el-tag>
           </div>
-          <div class="and-or-tree-container border border-1 border-info rounded-2 flex-fill p-4">
+          <div class="and-or-tree-container border border-1 border-info rounded-2 flex-fill p-4"
+            :class="{ 'drag-drop-mode': dragDropFlag }">
             <template v-if="Object.keys(treeData).length">
               <AndOrTree :node="treeData" />
             </template>
@@ -157,15 +229,14 @@ function mousedown(e) {
 </template>
 
 <style lang="scss" scoped>
-.and-or-tree {
-  &.drag-drop-mode {
-    :deep(.and-or-tree-container) {
-      .node-leaf {
-        &:hover {
-          border: 1px solid black;
-        }
+.and-or-tree-demo {
+  :deep(.drag-drop-mode) {
+    .node-leaf-content {
+      &:hover {
+        border-color: #3a85ff !important;
       }
     }
   }
+
 }
 </style>
