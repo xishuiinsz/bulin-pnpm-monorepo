@@ -69,9 +69,43 @@ function deleteNodeAndOptimize(root, targetNode) {
   return _deleteAndOptimize(newTree, targetNode);
 }
 
+// 递归遍历减少1个层级
+const reduceLevel = (node) => {
+  const level = node.level - 1;
+  Object.assign(node, { level })
+  if (node.children?.length) {
+    node.children.forEach(child => {
+      reduceLevel(child)
+    })
+  }
+}
+
+// 删除节点
 function nodeRemoveHandler(node) {
-  const tree = deleteNodeAndOptimize(treeData, node);
-  Object.assign(treeData, tree);
+  if (!node.supperId) {
+    Object.keys(treeData).forEach((key) => {
+      Reflect.deleteProperty(treeData, key);
+    });
+    return
+  }
+  const parentNode = getNodeById(node.supperId);
+  const index = parentNode.children.findIndex(item => String(item.id) === String(node.id))
+  if (index > -1) {
+    parentNode.children.splice(index, 1)
+  }
+  if (parentNode.children.length === 1) {
+    const [firstNode] = parentNode.children;
+    if (firstNode.type === nodeType.leaf) {
+      const { supperId, level, ...rest } = firstNode;
+      Object.assign(parentNode, rest)
+      Reflect.deleteProperty(parentNode, 'children');
+    } else {
+      const { supperId, ...rest } = firstNode;
+      Object.assign(parentNode, rest)
+      reduceLevel(parentNode)
+    }
+  }
+
 }
 
 function typeLabelClick(data) {
@@ -99,10 +133,10 @@ const getNodeById = (id) => {
 
 function mousedown(e) {
   const elTagSelector = 'drag-item';
-  dragDropFlag.value = true;
   const target = getAncestorByClass(e.target, elTagSelector);
   // 如果没有命中拖拽对象就退出。
   if (!target) return;
+  dragDropFlag.value = true;
   const cloneTarget = target.cloneNode(true);
   Object.assign(cloneTarget.style, { 'position': 'fixed', 'pointer-events': 'none' });
   Object.assign(document.body.style, { 'user-select': 'none' });
@@ -111,6 +145,34 @@ function mousedown(e) {
     Object.assign(document.body.style, { cursor: 'move' });
     Object.assign(cloneTarget.style, { left: `${event.pageX}px`, top: `${event.pageY}px` });
   };
+
+  const createAndTreeById = (id) => {
+    const nodeItem = getNodeById(id);
+    if (nodeItem) {
+      if (nodeItem.level >= maxLevel) {
+        // 如果节点已经到达最大层级，直接返回
+        ElMessage.error('节点已到达最大层级，无法添加子节点');
+        return;
+      }
+      const cloneNode = {
+        type: nodeType.leaf,
+        value: nodeItem.value,
+        supperId: nodeItem.id,
+        level: nodeItem.level + 1,
+        id: getUUID(),
+      };
+      const newNode = {
+        type: nodeType.leaf,
+        value: target.innerText,
+        supperId: nodeItem.id,
+        level: nodeItem.level + 1,
+        id: getUUID(),
+      };
+      Reflect.deleteProperty(nodeItem, 'value');
+      Object.assign(nodeItem, { type: nodeType.and });
+      nodeItem.children = [cloneNode, newNode]
+    }
+  }
 
   const mouseup = (e) => {
     dragDropFlag.value = false;
@@ -121,31 +183,7 @@ function mousedown(e) {
     const dropElement = getAncestorByClass(e.target, 'node-leaf-content');
     if (dropElement) {
       const dropId = dropElement.getAttribute('data-id');
-      const nodeItem = getNodeById(dropId);
-      if (nodeItem) {
-        if(nodeItem.level >= maxLevel) {
-          // 如果节点已经到达最大层级，直接返回
-          ElMessage.error('节点已到达最大层级，无法添加子节点');
-          return;
-        }
-        const cloneNode = {
-          type: nodeType.leaf,
-          value: nodeItem.value,
-          supperId: nodeItem.id,
-          level: nodeItem.level + 1,
-          id: getUUID(),
-        };
-        const newNode = {
-          type: nodeType.leaf,
-          value: target.innerText,
-          supperId: nodeItem.id,
-          level: nodeItem.level + 1,
-          id: getUUID(),
-        };
-        Reflect.deleteProperty(nodeItem, 'value');
-        Object.assign(nodeItem, { type: nodeType.and });
-        nodeItem.children = [cloneNode, newNode]
-      }
+      createAndTreeById(dropId);
       return;
     }
     const dropContainer = getAncestorByClass(e.target, 'and-or-tree-container');
@@ -156,7 +194,7 @@ function mousedown(e) {
           type: nodeType.leaf,
           value: target.innerText,
           supperId: treeData.id,
-          level: treeData,
+          level: treeData.level + 1,
           id: getUUID(),
         };
         // 如果为单叶
