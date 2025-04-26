@@ -45,7 +45,7 @@ const fetchImages = async () => {
         });
       }
     }
-  } catch (error) {}
+  } catch (error) { }
 };
 const loadMorePics = () => {
   // 取消 observe 最后的图片元素
@@ -94,12 +94,11 @@ onMounted(fetchImages);
 
       .el-scrollbar__view {
         width: 100%;
-        display: flex;
-        justify-content: space-between;
+        column-width: 280px;
+        column-count: 3;
 
         .waterfall-item {
           background-color: #fff;
-          width: 33%;
           height: fit-content;
 
           .img-wrap {
@@ -107,6 +106,10 @@ onMounted(fetchImages);
 
             .img {
               width: 100%;
+            }
+
+            &:not(:first-child) {
+              margin-top: 24px;
             }
           }
         }

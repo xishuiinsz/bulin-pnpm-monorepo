@@ -7,13 +7,22 @@ import RowSort from './RowSort.vue';
 const route = useRoute();
 const router = useRouter();
 function handleClick(data) { }
-const currentPage2 = ref(1);
-const pageSize = ref(20);
+const currentPage = ref(1);
+
+const pageSize = ref(10);
+
 const maxHeight = computed(() => {
   const pageHeaderHeight = '70px';
   return 900;
 });
+
 const sortFlag = ref(false);
+
+const computedTableData = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value;
+  const end = currentPage.value * pageSize.value;
+  return tableData.slice(start, end);
+});
 </script>
 
 <template>
@@ -29,10 +38,8 @@ const sortFlag = ref(false);
       <el-switch v-model="sortFlag" class="ms-3" active-text="启用序号列拖拽" inactive-text="禁用序号列拖拽" />
     </div>
     <div class="container table-container w-100 h-100 flex-fill">
-      <el-table
-        class="card-style-table" row-key="id" :data="tableData.slice(0, pageSize)" :max-height="maxHeight"
-        style="width: 100%"
-      >
+      <el-table class="card-style-table" row-key="id" :data="computedTableData" :max-height="maxHeight"
+        style="width: 100%">
         <template v-if="sortFlag">
           <RowSort />
         </template>
@@ -54,11 +61,9 @@ const sortFlag = ref(false);
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination
-        v-model:current-page="currentPage2" v-model:page-size="pageSize" class="p-4 justify-content-end"
+      <el-pagination v-model:current-page="currentPage" v-model:page-size="pageSize" class="p-4 justify-content-end"
         background :page-sizes="[10, 20, 50, 100, 200, 300, 400]" layout="total, sizes, prev, pager, next, jumper"
-        :total="tableData.length"
-      >
+        :total="tableData.length">
         条/页
       </el-pagination>
     </div>

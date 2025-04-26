@@ -33,7 +33,7 @@ const mouseenter = (e, data) => {
                 <el-icon>
                     <Position />
                 </el-icon>
-                <span class="ms-3">{{ scope.$index }}</span>
+                <span class="ms-3">{{ scope.$index + 1 }}</span>
             </div>
         </template>
     </el-table-column>

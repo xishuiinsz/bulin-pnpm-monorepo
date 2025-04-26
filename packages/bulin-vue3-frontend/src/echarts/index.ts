@@ -103,8 +103,12 @@ export function useEcharts(...params) {
     const stop = watch(isRef(options) ? options : () => options, renderChart, { deep: true });
     onUnmounted(stop);
   };
+
+  const getChartInstance = () => {
+    return chartInstance;
+  };
   onMounted(init);
-  return { chartRef, renderChart, chartInstance };
+  return { chartRef, renderChart, getChartInstance };
 }
 
 // 导出
