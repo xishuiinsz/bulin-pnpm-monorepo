@@ -23,9 +23,12 @@ exports.getCustomerInfoList = (req, res) => {
     return customerOption;
   });
   if (name.trim()) {
-    const nameQuery = name.trim();
+    const nameQuery = name.trim().toLowerCase();
     customerInfo = customerInfo.filter((employee) => {
-      return employee.firstName.toLowerCase().includes(nameQuery.toLowerCase()) || employee.lastName.toLowerCase().includes(nameQuery.toLowerCase());
+      const firstName = employee.firstName.toLowerCase();
+      const lastName = employee.lastName.toLowerCase();
+      const flag = firstName.includes(nameQuery) || lastName.includes(nameQuery) || `${firstName} ${lastName}`.includes(nameQuery);
+      return flag
     });
   }
   if (address.trim()) {

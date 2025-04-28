@@ -1,8 +1,10 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, h } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { tableData } from './data';
 import RowSort from './RowSort.vue';
+import { cellNumberFormat, getDecimalPart } from '@/utils/index';
+import { ElTooltip } from 'element-plus';
 
 const route = useRoute();
 const router = useRouter();
@@ -23,6 +25,15 @@ const computedTableData = computed(() => {
   const end = currentPage.value * pageSize.value;
   return tableData.slice(start, end);
 });
+
+const depositFormatter = (row, column, cellValue) => {
+  const value = cellNumberFormat(cellValue);
+  const decimalPart = getDecimalPart(value);
+  if (!decimalPart) {
+    return value;
+  }
+  return h(ElTooltip, { effect: 'dark', content: cellValue, placement: 'top' }, () => value);
+};
 </script>
 
 <template>
@@ -45,12 +56,19 @@ const computedTableData = computed(() => {
         </template>
 
         <el-table-column prop="date" label="Date" width="150" />
-        <el-table-column prop="name" label="Name" width="180" />
+        <el-table-column prop="name" label="Name" width="150" />
         <el-table-column prop="state" label="State" width="150" />
         <el-table-column prop="city" label="City" width="150" />
-        <el-table-column prop="address" label="Address" width="600" />
+        <el-table-column prop="address" width="150" label-class-name="label-nowrap" label="Address">
+          <template #default="scope">
+            <el-tooltip effect="dark" :content="scope.row.address" placement="top">
+              <div class="text-truncate">{{ scope.row.address }}</div>
+            </el-tooltip>
+          </template>
+        </el-table-column>
         <el-table-column prop="zip" label="Zip" width="150" />
-        <el-table-column label="Operations" min-width="150">
+        <el-table-column prop="deposit" label="存款" width="180" :formatter="depositFormatter" />
+        <el-table-column label="Operations" min-width="120">
           <template #default>
             <el-button link type="primary" size="small" @click="handleClick">
               Detail

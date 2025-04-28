@@ -8,6 +8,7 @@
     $header-bg-color: #f5f7fa;
     $tbody-bg-color: #fff;
     $keep-distance: 4px;
+
     @mixin card-row($height: 48px, $bg: #fff) {
       display: block;
       position: absolute;
@@ -22,38 +23,54 @@
       background-color: $bg;
       box-shadow: 0px 3px 6px 0 rgba(0, 0, 0, 0.15);
     }
+
     .el-table__inner-wrapper {
       tr {
         position: relative;
+
         .el-table__cell {
           padding: 0 20px;
-          .cell {
-          }
+
         }
       }
+
       .el-table__header-wrapper {
         .el-table__header {
           tr {
             .el-table__cell {
               height: 48px;
+
             }
+
             &::after {
               @include card-row(40px, $header-bg-color);
             }
+
+
           }
         }
       }
+
       .el-table__body-wrapper {
         .el-table__body {
           .el-table__row {
             .el-table__cell {
-              height: 64px;
+              height: 56px;
             }
+
             &::after {
               @include card-row(48px, $tbody-bg-color);
             }
           }
         }
+      }
+    }
+  }
+
+  th.el-table__cell.is-leaf {
+    &.label-nowrap {
+      .cell {
+        white-space: nowrap;
       }
     }
   }

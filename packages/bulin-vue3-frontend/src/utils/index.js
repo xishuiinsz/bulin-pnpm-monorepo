@@ -33,4 +33,19 @@ export function getFullLetters() {
   return letters;
 }
 
+export function getDecimalPart(str) {
+  const regex = /(\.\d+)/;
+  const match = str.match(regex);
+  return match ? match[1] : null;
+}
+
+export function cellNumberFormat(cellNumber, precision = 2) {
+  const precisionValue = Number.isInteger(Number.parseFloat(cellNumber)) ? 0 : precision;
+  const formatted = new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: precisionValue, // 保证至少有5位小数
+    maximumFractionDigits: precisionValue, // 最多保留5位小数
+  }).format(cellNumber);
+  return formatted;
+}
+
 export { getRangeInteger, myDebounced };
