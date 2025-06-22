@@ -1,4 +1,10 @@
+import hljs from 'highlight.js/lib/core';
+import { marked } from 'marked';
+import { markedHighlight } from 'marked-highlight';
 import { nextTick, reactive, ref } from 'vue';
+
+import 'highlight.js/styles/github.css';
+import 'highlight.js/styles/paraiso-light.css';
 
 export default {
   path: '/ai-chat-assiant',
@@ -65,4 +71,19 @@ export function focusInput() {
   else {
     console.warn('Input element not found.');
   }
+}
+
+export function getMarkedAnswer(answer) {
+  marked.use({
+    pedantic: false,
+    gfm: true,
+    breaks: false,
+    emptyLangClass: 'hljs',
+    langPrefix: 'hljs language-',
+    highlight(code, lang, info) {
+      const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+      return hljs.highlight(code, { language }).value;
+    },
+  });
+  return marked.parse(answer);
 }

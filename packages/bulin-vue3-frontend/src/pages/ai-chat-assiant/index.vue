@@ -27,7 +27,7 @@
                   <div class="w-50 text-end">{{ message.question }}</div>
                 </div>
                 <div class="ai-answer mt-2">
-                  <div class="ai-answer-content">{{ message.answer }}</div>
+                  <div class="ai-answer-content" v-html="getMarkedAnswer(message.answer)"></div>
                   <div v-if="!message.inAnswering" class=" d-flex justify-content-end ">
                     <el-tooltip content="重新生成" placement="top">
                       <span class="text-primary cursor-pointer" @click="regenerate(message)">
@@ -59,7 +59,11 @@
 import { nextTick, reactive, ref } from 'vue';
 import { Refresh, Edit } from '@element-plus/icons-vue';
 import OpenAI from 'openai';
-import { messageList, goToBottom, useObserveAnsweringHeight, cachedData, wheelEvt, focusInput } from './page';
+import { messageList, goToBottom, useObserveAnsweringHeight, cachedData, wheelEvt, focusInput, getMarkedAnswer } from './page';
+
+defineOptions({
+  name: 'AiChatAssiant'
+});
 
 const client = new OpenAI({
   apiKey: "sk-5cc5Pqit9escnNduo4Ard0oCxpmbnh23MDVWWYSpj7vHsZmQ",
@@ -70,6 +74,7 @@ const client = new OpenAI({
 const question = ref('');
 
 const chatHandler = async ({ question, done = null }) => {
+  const inAnsweringMessage = messageList.find(m => m.inAnswering === true);
   try {
     const completion = await client.chat.completions.create({
       model: "moonshot-v1-8k",
@@ -79,7 +84,7 @@ const chatHandler = async ({ question, done = null }) => {
     });
     const { startObserve, terminateObserve } = useObserveAnsweringHeight();
     startObserve();
-    const inAnsweringMessage = messageList.find(m => m.inAnswering === true);
+
     if (!inAnsweringMessage) {
       return;
     }
@@ -97,7 +102,7 @@ const chatHandler = async ({ question, done = null }) => {
     typeof done === 'function' && done();
     focusInput()
   } catch (error) {
-
+    inAnsweringMessage.answer = 'AI助手出错了，请稍后再试。';
   }
 }
 
@@ -116,7 +121,7 @@ const rewrite = (data) => {
 
 // 提问
 const submitMessage = async () => {
-  if (!question.value) {
+  if (!question.value?.trim()) {
     return;
   }
   const chatOptin = {
@@ -130,7 +135,7 @@ const submitMessage = async () => {
   nextTick(goToBottom)
   const done = () => {
     if (cachedData.hasScroll) {
-      goToBottom();
+      nextTick(goToBottom)
     };
   };
   chatHandler({ question: chatOptin.question, done });
