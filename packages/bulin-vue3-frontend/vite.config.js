@@ -1,7 +1,8 @@
+import { resolve } from 'node:path';
 import vue from '@vitejs/plugin-vue';
-import { defineConfig } from 'vite';
 import vueJsx from '@vitejs/plugin-vue-jsx';
-import { resolve } from 'path';
+import { defineConfig } from 'vite';
+
 export default defineConfig({
   base: './',
   // 设置scss的api类型为modern-compiler
@@ -77,6 +78,13 @@ export default defineConfig({
         },
         rewrite: (path) => {
           return path.replace(/^\/map/, '');
+        },
+      },
+      '/chat': {
+        target: 'https://api.moonshot.cn/v1',
+        changeOrigin: true,
+        rewrite: (path) => {
+          return path.replace(/^\/chat/, '');
         },
       },
     },
