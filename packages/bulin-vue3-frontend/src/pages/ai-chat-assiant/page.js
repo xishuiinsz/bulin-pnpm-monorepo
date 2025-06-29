@@ -1,7 +1,7 @@
 import hljs from 'highlight.js/lib/core';
 import { marked } from 'marked';
 import { markedHighlight } from 'marked-highlight';
-import { nextTick, reactive, ref } from 'vue';
+import { computed, nextTick, onUnmounted, reactive, ref, watch } from 'vue';
 
 import 'highlight.js/styles/github.css';
 import 'highlight.js/styles/paraiso-light.css';
@@ -16,6 +16,7 @@ export default {
 };
 
 const scrollContainer = '.scroll-container';
+export const inAnsweringKey = 'inAnswering';
 
 // 非响应式数据缓存
 export const cachedData = {
@@ -23,6 +24,14 @@ export const cachedData = {
 };
 
 export const messageList = reactive([]);
+
+// 是否有应答中的消息
+export const hasAnswering = computed(() => {
+  if (messageList.length) {
+    return messageList.some(item => item[inAnsweringKey]);
+  }
+  return false;
+});
 
 export function goToBottom(selector = scrollContainer) {
   const container = document.querySelector(selector);
@@ -35,19 +44,22 @@ export function wheelEvt() {
   Object.assign(cachedData, { hasScroll: true });
 }
 
-export function useObserveAnsweringHeight() {
-  const scrollContainerElement = document.querySelector(scrollContainer);
-  const { bottom: scrollContainerBottom } = scrollContainerElement.getBoundingClientRect();
-
-  const observer = new ResizeObserver((entries) => {
-    const { bottom: elementBottom } = entries[0].target.getBoundingClientRect();
-    if (elementBottom > scrollContainerBottom && !cachedData.hasScroll) {
-      goToBottom();
+export function useObserveAnswering() {
+  let target;
+  let observer;
+  const moveTarget = () => {
+    const scrollContainerElement = document.querySelector(scrollContainer);
+    const { bottom: scrollContainerBottom } = scrollContainerElement.getBoundingClientRect();
+    if (target) {
+      const { bottom: targetBottom } = target.getBoundingClientRect();
+      if (targetBottom > scrollContainerBottom && !cachedData.hasScroll) {
+        scrollContainerElement.scrollTop = scrollContainerElement.scrollTop + targetBottom - scrollContainerBottom;
+      }
     }
-  });
-  const target = document.querySelector('.message-list-container .message-item.in-answering');
-
+  };
   const startObserve = () => {
+    observer = new ResizeObserver(moveTarget);
+    target = document.querySelector('.message-list-container .message-item.in-answering');
     if (target) {
       observer.observe(target);
     }
@@ -56,11 +68,25 @@ export function useObserveAnsweringHeight() {
     }
   };
 
-  const terminateObserve = () => {
-    observer.unobserve(target);
+  const stopObserve = () => {
+    if (observer && target) {
+      observer.unobserve(target);
+      observer.disconnect();
+    }
   };
 
-  return { startObserve, terminateObserve };
+  const hasAnsweringChanged = (newValue, oldValue) => {
+    if (oldValue === false && newValue === true) {
+      startObserve();
+    }
+    if (oldValue === true && newValue === false) {
+      stopObserve();
+      moveTarget();
+    }
+  };
+  const stopWatch = watch(hasAnswering, hasAnsweringChanged, { flush: 'post' });
+  onUnmounted(stopWatch);
+  return { startObserve, stopObserve };
 }
 
 export function focusInput() {

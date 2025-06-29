@@ -61,3 +61,7 @@
 .width-fit-content {
   width: fit-content !important;
 }
+
+.word-break-all {
+  word-break: break-all;
+}

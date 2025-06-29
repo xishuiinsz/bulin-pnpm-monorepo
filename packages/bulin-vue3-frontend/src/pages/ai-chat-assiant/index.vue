@@ -59,7 +59,7 @@
 import { nextTick, reactive, ref } from 'vue';
 import { Refresh, Edit } from '@element-plus/icons-vue';
 import OpenAI from 'openai';
-import { messageList, goToBottom, useObserveAnsweringHeight, cachedData, wheelEvt, focusInput, getMarkedAnswer } from './page';
+import { messageList, goToBottom, useObserveAnswering, cachedData, wheelEvt, focusInput, getMarkedAnswer, } from './page';
 
 defineOptions({
   name: 'AiChatAssiant'
@@ -73,7 +73,10 @@ const client = new OpenAI({
 
 const question = ref('');
 
-const chatHandler = async ({ question, done = null }) => {
+const { startObserve, stopObserve } = useObserveAnswering();
+
+const chatHandler = async ({ question }) => {
+  Object.assign(cachedData, { hasScroll: false });
   const inAnsweringMessage = messageList.find(m => m.inAnswering === true);
   try {
     const completion = await client.chat.completions.create({
@@ -82,8 +85,7 @@ const chatHandler = async ({ question, done = null }) => {
       temperature: 0.3,
       stream: true
     });
-    const { startObserve, terminateObserve } = useObserveAnsweringHeight();
-    startObserve();
+
 
     if (!inAnsweringMessage) {
       return;
@@ -97,19 +99,18 @@ const chatHandler = async ({ question, done = null }) => {
         inAnsweringMessage.answer += delta.content;
       }
     }
-    terminateObserve();
     Reflect.deleteProperty(inAnsweringMessage, 'inAnswering');
-    typeof done === 'function' && done();
     focusInput()
   } catch (error) {
     inAnsweringMessage.answer = 'AI助手出错了，请稍后再试。';
+  } finally {
+    Object.assign(inAnsweringMessage, { inAnswering: false });
   }
 }
 
 // 重新生成
 const regenerate = (data) => {
   Object.assign(data, { inAnswering: true, answer: ' ' });
-  Object.assign(cachedData, { hasScroll: false });
   chatHandler({ question: data.question });
 }
 
@@ -129,16 +130,10 @@ const submitMessage = async () => {
     inAnswering: true,
     answer: ''
   };
-  Object.assign(cachedData, { hasScroll: false });
   question.value = '';
+  nextTick(goToBottom);
   messageList.push(chatOptin);
-  nextTick(goToBottom)
-  const done = () => {
-    if (cachedData.hasScroll) {
-      nextTick(goToBottom)
-    };
-  };
-  chatHandler({ question: chatOptin.question, done });
+  chatHandler({ question: chatOptin.question });
 }
 
 </script>
