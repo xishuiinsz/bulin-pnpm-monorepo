@@ -12,8 +12,8 @@
     <div class="container overflow-hidden w-100 h-100 flex-fill">
       <div class="d-flex h-100 gap-3">
         <el-card class="flex-shrink-0">
-          <el-input class="question-input w-100 h-100" :maxlength="100" show-word-limit
-            @keydown.enter.prevent="submitMessage" v-model="question" type="textarea" :rows="10" placeholder="请输入内容" />
+          <el-input class="question-input w-100 h-100" :maxlength="100" show-word-limit @focus="focusEvt"
+            v-model="question" type="textarea" :rows="10" :placeholder="placeholder" />
           <el-button class="w-100 mt-2" type="primary" @click="submitMessage">
             发送
           </el-button>
@@ -24,7 +24,7 @@
               <div class="message-item px-4 mt-4" :class="{ 'in-answering': message.inAnswering }"
                 v-for="message in messageList">
                 <div class="user-question d-flex justify-content-end">
-                  <div class="w-50 text-end">{{ message.question }}</div>
+                  <div class="w-50 white-space-pre text-end">{{ message.question }}</div>
                 </div>
                 <div class="ai-answer mt-2">
                   <div class="ai-answer-content" v-html="getMarkedAnswer(message.answer)"></div>
@@ -72,6 +72,7 @@ const client = new OpenAI({
 });
 
 const question = ref('');
+const placeholder = '按Enter键发送消息，按Shift+Enter换行';
 
 const { startObserve, stopObserve } = useObserveAnswering();
 
@@ -91,6 +92,8 @@ const chatHandler = async ({ question }) => {
       return;
     }
     for await (let chunk of completion) {
+      console.log('chunk: ', chunk);
+
       // 在这里，每个 chunk 的结构都与之前的 completion 相似，但 message 字段被替换成了 delta 字段
       const delta = chunk.choices[0].delta // <-- message 字段被替换成了 delta 字段
       if (delta.content) {
@@ -118,6 +121,22 @@ const regenerate = (data) => {
 const rewrite = (data) => {
   question.value = data.question;
   focusInput();
+}
+
+const focusEvt = (e) => {
+  const target = e.target;
+  if (target instanceof HTMLTextAreaElement) {
+    target.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault(); // 阻止默认的换行行为
+        if (event.shiftKey) {
+          question.value += '\n'; // 如果按下了 Shift 键，则允许换行
+          return; // 如果按下了 Shift 键，则允许换行
+        }
+        submitMessage(); // 调用提交消息的函数
+      }
+    });
+  }
 }
 
 // 提问

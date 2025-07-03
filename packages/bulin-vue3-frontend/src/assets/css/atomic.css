@@ -58,6 +58,10 @@
   width: 300px !important;
 }
 
+.white-space-pre {
+  white-space: pre;
+}
+
 .width-fit-content {
   width: fit-content !important;
 }
