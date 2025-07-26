@@ -18,13 +18,23 @@
           <el-input @input="elInputEvt" v-model="inputValue" placeholder="Please input" clearable />
         </el-form-item>
       </el-form>
+      <h1>Input Tag</h1>
+      <div class="input-tag-container">
+        <el-input-tag v-model="input" placeholder="Please input" aria-label="Please click the Enter key after input"
+          @focus.once="focus" />
+      </div>
+
     </div>
   </div>
 </template>
-<script setup>
-import { ref } from 'vue';
+<script lang="ts" setup>
+import { ref, getCurrentInstance } from 'vue';
 const inputValue = ref('');
-const refDivTag = ref(null)
+const refDivTag = ref(null);
+const input = ref<string[]>();
+const instance = getCurrentInstance();
+console.log(instance, 'instance');
+
 const compositionendHandler = (e) => {
   console.log(e.target.innerHTML);
 }
@@ -47,7 +57,25 @@ const nativeInput = (e) => {
 const elInputEvt = (e) => {
   console.log('elInput', e);
 };
+const focus = (e) => {
+  const container = instance.proxy.$el;
+  if (container) {
+    const inputTagEle = container.querySelector('.el-input-tag__wrapper');
+    if (inputTagEle) {
+      console.log('inputTagEle: ', inputTagEle);
+      inputTagEle.addEventListener('blur', (event) => {
+        console.log('blur event triggered');
+        event.stopPropagation();
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      }, false)
+    }
+  }
+}
 
+const blur = (e) => {
+  console.log('blur e.target: ', e.target);
+}
 </script>
 <style lang="scss" scoped>
 .content-editable-container {
@@ -59,6 +87,11 @@ const elInputEvt = (e) => {
     width: 100%;
     height: 32px;
     background-color: pink;
+  }
+
+  .input-tag-container {
+    width: 400px;
+    margin-top: 20px;
   }
 }
 </style>
