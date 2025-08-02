@@ -1,10 +1,19 @@
+<script setup>
+import DynamicTooltip from '@/components/DynamicTooltip.vue';
+import showTooltip from '@/imperatives/showTooltip';
+
+function setZoom(value, element = document.body) {
+  Object.assign(element.style, { zoom: value });
+}
+</script>
+
 <template>
   <div class="content-editable-container">
     <div class="crumbs">
       <div class="el-breadcrumb" aria-label="Breadcrumb" role="navigation">
-        <span class="el-breadcrumb__item" aria-current="page"></span>
+        <span class="el-breadcrumb__item" aria-current="page" />
         <span class="el-breadcrumb__inner" role="link">
-          <i class="el-icon-lx-warn"></i>
+          <i class="el-icon-lx-warn" />
           js调用tooltip
         </span>
         <span class="el-breadcrumb__separator" role="presentation">/</span>
@@ -13,31 +22,44 @@
     <div class="container">
       <h1>js如何调用ElTooltip组件</h1>
       <div
+        style="max-width: 200px" class="text-nowrap overflow-hidden text-truncate"
         @mouseenter="showTooltip($event.target, { effect: 'light' })"
-        style="max-width: 200px"
-        class="text-nowrap overflow-hidden text-truncate"
       >
         超长文本超长文本超长文本超长文本超长文本超长文本
       </div>
       <el-divider border-style="dashed" />
-      <div @mouseenter="showTooltip($event.target)" style="max-width: 200px;outline: 1px solid green;" class="text-nowrap overflow-hidden text-truncate">
-        超长文本超长文本超长文本超长文本超长文本超长文本
-      </div>
-      <h1 class="mt-4">设置不同的zoom</h1>
+      <h1>DynamicTooltip组件</h1>
+      <DynamicTooltip>
+        <div style="max-width: 200px;outline: 1px solid green;" class="text-nowrap overflow-hidden text-truncate">
+          超长文本超长文本超长文本超长文本超长文本超长文本
+        </div>
+      </DynamicTooltip>
+
+      <el-divider border-style="dashed" />
+      <h1>原生ElTooltip组件</h1>
+      <el-tooltip content="超长文本超长文本超长文本超长文本超长文本超长文本">
+        <div style="max-width: 200px;outline: 1px solid green;" class="text-nowrap overflow-hidden text-truncate">
+          超长文本超长文本超长文本超长文本超长文本超长文本
+        </div>
+      </el-tooltip>
+      <h1 class="mt-4">
+        设置不同的zoom
+      </h1>
       <div>
-        <el-button @click="setZoom(0.75)" type="primary">0.75倍zoom</el-button>
-        <el-button @click="setZoom(1)" type="primary">恢复zoom</el-button>
-        <el-button @click="setZoom(1.25)" type="primary">1.25倍zoom</el-button>
+        <el-button type="primary" @click="setZoom(0.75)">
+          0.75倍zoom
+        </el-button>
+        <el-button type="primary" @click="setZoom(1)">
+          恢复zoom
+        </el-button>
+        <el-button type="primary" @click="setZoom(1.25)">
+          1.25倍zoom
+        </el-button>
       </div>
     </div>
   </div>
 </template>
-<script setup>
-import showTooltip from '@/imperatives/showTooltip';
-const setZoom = (value, element = document.body) => {
-  Object.assign(element.style, { zoom: value });
-};
-</script>
+
 <style lang="scss" scoped>
 .content-editable-container {
   .multi-editable-form {
