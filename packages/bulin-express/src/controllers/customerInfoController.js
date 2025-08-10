@@ -51,6 +51,20 @@ exports.getCustomerInfoList = (req, res) => {
  */
 exports.updateCustomerInfoList = (req, res) => {
   const { address, customerId, firstName, lastName, company, city, state, country, email } = req.query;
+  const requiredFields = {
+    firstName: '名字',
+    lastName: '姓氏'
+  };
+
+  for (let index = 0; index < Object.keys(requiredFields).length; index++) {
+    const field = Object.keys(requiredFields)[index];
+    if (!req.query[field]?.trim() || !req.query[field]?.trim()) {
+      return res.status(200).send({
+        code: '1',
+        msg: `${requiredFields.firstName}及${requiredFields.lastName}不能为空`,
+      });
+    }
+  }
   const dbFile = path.join(__dirname, '../database/chinook.db');
   const Database = require('better-sqlite3');
   const db = new Database(dbFile, { verbose: logGreen });
