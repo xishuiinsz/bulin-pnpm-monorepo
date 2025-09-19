@@ -1,11 +1,12 @@
 <script setup>
-import { myDebounced } from '@/utils';
-import structuredTable from '@c/structuredTable/entry.jsx';
+import CustomColumns from '@/components/structuredTable/CustomColumns.vue';
+import showDialog from '@/imperatives/showDialog.jsx';
 import { Search } from '@element-plus/icons-vue';
 import { fetchData } from '@i/index';
-import { ElButton } from 'element-plus';
+import { ElButton, ElMessage, ElMessageBox } from 'element-plus';
 import { computed, h, reactive, ref } from 'vue';
-import { tableColumnList, tableDataList, tableOptions } from './tableData.js';
+import editForm from './editForm.vue';
+import { tableColumnList, tableDataList } from './tableData.js';
 
 const query = reactive({
   address: '',
@@ -21,7 +22,13 @@ function getData() {
     pageTotal.value = res.pageTotal || 50;
   });
 }
-// getData()
+
+function selectionChange(rows) {
+  console.log('selectionChange rows:', rows);
+}
+function filterChange(data) {
+  console.log('filterChange data:', data);
+}
 
 // 查询操作
 function handleSearch() {
@@ -34,25 +41,34 @@ function handlePageChange(val) {
   getData();
 }
 
-// 表格编辑时弹窗和保存
-const editVisible = ref(false);
-const form = reactive({
-  id: '',
-  name: '',
-  address: '',
-});
-function saveEdit() {
-  editVisible.value = false;
-  const { id } = form;
-  const [editRow] = tableDataList.filter(item => item.id === id);
-  editRow && Object.assign(editRow, form);
+// 操作列之“编辑”点击事件
+function handleEdit(row) {
+  let dialogInstance = null;
+  const closeEvt = () => {
+    dialogInstance?.destroy?.();
+  };
+  const params = {
+    title: '编辑',
+    slots: {
+      default: () => h(editForm, { close: closeEvt, initialFormData: { ...row } }),
+    },
+  };
+  dialogInstance = showDialog(params);
 }
-</script>
 
-<script>
-export default {
-  name: 'BasetableDemo',
-};
+// 删除操作
+function handleDelete(row) {
+  // 二次确认删除
+  ElMessageBox.confirm('确定要删除吗？', '提示', {
+    type: 'warning',
+  })
+    .then(() => {
+      const index = tableDataList.findIndex(item => item === row);
+      ElMessage.success('删除成功');
+      tableDataList.splice(index, 1);
+    })
+    .catch(() => { });
+}
 </script>
 
 <template>
@@ -72,24 +88,36 @@ export default {
           <el-option key="2" label="湖南省" value="湖南省" />
         </el-select>
         <el-input
-          v-model="query.name"
-          placeholder="用户名"
-          class="handle-input mr10"
+          v-model="query.name" placeholder="用户名" class="handle-input mr10"
           @input="queryByName('test', 'test1')"
         />
         <ElButton type="primary" :icon="Search" @click="handleSearch">
           搜索
         </ElButton>
       </div>
-      <structuredTable class="my-table" :table-column-list="tableColumnList" :table-options="tableOptions" />
+      <el-table
+        :data="tableDataList" border stripe class="" :row-key="(row) => row.id" @filter-change="filterChange"
+        @selection-change="selectionChange"
+      >
+        <CustomColumns :list="tableColumnList">
+          <template #suffix>
+            <el-table-column label="操作" width="120" :sortable="false" :resizable="false">
+              <template #default="{ row }">
+                <ElButton :link="true" type="primary" @click="handleEdit(row)">
+                  编辑
+                </ElButton>
+                <ElButton :link="true" type="danger" @click="handleDelete(row)">
+                  删除
+                </ElButton>
+              </template>
+            </el-table-column>
+          </template>
+        </CustomColumns>
+      </el-table>
       <div class="pagination">
         <el-pagination
-          background
-          layout="total, prev, pager, next"
-          :current-page="query.pageIndex"
-          :page-size="query.pageSize"
-          :total="pageTotal"
-          @current-change="handlePageChange"
+          background layout="total, prev, pager, next" :current-page="query.pageIndex"
+          :page-size="query.pageSize" :total="pageTotal" @current-change="handlePageChange"
         />
       </div>
     </div>
@@ -125,8 +153,7 @@ export default {
 
 :deep(.table-td-thumb) {
   display: block;
-  margin: auto;
-  width: 40px;
-  height: 40px;
+  width: 140px;
+  object-fit: cover;
 }
 </style>

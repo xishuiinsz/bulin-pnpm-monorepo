@@ -1,16 +1,22 @@
+### 2025-09-19
+
+- [x] 高度封装的、可定制化的表格列组件【components\structuredTable\CustomColumns.vue】
+  - demo 路径：左侧菜单 - 基础表格
+  - 组件路径: **packages\bulin-vue3-frontend\src\components\structuredTable\CustomColumns.vue**
+
 ### 2024-09-22
 
 - [x] 通过拦截Echarts实例中setOption方法来实现图表中字体大小与屏幕大小自适应的能力。
   - demo 路径：左侧菜单 - 练习场 - echarts中Tip引入Vue组件
   - 组件路径: **src\views\EchartsAndVue\EchartsAndVue.vue**
   - 通用逻辑: **src\echarts\index.js**
-  
+
 ### 2024-09-20
 
 - [x] 新增输入表单模拟器组件，尝试解决当表格中渲染大批量表单组件时不流畅的问题。
   - demo 路径：左侧菜单 - 练习场 - 表格中渲染大量输入框
   - 组件路径: **src\pages\massInputsInTable\InputSimulator.vue**
-  
+
 ### 2024-08-18
 
 - [x] 新增命令式 ElDrawer 能力
@@ -113,8 +119,8 @@
   - 基于 marked、highlight.js 等插件,
   - 摘录代码如下
   ```javascript
-  import { marked } from 'marked';
   import logsMarkdown from '@/logs.md?raw';
+  import { marked } from 'marked';
   const logs = ref('');
   onMounted(() => {
     logs.value = marked(logsMarkdown);

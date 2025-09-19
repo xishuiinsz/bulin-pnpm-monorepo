@@ -1,46 +1,8 @@
-import showDialog from '@/imperatives/showDialog.jsx';
 import showDrawer from '@/imperatives/showDrawer.js';
 import { User } from '@element-plus/icons-vue';
-import { ElButton, ElImage, ElMessage, ElMessageBox } from 'element-plus';
+import { ElImage } from 'element-plus';
 import { h, reactive } from 'vue';
 import detailsForm from './detailsForm.vue';
-import editForm from './editForm.vue';
-
-// 操作列之“编辑”点击事件
-function handleEdit(row) {
-  let dialogInstance = null;
-  const closeEvt = () => {
-    dialogInstance?.destroy?.();
-  };
-  const params = {
-    title: '编辑',
-    slots: {
-      default: () => h(editForm, { close: closeEvt, initialFormData: { ...row } }),
-    },
-  };
-  dialogInstance = showDialog(params);
-}
-
-// 删除操作
-function handleDelete(row, tableDataList) {
-  // 二次确认删除
-  ElMessageBox.confirm('确定要删除吗？', '提示', {
-    type: 'warning',
-  })
-    .then(() => {
-      const index = tableDataList.findIndex(item => item === row);
-      ElMessage.success('删除成功');
-      tableDataList.splice(index, 1);
-    })
-    .catch(() => {});
-}
-
-function selectionChange(rows) {
-  console.log('selectionChange rows:', rows);
-}
-function filterChange(data) {
-  console.log('filterChange data:', data);
-}
 
 function nameClick(data) {
   let drawerInstance = null;
@@ -60,62 +22,49 @@ export const tableColumnList = [
   {
     prop: 'name',
     label: '用户名',
-    header: row =>
-      h('span', { class: 'd-flex align-items-center' }, [
-        row.label,
-        h(User, { class: 'ml8', style: { width: '16px', height: '16px' } }),
-      ]),
-    default: row => h('span', { class: 'cursor-pointer color-0d6efd', onClick: () => nameClick(row) }, row.name),
+    width: 120,
+    slots: {
+      header: data =>
+        h('span', { class: 'd-flex align-items-center' }, [
+          data.column.label,
+          h(User, { class: 'ml8', style: { width: '16px', height: '16px' } }),
+        ]),
+      default: ({ row }) => h('span', { class: 'cursor-pointer color-0d6efd', onClick: () => nameClick(row) }, row.name),
+    },
+
   },
-  { prop: 'money', label: '账户余额', sortable: true, default: row => `￥${row.money}` },
+  {
+    prop: 'money',
+    label: '账户余额',
+    width: 120,
+    sortable: true,
+    slots: {
+      default: ({ row }) => `￥${row.money}`,
+    },
+  },
   {
     prop: 'thumb',
     label: '头像(查看大图)',
     className: 'thumb-column',
-    width: 120,
-    default: row =>
-      h(ElImage, { 'class': 'table-td-thumb', 'src': row.thumb, 'preview-src-list': [row.thumb], 'preview-teleported': true }),
+    width: 200,
+    slots: {
+      default: ({ row }) =>
+        h(ElImage, { 'class': 'table-td-thumb', 'src': row.thumb, 'preview-src-list': [row.thumb], 'preview-teleported': true }),
+    },
+
   },
   { prop: 'address', label: '地址' },
   {
     prop: 'state',
     label: '状态',
+    width: 80,
     filters: [
       { text: '成功', value: '成功' },
       { text: '失败', value: '失败' },
     ],
   },
-  { prop: 'date', label: '注册日期' },
-  {
-    prop: 'action',
-    label: '操作',
-    minWidth: '50',
-    default: row =>
-      h('div', { class: 'buttons-wrap' }, [
-        h(
-          ElButton,
-          {
-            link: true,
-            type: 'primary',
-            onClick(event) {
-              handleEdit(row);
-            },
-          },
-          () => '编辑',
-        ),
-        h(
-          ElButton,
-          {
-            link: true,
-            type: 'danger',
-            onClick(event) {
-              handleDelete(row, tableDataList);
-            },
-          },
-          () => '删除',
-        ),
-      ]),
-  },
+  { prop: 'date', label: '注册日期', width: 120 },
+
 ];
 
 export const tableDataList = reactive([
@@ -126,7 +75,7 @@ export const tableDataList = reactive([
     address: '广东省东莞市长安镇',
     state: '成功',
     date: '2019-11-1',
-    thumb: 'https://lin-xin.gitee.io/images/post/wms.png',
+    thumb: 'https://cn.element-plus.org/images/mele-banner.png',
   },
   {
     id: 2,
@@ -135,7 +84,7 @@ export const tableDataList = reactive([
     address: '广东省广州市白云区',
     state: '成功',
     date: '2019-10-11',
-    thumb: 'https://lin-xin.gitee.io/images/post/node3.png',
+    thumb: 'https://cn.element-plus.org/images/jnpfsoft.png',
   },
   {
     id: 3,
@@ -144,7 +93,7 @@ export const tableDataList = reactive([
     address: '湖南省长沙市',
     state: '失败',
     date: '2019-11-11',
-    thumb: 'https://lin-xin.gitee.io/images/post/parcel.png',
+    thumb: 'https://cn.element-plus.org/images/CRMEB-l.png',
   },
   {
     id: 4,
@@ -153,13 +102,6 @@ export const tableDataList = reactive([
     address: '福建省厦门市鼓浪屿',
     state: '成功',
     date: '2019-10-20',
-    thumb: 'https://lin-xin.gitee.io/images/post/notice.png',
+    thumb: 'https://cn.element-plus.org/images/buildadmin-l.png',
   },
 ]);
-
-export const tableOptions = {
-  border: true,
-  data: tableDataList,
-  onSelectionChange: selectionChange,
-  onFilterChange: filterChange,
-};
