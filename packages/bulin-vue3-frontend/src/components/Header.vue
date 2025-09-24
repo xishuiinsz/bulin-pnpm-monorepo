@@ -1,3 +1,44 @@
+<script setup>
+import showTooltip from '@/imperatives/showTooltip';
+import { useSidebarStore } from '@/store/sidebar';
+import { onMounted, ref, watchEffect } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+// 用户名下拉菜单选择事件
+const router = useRouter();
+const route = useRoute();
+const [pathStr] = location.hash.slice(2).split('/');
+const topActiveMenuItem = ref(pathStr || 'myComponents');
+function handleTopMenuSelect(item) {
+  topActiveMenuItem.value = item;
+  router.push(`/${item}`);
+}
+const username = localStorage.getItem('ms_username');
+const message = 2;
+
+const sidebar = useSidebarStore();
+// 侧边栏折叠
+function collapseChage() {
+  sidebar.handleCollapse();
+}
+const isShowExpandFoldIcon = ref(true);
+
+onMounted(() => {
+  if (document.body.clientWidth < 1500) {
+    collapseChage();
+  }
+});
+
+function handleCommand(command) {
+  if (command === 'loginout') {
+    localStorage.removeItem('ms_username');
+    router.push('/login');
+  }
+  else if (command === 'user') {
+    router.push('/myComponents/user');
+  }
+}
+</script>
+
 <template>
   <div class="header">
     <div class="header-left">
@@ -11,7 +52,9 @@
             <Expand />
           </el-icon>
         </div>
-        <div class="logo">基于Vue3的布林前端开源平台</div>
+        <div class="logo">
+          基于Vue3的布林前端开源平台
+        </div>
       </div>
       <div class="el-menu-wrap">
         <el-menu
@@ -21,7 +64,9 @@
           background-color="transparent"
           @select="handleTopMenuSelect"
         >
-          <el-menu-item index="myComponents">组件列表</el-menu-item>
+          <el-menu-item index="myComponents">
+            组件列表
+          </el-menu-item>
         </el-menu>
       </div>
     </div>
@@ -36,28 +81,32 @@
               </el-icon>
             </router-link>
           </el-tooltip>
-          <span class="btn-bell-badge" v-if="message"></span>
+          <span v-if="message" class="btn-bell-badge" />
         </div>
         <!-- 用户头像 -->
         <div class="user-avator">
-          <img src="../assets/img/img.jpg" />
+          <img src="../assets/img/img.jpg">
         </div>
         <!-- 用户名下拉菜单 -->
         <el-dropdown class="user-name" trigger="click" @command="handleCommand">
           <span class="el-dropdown-link">
             {{ username }}
-            <i class="el-icon-caret-bottom"></i>
+            <i class="el-icon-caret-bottom" />
           </span>
           <template #dropdown>
             <el-dropdown-menu class="personal-profile">
               <a href="https://github.com/xishuiinsz/bulin-vue3-frontend" target="_blank">
                 <el-dropdown-item>项目仓库</el-dropdown-item>
               </a>
-              <el-dropdown-item command="user">个人中心</el-dropdown-item>
+              <el-dropdown-item command="user">
+                个人中心
+              </el-dropdown-item>
               <el-dropdown-item command="user" @mouseenter="showTooltip($event.target)">
                 我的个人兴趣爱好是Javascript编程
               </el-dropdown-item>
-              <el-dropdown-item divided command="loginout">退出登录</el-dropdown-item>
+              <el-dropdown-item divided command="loginout">
+                退出登录
+              </el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -65,45 +114,7 @@
     </div>
   </div>
 </template>
-<script setup>
-import { ref, onMounted, watchEffect } from 'vue';
-import { useSidebarStore } from '@/store/sidebar';
-import { useRouter, useRoute } from 'vue-router';
-import showTooltip from '@/imperatives/showTooltip';
-// 用户名下拉菜单选择事件
-const router = useRouter();
-const route = useRoute();
-const [pathStr] = location.hash.slice(2).split('/');
-const topActiveMenuItem = ref(pathStr || 'myComponents');
-const handleTopMenuSelect = (item) => {
-  topActiveMenuItem.value = item;
-  router.push(`/${item}`);
-};
-const username = localStorage.getItem('ms_username');
-const message = 2;
 
-const sidebar = useSidebarStore();
-// 侧边栏折叠
-const collapseChage = () => {
-  sidebar.handleCollapse();
-};
-const isShowExpandFoldIcon = ref(true);
-
-onMounted(() => {
-  if (document.body.clientWidth < 1500) {
-    collapseChage();
-  }
-});
-
-const handleCommand = (command) => {
-  if (command === 'loginout') {
-    localStorage.removeItem('ms_username');
-    router.push('/login');
-  } else if (command === 'user') {
-    router.push('/user');
-  }
-};
-</script>
 <style scoped>
 .header {
   box-sizing: border-box;
@@ -226,6 +237,7 @@ const handleCommand = (command) => {
   text-align: center;
 }
 </style>
+
 <style>
 .el-dropdown-menu.personal-profile {
   overflow: hidden;

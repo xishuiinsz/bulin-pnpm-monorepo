@@ -1,6 +1,6 @@
 export default {
-  path: '/myComponents/linear-gradient-and-img',
-  title: '背景图片和渐变色并存',
+  path: '/myComponents/jigsaw-puzzle',
+  title: '拼图游戏',
   hasChild: false,
   order: 1,
   component: () => import('./index.vue'),

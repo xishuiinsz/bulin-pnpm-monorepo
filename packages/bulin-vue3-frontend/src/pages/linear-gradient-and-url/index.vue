@@ -5,7 +5,7 @@ import pageData from './page';
 </script>
 
 <template>
-  <div class="linear-gradient-and-url w-100 h-100 d-flex flex-column">
+  <div class="linear-gradient-and-img w-100 h-100 d-flex flex-column">
     <div class="crumbs">
       <div class="el-breadcrumb" aria-label="Breadcrumb" role="navigation">
         <span class="el-breadcrumb__item" aria-current="page" />
@@ -22,7 +22,7 @@ import pageData from './page';
 </template>
 
 <style lang="scss" scoped>
-.linear-gradient-and-url {
+.linear-gradient-and-img {
   .login-container {
     width: 100%;
     background: url("./img/bg2.png") no-repeat right bottom, linear-gradient(135deg, lightgreen 0, lightblue 100%);

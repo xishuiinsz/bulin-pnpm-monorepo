@@ -1,150 +1,91 @@
-<template>
-  <div>
-    <div class="crumbs">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item>
-          <i class="el-icon-lx-calendar"></i> 表单
-        </el-breadcrumb-item>
-        <el-breadcrumb-item>图片上传</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
-    <div class="container">
-      <div class="content-title">支持拖拽</div>
-      <div class="plugins-tips">
-        Element UI自带上传组件。 访问地址：
-        <a
-          href="http://element.eleme.io/#/zh-CN/component/upload"
-          target="_blank"
-          >Element UI Upload</a
-        >
-      </div>
-      <el-upload
-        action="#"
-        class="upload-demo"
-        :before-upload="beforeUpload"
-        :http-request="handleUpload"
-        :multiple="false"
-        :show-file-list="false"
-      >
-        <el-icon style="font-size: 100px"><UploadFilled /></el-icon>
-      </el-upload>
-      <div class="file-list-wrap">
-        <ul>
-          <li v-for="file in fileList" :key="file.hash">
-            <el-tooltip class="box-item" effect="light" placement="top-start">
-              <template #content>
-                <el-button @click="fileDeleteHandler(file)" type="danger"
-                  >删除</el-button
-                >
-              </template>
-              <img :src="`${file.url}`" alt="" srcset="" />
-            </el-tooltip>
-          </li>
-        </ul>
-      </div>
-      <div class="content-title">支持裁剪</div>
-      <div class="plugins-tips">
-        vue-cropperjs：一个封装了 cropperjs 的 Vue 组件。 访问地址：
-        <a href="https://github.com/Agontuk/vue-cropperjs" target="_blank"
-          >vue-cropperjs</a
-        >
-      </div>
-    </div>
-  </div>
-</template>
-
 <script>
-import { ref } from 'vue'
-import { ElLoading, ElMessage } from 'element-plus'
-import VueCropper from 'vue-cropperjs'
-import 'cropperjs/dist/cropper.css'
-import defaultSrc from '../assets/img/img.jpg'
-import axios from 'axios'
+import axios from 'axios';
+import { ElLoading, ElMessage } from 'element-plus';
+import { ref } from 'vue';
+import defaultSrc from '../assets/img/img.jpg';
+
 export default {
-  name: 'upload',
-  components: {
-    VueCropper
-  },
+  name: 'Upload',
   setup() {
-    const jwt = 'sdfasdfasdfasdfsdfsfdasfd'
-    const headers = { 'Content-Type': 'multipart/form-data' }
-    const fileList = ref([])
-    const imgSrc = ref('')
-    const cropImg = ref(defaultSrc)
-    const dialogVisible = ref(false)
-    const cropper = ref(null)
+    const jwt = 'sdfasdfasdfasdfsdfsfdasfd';
+    const headers = { 'Content-Type': 'multipart/form-data' };
+    const fileList = ref([]);
+    const imgSrc = ref('');
+    const cropImg = ref(defaultSrc);
+    const dialogVisible = ref(false);
+    const cropper = ref(null);
 
     const setImage = (e) => {
-      const file = e.target.files[0]
+      const file = e.target.files[0];
       if (!file.type.includes('image/')) {
-        return
+        return;
       }
-      const reader = new window.FileReader()
+      const reader = new window.FileReader();
       reader.onload = (event) => {
-        dialogVisible.value = true
-        imgSrc.value = event.target.result
-        cropper.value && cropper.value.replace(event.target.result)
-      }
-      reader.readAsDataURL(file)
-    }
+        dialogVisible.value = true;
+        imgSrc.value = event.target.result;
+        cropper.value && cropper.value.replace(event.target.result);
+      };
+      reader.readAsDataURL(file);
+    };
 
     const cropImage = () => {
-      cropImg.value = cropper.value.getCroppedCanvas().toDataURL()
-    }
+      cropImg.value = cropper.value.getCroppedCanvas().toDataURL();
+    };
 
     const cancelCrop = () => {
-      dialogVisible.value = false
-      cropImg.value = defaultSrc
-    }
+      dialogVisible.value = false;
+      cropImg.value = defaultSrc;
+    };
     const beforeUpload = (file) => {
       if (file.size <= 0) {
-        ElMessage.error('上传的文件大小不能为空！')
-        return false
+        ElMessage.error('上传的文件大小不能为空！');
+        return false;
       }
       if (!file.type.startsWith('image/')) {
-        ElMessage.error('请上传图片文件！')
-        return false
+        ElMessage.error('请上传图片文件！');
+        return false;
       }
-      return true
-    }
+      return true;
+    };
     // 文件上传
     const handleUpload = async (item) => {
-      const formData = new window.FormData()
-      formData.append('file', item.file, item.file.name)
+      const formData = new window.FormData();
+      formData.append('file', item.file, item.file.name);
       axios
         .post('/api/upload', formData, {
           headers: {
-            Authorization: `Bearer ${jwt}`
-          }
+            Authorization: `Bearer ${jwt}`,
+          },
         })
         .then((response) => {
-          const { uuid, name } = response.data
+          const { uuid, name } = response.data;
           fileList.value.push({
             uuid,
-            url: `/api/uploads/${uuid}/${name}`
-          })
-        })
-    }
+            url: `/api/uploads/${uuid}/${name}`,
+          });
+        });
+    };
 
     // 文件删除
     const fileDeleteHandler = (file) => {
-      const loadingInstance = ElLoading.service()
+      const loadingInstance = ElLoading.service();
       axios
-        .delete('/api/upload/' + file.uuid, {
+        .delete(`/api/upload/${file.uuid}`, {
           headers: {
-            Authorization: `Bearer ${jwt}`
-          }
+            Authorization: `Bearer ${jwt}`,
+          },
         })
         .then((response) => {
-          loadingInstance.close()
-          const { code, msg } = response.data
+          loadingInstance.close();
+          const { code, msg } = response.data;
           if (code === '0') {
-            const index = fileList.value.findIndex((item) => item === file)
-            fileList.value.splice(index, 1)
-            ElMessage.success(msg || '删除成功')
+            const index = fileList.value.findIndex(item => item === file);
+            fileList.value.splice(index, 1);
+            ElMessage.success(msg || '删除成功');
           }
-        })
-    }
+        });
+    };
     return {
       headers,
       fileList,
@@ -157,11 +98,55 @@ export default {
       dialogVisible,
       setImage,
       cropImage,
-      cancelCrop
-    }
-  }
-}
+      cancelCrop,
+    };
+  },
+};
 </script>
+
+<template>
+  <div>
+    <div class="crumbs">
+      <el-breadcrumb separator="/">
+        <el-breadcrumb-item>
+          <i class="el-icon-lx-calendar" /> 表单
+        </el-breadcrumb-item>
+        <el-breadcrumb-item>图片上传</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <div class="container">
+      <div class="content-title">
+        支持拖拽
+      </div>
+      <div class="plugins-tips">
+        Element UI自带上传组件。 访问地址：
+        <a href="http://element.eleme.io/#/zh-CN/component/upload" target="_blank">Element UI Upload</a>
+      </div>
+      <el-upload
+        action="#" class="upload-demo" :before-upload="beforeUpload" :http-request="handleUpload"
+        :multiple="false" :show-file-list="false"
+      >
+        <el-icon style="font-size: 100px">
+          <UploadFilled />
+        </el-icon>
+      </el-upload>
+      <div class="file-list-wrap">
+        <ul>
+          <li v-for="file in fileList" :key="file.hash">
+            <el-tooltip class="box-item" effect="light" placement="top-start">
+              <template #content>
+                <el-button type="danger" @click="fileDeleteHandler(file)">
+                  删除
+                </el-button>
+              </template>
+              <img :src="`${file.url}`" alt="" srcset="">
+            </el-tooltip>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .content-title {
