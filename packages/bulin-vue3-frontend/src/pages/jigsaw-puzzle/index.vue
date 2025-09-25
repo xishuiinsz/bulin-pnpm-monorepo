@@ -20,6 +20,8 @@ const handleExceed: UploadProps['onExceed'] = (files) => {
 
 const cachedData = {
   canvas: null as HTMLCanvasElement | null,
+  rectBox: null as Path2D | null,
+  flagMouseDown: false,
   rectConfig: {
     x: 0,
     y: 0,
@@ -50,43 +52,64 @@ function drawRect() {
     return;
   }
   const ctx = cachedData.canvas.getContext('2d');
+  cachedData.rectBox = new Path2D();
   ctx.clearRect(0, 0, cachedData.canvas.width, cachedData.canvas.height);
   const { rectConfig } = cachedData;
-  ctx.rect(rectConfig.x, rectConfig.y, rectConfig.width, rectConfig.height);
+  cachedData.rectBox.rect(rectConfig.x, rectConfig.y, rectConfig.width, rectConfig.height);
   ctx.strokeStyle = color;
-  ctx.stroke();
+  ctx.stroke(cachedData.rectBox);
   drawLine();
 }
 
-function mousedownEvent(e: MouseEvent) {
-  e.preventDefault();
+function mousemoveEvent(event: MouseEvent) {
+  event.preventDefault();
   if (!cachedData.canvas) {
     return;
   }
-
-  function mousemoveEvent(event: MouseEvent) {
-    event.preventDefault();
-    if (!cachedData.canvas) {
-      return;
-    }
+  if (cachedData.flagMouseDown === true) {
+    cachedData.canvas.style.cursor = 'move';
     const { movementX, movementY } = event;
     const { rectConfig } = cachedData;
     rectConfig.x += movementX;
     rectConfig.y += movementY;
     drawRect();
   }
-
-  function mouseupEvent() {
-    e.preventDefault();
-    if (!cachedData.canvas) {
-      return;
+  else {
+    const { offsetX, offsetY } = event;
+    const ctx = cachedData.canvas.getContext('2d');
+    const result = ctx.isPointInPath(cachedData.rectBox, offsetX, offsetY);
+    if (result) {
+      cachedData.canvas.style.cursor = 'grab';
     }
-    cachedData.canvas.removeEventListener('mousemove', mousemoveEvent);
-    cachedData.canvas.removeEventListener('mouseup', mouseupEvent);
+    else {
+      cachedData.canvas.style.cursor = 'default';
+    }
+  }
+}
+
+function mouseupEvent(event: MouseEvent) {
+  event.preventDefault();
+  if (!cachedData.canvas) {
+    return;
+  }
+  cachedData.flagMouseDown = false;
+  cachedData.canvas.removeEventListener('mouseup', mouseupEvent);
+}
+
+function mousedownEvent(event: MouseEvent) {
+  event.preventDefault();
+  if (!cachedData.canvas) {
+    return;
   }
 
-  cachedData.canvas.addEventListener('mousemove', mousemoveEvent);
-  cachedData.canvas.addEventListener('mouseup', mouseupEvent);
+  const { offsetX, offsetY } = event;
+  const ctx = cachedData.canvas.getContext('2d');
+  const result = ctx.isPointInPath(cachedData.rectBox, offsetX, offsetY);
+  if (!result) {
+    return;
+  }
+  cachedData.flagMouseDown = true;
+  window.addEventListener('mouseup', mouseupEvent);
 }
 
 function initRect() {
@@ -123,6 +146,7 @@ function preCropper(file: File) {
     initRect();
     drawRect();
     cachedData.canvas.addEventListener('mousedown', mousedownEvent);
+    cachedData.canvas.addEventListener('mousemove', mousemoveEvent);
   }
 }
 </script>
@@ -176,6 +200,7 @@ function preCropper(file: File) {
       }
     }
   }
+
   canvas {
     position: absolute;
     top: 0;
