@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { UploadInstance, UploadProps, UploadRawFile } from 'element-plus';
 import { Plus } from '@element-plus/icons-vue';
-import { genFileId } from 'element-plus';
+import { ElMessage } from 'element-plus';
 import Sortable from 'sortablejs';
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -11,6 +11,7 @@ const upload = ref<UploadInstance>();
 const fileList = ref<File[]>([]);
 
 const color = '#358aff';
+let sortableInstance: Sortable | null = null;
 
 const imgsList = ref<{ img: string; sort: number }[]>([]);
 
@@ -107,7 +108,7 @@ function preCropper(file: File) {
   if (!img) {
     return;
   }
-  const { naturalWidth: imgWidth, naturalHeight: imgHeight } = img;
+  const { offsetWidth: imgWidth, offsetHeight: imgHeight } = img;
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
   canvas.width = imgWidth;
@@ -129,15 +130,17 @@ function preCropper(file: File) {
     const imgData = { img: newDataUrl, sort: index };
     imgsList.value.push(imgData);
   });
+  if (sortableInstance) {
+    sortableInstance.destroy();
+    sortableInstance = null;
+  }
 }
-
-let sortableInstance: Sortable | null = null;
 
 function randomSort() {
   imgsList.value.sort(() => Math.random() - 0.5);
   if (!sortableInstance) {
-    const el = document.querySelector('.d-grid') as HTMLElement;
-    sortableInstance = Sortable.create(el, {
+    const container = document.querySelector('.puzzle-container') as HTMLElement;
+    sortableInstance = Sortable.create(container, {
       animation: 150,
       onEnd(evt) {
         const { oldIndex, newIndex } = evt;
@@ -146,6 +149,17 @@ function randomSort() {
       },
     });
   }
+}
+
+function checkPuzzle() {
+  for (let index = 0; index < imgsList.value.length; index++) {
+    const element = imgsList.value[index];
+    if (element.sort !== index) {
+      ElMessage.error('拼图失败');
+      return;
+    }
+  }
+  ElMessage.success('拼图成功');
 }
 </script>
 
@@ -172,7 +186,7 @@ function randomSort() {
 
         <template #file="{ file }">
           <div v-if="!imgsList.length">
-            <div class="position-relative">
+            <div class="position-relative" style="max-width: 40vw;">
               <img :src="file.url" class="w-100">
               <div class="nine-square-grid-container w-100 h-100 position-absolute top-0 start-0">
                 <div class="nine-square-grid">
@@ -196,13 +210,16 @@ function randomSort() {
           </div>
           <div v-else>
             <div class="d-grid puzzle-container" style="grid-template-columns: repeat(3, 1fr); gap: 2px;">
-              <div v-for="(item, sort) in imgsList" :key="sort">
+              <div v-for="(item) in imgsList" :key="item.sort" :data-sort="item.sort">
                 <img :src="item.img">
               </div>
             </div>
             <div class="mt-2">
               <el-button type="primary" size="small" @click="randomSort">
-                随机更换顺序
+                生成随机顺序
+              </el-button>
+              <el-button type="primary" size="small" @click="checkPuzzle">
+                检测是否成功
               </el-button>
             </div>
           </div>
@@ -227,6 +244,8 @@ function randomSort() {
   $square-container: 80%;
 
   .nine-square-grid-container {
+    max-width: 50vw;
+
     .nine-square-grid {
       position: absolute;
       left: calc((100% - #{$square-container}) / 2);
