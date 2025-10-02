@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { UploadInstance, UploadProps, UploadRawFile } from 'element-plus';
 import { Plus } from '@element-plus/icons-vue';
-import { ElMessage } from 'element-plus';
+import { ElMessage, genFileId } from 'element-plus';
 import Sortable from 'sortablejs';
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -10,96 +10,80 @@ import pageData from './page';
 const upload = ref<UploadInstance>();
 const fileList = ref<File[]>([]);
 
-const color = '#358aff';
 let sortableInstance: Sortable | null = null;
 
 const imgsList = ref<{ img: string; sort: number }[]>([]);
 
 const handleExceed: UploadProps['onExceed'] = (files) => {
+  imgsList.value = [];
   upload.value!.clearFiles();
   const file = files[0] as UploadRawFile;
   file.uid = genFileId();
   upload.value!.handleStart(file);
 };
 
+// 本地缓存数据
 const cachedData = {
-  canvas: null as HTMLCanvasElement | null,
-  rectBox: null as Path2D | null,
+  firstTime: null,
+  endTime: null,
+  hasRegMousemoveEvent: false,
   flagMouseDown: false,
-  rectConfig: {
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
-  },
 };
+
+function getNineSquareGrid() {
+  const container = upload.value?.$el as HTMLElement;
+  const nineSquareGrid = container.querySelector('.nine-square-grid') as HTMLElement;
+  return nineSquareGrid;
+}
 
 function mousemoveEvent(event: MouseEvent) {
   event.preventDefault();
-  if (!cachedData.canvas) {
-    return;
-  }
+  const nineSquareGrid = getNineSquareGrid();
   if (cachedData.flagMouseDown === true) {
-    cachedData.canvas.style.cursor = 'move';
-    const { rectConfig } = cachedData;
-    if (rectConfig.x <= 0) {
-      rectConfig.x = 0;
+    if (nineSquareGrid) {
+      nineSquareGrid.style.cursor = 'move';
+      const { movementX, movementY } = event;
+      const x = nineSquareGrid.offsetLeft + movementX;
+      const y = nineSquareGrid.offsetTop + movementY;
+      nineSquareGrid.style.left = `${x}px`;
+      nineSquareGrid.style.top = `${y}px`;
     }
-    if (rectConfig.x + rectConfig.width >= cachedData.canvas.width) {
-      rectConfig.x = cachedData.canvas.width - rectConfig.width;
-    }
-    if (rectConfig.y <= 0) {
-      rectConfig.y = 0;
-    }
-    if (rectConfig.y + rectConfig.height >= cachedData.canvas.height) {
-      rectConfig.y = cachedData.canvas.height - rectConfig.height;
-    }
-    const { movementX, movementY } = event;
-
-    rectConfig.x += movementX;
-    rectConfig.y += movementY;
-    drawRect();
   }
   else {
-    const { offsetX, offsetY } = event;
-    const ctx = cachedData.canvas.getContext('2d');
-    const result = ctx.isPointInPath(cachedData.rectBox, offsetX, offsetY);
-    if (result) {
-      cachedData.canvas.style.cursor = 'grab';
-    }
-    else {
-      cachedData.canvas.style.cursor = 'default';
+    if (!cachedData.hasRegMousemoveEvent) {
+      nineSquareGrid.addEventListener('mousedown', mousedownEvent, { capture: true });
+      cachedData.hasRegMousemoveEvent = true;
     }
   }
 }
 
 function mouseupEvent(event: MouseEvent) {
   event.preventDefault();
-  if (!cachedData.canvas) {
-    return;
-  }
   cachedData.flagMouseDown = false;
-  cachedData.canvas.removeEventListener('mouseup', mouseupEvent);
+  cachedData.hasRegMousemoveEvent = false;
+  const nineSquareGrid = getNineSquareGrid();
+  if (nineSquareGrid) {
+    nineSquareGrid.style.cursor = 'default';
+    nineSquareGrid.removeEventListener('mouseup', mouseupEvent);
+    nineSquareGrid.removeEventListener('mousemove', mousemoveEvent);
+  }
 }
 
 function mousedownEvent(event: MouseEvent) {
   event.preventDefault();
-  if (!cachedData.canvas) {
-    return;
-  }
-
-  const { offsetX, offsetY } = event;
-  const ctx = cachedData.canvas.getContext('2d');
-  const result = ctx.isPointInPath(cachedData.rectBox, offsetX, offsetY);
-  if (!result) {
-    return;
-  }
   cachedData.flagMouseDown = true;
   window.addEventListener('mouseup', mouseupEvent);
 }
 
-function handleChange() {
-  imgsList.value = [];
+function regMousemoveEvent() {
+  const container = upload.value?.$el as HTMLElement;
+  if (container) {
+    container.addEventListener('mousemove', mousemoveEvent);
+  }
+}
+
+function onChange() {
+  regMousemoveEvent();
 }
 
 function preCropper(file: File) {
@@ -116,6 +100,9 @@ function preCropper(file: File) {
   ctx.drawImage(img, 0, 0, imgWidth, imgHeight);
 
   const nineSquareGrid = container.querySelector('.nine-square-grid') as HTMLElement;
+  if (!nineSquareGrid) {
+    return;
+  }
   const { offsetLeft: offsetLeftGrid, offsetTop: offsetTopGrid } = nineSquareGrid;
   const nineSquareGridItems = nineSquareGrid.querySelectorAll('.nine-square-item');
   nineSquareGridItems.forEach((item, index) => {
@@ -134,21 +121,31 @@ function preCropper(file: File) {
     sortableInstance.destroy();
     sortableInstance = null;
   }
+  nineSquareGrid.addEventListener('mousedown', mousedownEvent, { capture: true });
+  nineSquareGrid.addEventListener('mousemove', mousemoveEvent);
 }
 
 function randomSort() {
   imgsList.value.sort(() => Math.random() - 0.5);
+  Object.assign(cachedData, { firstTime: null, endTime: null });
   if (!sortableInstance) {
     const container = document.querySelector('.puzzle-container') as HTMLElement;
     sortableInstance = Sortable.create(container, {
       animation: 150,
       onEnd(evt) {
+        if (!cachedData.firstTime) {
+          Object.assign(cachedData, { firstTime: new Date().getTime() });
+        }
         const { oldIndex, newIndex } = evt;
         const [item] = imgsList.value.splice(oldIndex!, 1);
         imgsList.value.splice(newIndex!, 0, item);
       },
     });
   }
+}
+
+function resetSort() {
+  imgsList.value.sort((a, b) => a.sort - b.sort);
 }
 
 function checkPuzzle() {
@@ -159,7 +156,16 @@ function checkPuzzle() {
       return;
     }
   }
-  ElMessage.success('拼图成功');
+  if (!cachedData.endTime) {
+    Object.assign(cachedData, { endTime: new Date().getTime() });
+  }
+  const diffTime = ((cachedData.endTime - cachedData.firstTime) / 1000).toFixed(2);
+  if (diffTime) {
+    ElMessage.success(`拼图成功，耗时${diffTime}秒`);
+  }
+  else {
+    ElMessage.success('拼图成功');
+  }
 }
 </script>
 
@@ -178,7 +184,7 @@ function checkPuzzle() {
       <div>如题所示，用来自动生成页面的模板</div>
       <el-upload
         ref="upload" v-model="fileList" class="upload-demo mt-2" :on-exceed="handleExceed" action="#"
-        list-type="picture-card" :limit="1" :auto-upload="false" @change="handleChange"
+        list-type="picture-card" :limit="1" :auto-upload="false" :on-change="onChange"
       >
         <el-icon>
           <Plus />
@@ -216,7 +222,10 @@ function checkPuzzle() {
             </div>
             <div class="mt-2">
               <el-button type="primary" size="small" @click="randomSort">
-                生成随机顺序
+                随机顺序
+              </el-button>
+              <el-button type="primary" size="small" @click="resetSort">
+                重置顺序
               </el-button>
               <el-button type="primary" size="small" @click="checkPuzzle">
                 检测是否成功
