@@ -1,3 +1,9 @@
+### 2025-10-01
+
+- [x] html+canvas原创性实现“拼图游戏”
+  - demo 路径：左侧菜单 - 练习场 - 拼图游戏
+  - 组件路径: **packages\bulin-vue3-frontend\src\pages\jigsaw-puzzle\index.vue**
+
 ### 2025-09-19
 
 - [x] 高度封装的、可定制化的表格列组件【components\structuredTable\CustomColumns.vue】
