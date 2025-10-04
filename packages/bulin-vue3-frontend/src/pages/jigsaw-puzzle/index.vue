@@ -9,6 +9,7 @@ import pageData from './page';
 
 const upload = ref<UploadInstance>();
 const fileList = ref<File[]>([]);
+const isDisableCheck = ref(true);
 
 let sortableInstance: Sortable | null = null;
 
@@ -41,10 +42,18 @@ function mousemoveEvent(event: MouseEvent) {
   const nineSquareGrid = getNineSquareGrid();
   if (cachedData.flagMouseDown === true) {
     if (nineSquareGrid) {
+      const { offsetLeft, offsetTop, offsetWidth, offsetHeight } = nineSquareGrid;
+      const { offsetWidth: containerWidth, offsetHeight: containerHeight } = nineSquareGrid.parentElement;
       nineSquareGrid.style.cursor = 'move';
       const { movementX, movementY } = event;
-      const x = nineSquareGrid.offsetLeft + movementX;
-      const y = nineSquareGrid.offsetTop + movementY;
+      const x = offsetLeft + movementX;
+      const y = offsetTop + movementY;
+      if (x < 0 || y < 0) {
+        return;
+      }
+      if (x + offsetWidth > containerWidth || y + offsetHeight > containerHeight) {
+        return;
+      }
       nineSquareGrid.style.left = `${x}px`;
       nineSquareGrid.style.top = `${y}px`;
     }
@@ -83,6 +92,8 @@ function regMousemoveEvent() {
 }
 
 function onChange() {
+  cachedData.hasRegMousemoveEvent = false;
+  cachedData.flagMouseDown = false;
   regMousemoveEvent();
 }
 
@@ -137,6 +148,10 @@ function randomSort() {
           Object.assign(cachedData, { firstTime: new Date().getTime() });
         }
         const { oldIndex, newIndex } = evt;
+        if (oldIndex === newIndex) {
+          return;
+        }
+        isDisableCheck.value = false;
         const [item] = imgsList.value.splice(oldIndex!, 1);
         imgsList.value.splice(newIndex!, 0, item);
       },
@@ -149,6 +164,7 @@ function resetSort() {
 }
 
 function checkPuzzle() {
+  isDisableCheck.value = true;
   for (let index = 0; index < imgsList.value.length; index++) {
     const element = imgsList.value[index];
     if (element.sort !== index) {
@@ -227,7 +243,7 @@ function checkPuzzle() {
               <el-button type="primary" size="small" @click="resetSort">
                 重置顺序
               </el-button>
-              <el-button type="primary" size="small" @click="checkPuzzle">
+              <el-button :disabled="isDisableCheck" type="primary" size="small" @click="checkPuzzle">
                 检测是否成功
               </el-button>
             </div>
