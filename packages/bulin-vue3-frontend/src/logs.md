@@ -1,3 +1,9 @@
+### 2025-10-05
+
+- [x] 原创性实现“五子棋”游戏
+  - demo 路径：左侧菜单 - 练习场 - 五子棋
+  - 组件路径: **packages\bulin-vue3-frontend\src\pages\five-in-a-row\index.vue**
+
 ### 2025-10-01
 
 - [x] html+canvas原创性实现“拼图游戏”
