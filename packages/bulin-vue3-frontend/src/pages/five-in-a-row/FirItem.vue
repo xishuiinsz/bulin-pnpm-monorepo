@@ -12,10 +12,7 @@ const emit = defineEmits<{
   (e: 'clickTrigger', props: { rowIndex: number; colIndex: number }): void;
 }>();
 
-function handleClick(props: { rowIndex: number; colIndex: number; value: null | 'X' | 'O' }) {
-  if (props.value) {
-    return;
-  }
+function handleClick(props: { rowIndex: number; colIndex: number }) {
   emit('clickTrigger', props);
 }
 </script>
@@ -25,9 +22,12 @@ function handleClick(props: { rowIndex: number; colIndex: number; value: null | 
     :class="{ 'first-row': rowIndex === 0, 'last-row': rowIndex === length - 1, 'first-col': colIndex === 0, 'last-col': colIndex === length - 1 }"
     class="fir-item lh-1 text-center"
   >
-    <div class="chess-piece cursor-pointer" :class="value && `chess-piece-${value}`" @click="handleClick(props)">
-      {{ value ? value : '' }}
-    </div>
+    <template v-if="value">
+      <div class="chess-piece" :class="`chess-piece-${value.toLowerCase()}`" />
+    </template>
+    <template v-else>
+      <div class="chess-piece chess-piece-empty cursor-pointer" @click="handleClick({ rowIndex, colIndex })" />
+    </template>
   </div>
 </template>
 
@@ -120,20 +120,5 @@ function handleClick(props: { rowIndex: number; colIndex: number; value: null | 
     }
   }
 
-  .chess-piece {
-    width: 16px;
-    height: 16px;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 16px;
-    z-index: 10;
-    border-radius: 50%;
-
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.1);
-    }
-  }
 }
 </style>

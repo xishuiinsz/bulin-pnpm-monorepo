@@ -11,9 +11,9 @@ const initBoardList = Array.from({ length }).map(() =>
 ) as ('X' | 'O' | null)[][];
 
 const boardList = ref(structuredClone(initBoardList));
-
+const initChess = 'X' as 'X' | 'O';
 const data = reactive({
-  currentChess: 'X' as 'X' | 'O',
+  currentChess: initChess,
 
 });
 
@@ -63,6 +63,7 @@ function winCheck(rowIndex: number, colIndex: number) {
     if (count >= 5) {
       ElMessage.success(`${cachedData[(data.currentChess).toLowerCase()]} 赢了!`);
       boardList.value = structuredClone(initBoardList);
+      data.currentChess = initChess;
       return true;
     }
   }
@@ -89,25 +90,64 @@ function handleClick(props: { rowIndex: number; colIndex: number }) {
         </span>
       </div>
     </div>
-    <div class="container d-flex gap-4 w-100 h-100 flex-fill">
-      <div
-        class="d-grid fir-board"
-        :style="`grid-template-columns: repeat(${length}, 30px); grid-template-rows: repeat(${length}, 30px);`"
-      >
-        <template v-for="(item, rowIndex) in boardList" :key="rowIndex">
-          <template v-for="(subItem, colIndex) in item" :key="colIndex">
-            <FirItem :row-index="rowIndex" :col-index="colIndex" :value="subItem" @click-trigger="handleClick" />
+    <div class="container  w-100 h-100 flex-fill">
+      <div class="d-flex gap-4">
+        <div
+          class="d-grid fir-board"
+          :style="`grid-template-columns: repeat(${length}, 30px); grid-template-rows: repeat(${length}, 30px);`"
+        >
+          <template v-for="(item, rowIndex) in boardList" :key="rowIndex">
+            <template v-for="(subItem, colIndex) in item" :key="colIndex">
+              <FirItem :row-index="rowIndex" :col-index="colIndex" :value="subItem" @click-trigger="handleClick" />
+            </template>
           </template>
-        </template>
-      </div>
-      <div>
-        <div>当前下棋方:</div>
-        <span>{{ data.currentChess }}</span>
+        </div>
+        <div class="chess-replay p-3">
+          <div class="w-100">
+            <div class="text-center">
+              当前下棋方:
+            </div>
+            <div class="w-100 position-relative" style="height: 2rem;">
+              <div class="chess-piece" :class="`chess-piece-${data.currentChess.toLowerCase()}`" />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.auto-generate-page {}
+.auto-generate-page {
+  :deep(.chess-piece) {
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 16px;
+    z-index: 10;
+    border-radius: 50%;
+
+    &.chess-piece-empty {
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+    }
+
+    &.chess-piece-x {
+      background-color: black;
+    }
+
+    &.chess-piece-o {
+      background-color: white;
+    }
+
+  }
+
+  .chess-replay {
+    background-color: bisque;
+  }
+}
 </style>
