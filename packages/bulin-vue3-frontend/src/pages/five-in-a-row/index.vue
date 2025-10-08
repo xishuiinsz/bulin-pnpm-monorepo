@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ElMessage } from 'element-plus';
-import { reactive, ref } from 'vue';
+import { ElMessage, ElMessageBox } from 'element-plus';
+import { computed, reactive, ref } from 'vue';
 import FirItem from './FirItem.vue';
 import pageData, { length } from './page';
 
@@ -77,6 +77,22 @@ function handleClick(props: { rowIndex: number; colIndex: number }) {
   }
   data.currentChess = data.currentChess === 'X' ? 'O' : 'X';
 }
+
+const hasMoveChess = computed(() => {
+  const list = boardList.value.flat();
+  return !list.some(item => item !== null);
+});
+
+function resetChess() {
+  const doConfirm = () => {
+    boardList.value = structuredClone(initBoardList);
+    data.currentChess = initChess;
+  };
+  ElMessageBox.confirm('请确认重置棋盘为默认状态', '警告', {
+    confirmButtonText: '确认',
+    cancelButtonText: '取消',
+  }).then(doConfirm);
+}
 </script>
 
 <template>
@@ -93,8 +109,8 @@ function handleClick(props: { rowIndex: number; colIndex: number }) {
     <div class="container  w-100 h-100 flex-fill">
       <div class="d-flex gap-4">
         <div
-          class="d-grid fir-board"
-          :style="`grid-template-columns: repeat(${length}, 30px); grid-template-rows: repeat(${length}, 30px);`"
+          class="d-grid fir-board rounded-2 overflow-hidden"
+          :style="`grid-template-columns: repeat(${length}, 1.875rem); grid-template-rows: repeat(${length}, 1.875rem);`"
         >
           <template v-for="(item, rowIndex) in boardList" :key="rowIndex">
             <template v-for="(subItem, colIndex) in item" :key="colIndex">
@@ -102,7 +118,7 @@ function handleClick(props: { rowIndex: number; colIndex: number }) {
             </template>
           </template>
         </div>
-        <div class="chess-replay p-3">
+        <div class="chess-replay p-3 d-flex flex-column justify-content-between rounded-2 overflow-hidden">
           <div class="w-100">
             <div class="text-center">
               当前下棋方:
@@ -110,6 +126,11 @@ function handleClick(props: { rowIndex: number; colIndex: number }) {
             <div class="w-100 position-relative" style="height: 2rem;">
               <div class="chess-piece" :class="`chess-piece-${data.currentChess.toLowerCase()}`" />
             </div>
+          </div>
+          <div>
+            <el-button :disabled="hasMoveChess" class="w-100" type="primary" @click="resetChess">
+              重置棋盘
+            </el-button>
           </div>
         </div>
       </div>

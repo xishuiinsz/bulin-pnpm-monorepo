@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import pageData from './page';
+import pageData, { rootClass } from './page';
 </script>
 
 <template>
-  <div class="auto-generate-page w-100 h-100 d-flex flex-column">
+  <div :class="rootClass" class="w-100 h-100 d-flex flex-column">
     <div class="crumbs">
       <div class="el-breadcrumb" aria-label="Breadcrumb" role="navigation">
         <span class="el-breadcrumb__item" aria-current="page" />

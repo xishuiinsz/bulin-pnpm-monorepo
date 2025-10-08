@@ -1,6 +1,6 @@
 ### 2025-10-05
 
-- [x] 原创性实现“五子棋”游戏
+- [x] 实现“五子棋”游戏，判定赢棋的逻辑来自GitHub Copilot
   - demo 路径：左侧菜单 - 练习场 - 五子棋
   - 组件路径: **packages\bulin-vue3-frontend\src\pages\five-in-a-row\index.vue**
 

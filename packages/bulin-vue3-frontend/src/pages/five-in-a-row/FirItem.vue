@@ -33,8 +33,8 @@ function handleClick(props: { rowIndex: number; colIndex: number }) {
 
 <style lang="scss" scoped>
 .fir-item {
-  width: 30px;
-  height: 30px;
+  width: 100%;
+  height: 100%;
   box-sizing: border-box;
   position: relative;
   background-color: bisque;
