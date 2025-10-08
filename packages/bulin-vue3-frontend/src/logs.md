@@ -1,3 +1,9 @@
+### 2025-10-08
+
+- [x] 原创性实现“安全找茬”能力
+  - demo 路径：左侧菜单 - 练习场 - 安全找茬
+  - 组件路径: **packages\bulin-vue3-frontend\src\pages\safe-nitpicking\index.vue**
+
 ### 2025-10-05
 
 - [x] 实现“五子棋”游戏，判定赢棋的逻辑来自GitHub Copilot
