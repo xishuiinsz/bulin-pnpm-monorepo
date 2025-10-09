@@ -60,7 +60,7 @@ function mousemoveEvent(event: MouseEvent) {
   }
   else {
     if (!cachedData.hasRegMousemoveEvent) {
-      nineSquareGrid.addEventListener('mousedown', mousedownEvent, { capture: true });
+      nineSquareGrid?.addEventListener('mousedown', mousedownEvent, { capture: true });
       cachedData.hasRegMousemoveEvent = true;
     }
   }
@@ -132,8 +132,8 @@ function preCropper(file: File) {
     sortableInstance.destroy();
     sortableInstance = null;
   }
-  nineSquareGrid.addEventListener('mousedown', mousedownEvent, { capture: true });
-  nineSquareGrid.addEventListener('mousemove', mousemoveEvent);
+  nineSquareGrid?.addEventListener('mousedown', mousedownEvent, { capture: true });
+  nineSquareGrid?.addEventListener('mousemove', mousemoveEvent);
 }
 
 function randomSort() {
