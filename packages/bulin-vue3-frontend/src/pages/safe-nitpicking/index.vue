@@ -15,6 +15,10 @@ function uploadImage() {
   const config = {
     onchange: (event: Event) => {
       const file = (event.target as HTMLInputElement)?.files?.[0] as File;
+      if (!file.type.startsWith('image/')) {
+        ElMessage.error('请上传图片格式文件');
+        return;
+      }
       const url = URL.createObjectURL(file);
       imgUrl.value = url;
       ElMessage.success('图片上传成功');

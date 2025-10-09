@@ -200,7 +200,7 @@ function checkPuzzle() {
       <div>如题所示，用来自动生成页面的模板</div>
       <el-upload
         ref="upload" v-model="fileList" class="upload-demo mt-2" :on-exceed="handleExceed" action="#"
-        list-type="picture-card" :limit="1" :auto-upload="false" :on-change="onChange"
+        accept="image/*" list-type="picture-card" :limit="1" :auto-upload="false" :on-change="onChange"
       >
         <el-icon>
           <Plus />
@@ -208,8 +208,11 @@ function checkPuzzle() {
 
         <template #file="{ file }">
           <div v-if="!imgsList.length">
-            <div class="position-relative" style="max-width: 40vw;">
-              <img :src="file.url" class="w-100">
+            <div class="position-relative">
+              <img
+                :src="file.url" class="w-100"
+                style="max-height: calc(100vh - 15rem );max-width: calc(100vw - 10rem);"
+              >
               <div class="nine-square-grid-container w-100 h-100 position-absolute top-0 start-0">
                 <div class="nine-square-grid">
                   <div class="nine-square-item h-100" />
