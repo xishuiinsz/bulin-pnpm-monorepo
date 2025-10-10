@@ -19,6 +19,9 @@ function uploadImage() {
         ElMessage.error('请上传图片格式文件');
         return;
       }
+      shapes.length = 0;
+      cachedData.canvas?.remove?.();
+      cachedData.canvas = null;
       const url = URL.createObjectURL(file);
       imgUrl.value = url;
       ElMessage.success('图片上传成功');
@@ -67,33 +70,39 @@ function mousedownEvt(e) {
 }
 
 function startFinding() {
-  if (cachedData.img && cachedData.canvas) {
-    const { canvas } = cachedData;
-    canvas.removeEventListener('mousedown', mousedownEvt);
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    if (shapes.length) {
-      shapes.forEach((paths) => {
-        ctx.strokeStyle = 'transparent';
-        ctx.stroke(paths);
-      });
-      const handleClick = (event: MouseEvent) => {
-        const { offsetX, offsetY } = event;
-        if (cachedData.instanceofElMessage) {
-          const { instanceofElMessage } = cachedData;
-          instanceofElMessage?.close();
+  if (!cachedData.canvas) {
+    ElMessage.error('请先上传图片');
+    return;
+  }
+  if (!shapes.length) {
+    ElMessage.error('请先设置找茬点');
+    return;
+  }
+  const { canvas } = cachedData;
+  canvas.removeEventListener('mousedown', mousedownEvt);
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (shapes.length) {
+    shapes.forEach((paths) => {
+      ctx.strokeStyle = 'transparent';
+      ctx.stroke(paths);
+    });
+    const handleClick = (event: MouseEvent) => {
+      const { offsetX, offsetY } = event;
+      if (cachedData.instanceofElMessage) {
+        const { instanceofElMessage } = cachedData;
+        instanceofElMessage?.close();
+      }
+      shapes.forEach((paths, index) => {
+        if (ctx.isPointInPath(paths, offsetX, offsetY)) {
+          cachedData.instanceofElMessage = ElMessage.success('找茬成功');
+          ctx.strokeStyle = 'red';
+          ctx.stroke(paths);
+          shapes.splice(index, 1);
         }
-        shapes.forEach((paths, index) => {
-          if (ctx.isPointInPath(paths, offsetX, offsetY)) {
-            cachedData.instanceofElMessage = ElMessage.success('找茬成功');
-            ctx.strokeStyle = 'red';
-            ctx.stroke(paths);
-            shapes.splice(index, 1);
-          }
-        });
-      };
-      canvas.addEventListener('click', handleClick);
-    }
+      });
+    };
+    canvas.addEventListener('click', handleClick);
   }
 }
 
