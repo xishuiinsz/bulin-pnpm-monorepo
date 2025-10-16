@@ -7,17 +7,14 @@ interface Props {
   moreText?: string;
   moreClick?: () => void;
 }
-const { rows, content, moreText, moreClick } = withDefaults(defineProps<Props>(), {
-  rows: 2,
-  moreText: '更多',
-  moreClick: () => { },
-});
+const { rows = 2, content, moreText = '更多', moreClick = () => { } } = defineProps<Props>();
 
 const instance = getCurrentInstance();
 const shownContent = ref(content);
 const cachedData = { ob: null };
 
 function resizeCallback() {
+  shownContent.value = content;
   computingShowContent();
 }
 
@@ -29,18 +26,20 @@ function computingShowContent() {
       shownContent.value = newContent;
       computingShowContent();
     }
-    else {
-      if (!cachedData.ob) {
-        cachedData.ob = new ResizeObserver(resizeCallback);
-        cachedData.ob.observe(container);
-      }
-    }
   });
 }
-
+function clickEvt() {
+  if (!cachedData.ob) {
+    const container = instance.proxy.$el;
+    cachedData.ob = new ResizeObserver(resizeCallback);
+    cachedData.ob?.observe?.(container);
+  }
+}
 onMounted(computingShowContent);
+window.addEventListener('click', clickEvt, { once: true, capture: true });
 onUnmounted(() => {
   cachedData.ob?.disconnect?.();
+  window.removeEventListener('click', clickEvt);
 });
 </script>
 
