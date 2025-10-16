@@ -7,7 +7,7 @@ function interestFormatter({ row, rowIndex, col, _colIndex }) {
     window.console.log('onClick row: ', row);
     window.console.log('onClick rowIndex: ', rowIndex);
   };
-  const vnode = h('div', { class: 'color-853aff cursor-pointer', onClick: click }, row[col.field]);
+  const vnode = h('div', { class: 'color-3a85ff cursor-pointer', onClick: click }, row[col.field]);
   return vnode;
 }
 

@@ -1,3 +1,9 @@
+### 2025-10-16
+
+- [x] 原创性实现“带‘查看更多’交互的多行超长...文本”的组件
+  - demo 路径：左侧菜单 - 基础表格
+  - 组件路径: **packages\bulin-vue3-frontend\src\components\MultiTextWithMore.vue**
+
 ### 2025-10-08
 
 - [x] 原创性实现“安全找茬”能力

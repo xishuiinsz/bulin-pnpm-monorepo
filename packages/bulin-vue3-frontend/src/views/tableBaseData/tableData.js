@@ -1,6 +1,7 @@
+import MultiTextWithMore from '@/components/MultiTextWithMore.vue';
 import showDrawer from '@/imperatives/showDrawer.js';
 import { User } from '@element-plus/icons-vue';
-import { ElImage } from 'element-plus';
+import { ElImage, ElMessage } from 'element-plus';
 import { h, reactive } from 'vue';
 import detailsForm from './detailsForm.vue';
 
@@ -55,6 +56,21 @@ export const tableColumnList = [
   },
   { prop: 'address', label: '地址' },
   {
+    prop: 'hobbies',
+    label: '爱好',
+    slots: {
+      default: ({ row }) => {
+        if (!row.hobbies?.trim()) {
+          return '--';
+        }
+        const moreClick = () => {
+          ElMessage({ type: 'success', message: row.hobbies, customClass: 'max-width-600' });
+        };
+        return h(MultiTextWithMore, { content: row.hobbies, moreClick });
+      },
+    },
+  },
+  {
     prop: 'state',
     label: '状态',
     width: 80,
@@ -73,6 +89,7 @@ export const tableDataList = reactive([
     name: '张三',
     money: 123,
     address: '广东省东莞市长安镇',
+    hobbies: '1、运动类：篮球、羽毛球、、跑步、跳绳、举重；2、娱乐类：听音乐、看电影、绘画、写小说、看书；3、冒险类：做弹弓玩、做木剑玩、做橡皮枪玩；4、返老还童类：积木、用麻将搭金字塔；5、智力类：拼图、拆装（拆小汽车、闹钟、电风扇之类的）；6、收藏类：收藏扑克牌、小汽车、手表、鞋之类的；7、乐器类：弹吉他、钢琴、萨克斯、葫芦丝、大号、小号；8、文艺类：折纸（可以尝试无限种折纸飞机的办法）、剪纸、品茶、涂鸦；',
     state: '成功',
     date: '2019-11-1',
     thumb: 'https://cn.element-plus.org/images/mele-banner.png',
@@ -82,6 +99,7 @@ export const tableDataList = reactive([
     name: '李四',
     money: 456,
     address: '广东省广州市白云区',
+    hobbies: '1、运动类：篮球、羽毛球、、跑步、跳绳、举重；2、娱乐类：听音乐、看电影、绘画、写小说、看书；3、冒险类：做弹弓玩、做木剑玩、做橡皮枪玩；4、返老还童类：积木、用麻将',
     state: '成功',
     date: '2019-10-11',
     thumb: 'https://cn.element-plus.org/images/jnpfsoft.png',
