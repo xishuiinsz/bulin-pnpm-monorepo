@@ -52,7 +52,12 @@ function mousedownEvt(e) {
     const ctx = canvas.getContext('2d');
     const paths = new Path2D();
     const mousemoveEvt = (ev) => {
-      paths.lineTo(ev.offsetX, ev.offsetY);
+      const x = ev.offsetX;
+      const y = ev.offsetY;
+      console.log(`${x}${y}`);
+
+      paths.lineTo(x, y);
+
       ctx.stroke(paths);
     };
     const mouseUpEvt = (ev) => {

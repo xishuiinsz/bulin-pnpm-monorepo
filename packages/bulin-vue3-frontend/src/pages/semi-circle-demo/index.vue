@@ -21,7 +21,10 @@ const value = ref('30');
       <div class="progress-ring-wrapper">
         <SemiCircle :value="value" />
       </div>
-      <el-input v-model="value" type="number" class="  mt-3 w300" />
+      <el-input-number
+        v-model="value" align="left" :disabled-scientific="true" :controls="false" :min="0" :max="100"
+        precision="1" class="  mt-3 w300"
+      />
     </div>
   </div>
 </template>
