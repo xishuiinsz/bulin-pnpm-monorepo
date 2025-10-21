@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { FormInstance, FormRules } from 'element-plus';
+import useShortcutsEcho from '@/hooks/useShortcutsEcho';
 import { formData } from '@/views/formBaseData/data';
 import { genFileId } from 'element-plus';
 import { reactive, ref, toRaw } from 'vue';
@@ -10,8 +11,6 @@ import JunComp from './components/JunComp.vue';
 import MarComp from './components/MarComp.vue';
 import MayComp from './components/MayComp.vue';
 import { dataScope } from './page';
-
-const popperClass = 'popper-1761056793229';
 
 interface RuleForm {
   name: string;
@@ -31,8 +30,7 @@ const ruleForm = reactive<RuleForm>({
   name: 'Hello',
   region: '',
   count: '',
-  date: '',
-  date2: '',
+  date: [],
   delivery: false,
   location: '',
   type: [],
@@ -216,60 +214,11 @@ function getComponentByKey(key) {
   return mapComp[key] ?? JanComp;
 }
 
-function visibleChange(visible: boolean) {
-  if (visible)
-    return;
-  const selectedDates = toRaw(ruleForm.date);
-  const selector = 'selected-shortcut';
-  const shortcutSelector = '.el-picker-panel__shortcut';
-  const datePopper = document.querySelector(`.${popperClass}`);
-
-  const clearShortcutSelection = () => {
-    if (datePopper) {
-      const shortcutElements = datePopper.querySelectorAll(shortcutSelector);
-      shortcutElements.forEach((el) => {
-        el.classList.remove(selector);
-      });
-    }
-  };
-
-  const ensureShortcutSelection = (text) => {
-    if (datePopper) {
-      const shortcutElements = datePopper.querySelectorAll(shortcutSelector);
-      for (let index = 0; index < shortcutElements.length; index++) {
-        const element = shortcutElements[index];
-        if (element.textContent === text) {
-          element.classList.add(selector);
-          break;
-        }
-      }
-    }
-  };
-  if (selectedDates?.length === 2) {
-    const [startTime, endTime] = selectedDates;
-    const shortcut = shortcuts.find((s) => {
-      const [start, end] = s.value().map((t) => {
-        return t.toLocaleDateString('zh', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-        }).replaceAll('/', '-');
-      });
-      return startTime === start && endTime === end;
-    });
-    if (shortcut) {
-      const { text } = shortcut;
-      clearShortcutSelection();
-      ensureShortcutSelection(text);
-    }
-    else {
-      clearShortcutSelection();
-    }
-  }
-  else {
-    clearShortcutSelection();
-  }
-}
+const { visibleChange, popperClass } = useShortcutsEcho({
+  key: 'date',
+  shortcuts,
+  formData: ruleForm,
+});
 </script>
 
 <template>
