@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { FormInstance, FormRules } from 'element-plus';
-import { reactive, ref, resolveComponent } from 'vue';
+import { formData } from '@/views/formBaseData/data';
+import { genFileId } from 'element-plus';
+import { reactive, ref, toRaw } from 'vue';
 import AprComp from './components/AprComp.vue';
 import FebComp from './components/FebComp.vue';
 import JanComp from './components/JanComp.vue';
@@ -9,11 +11,13 @@ import MarComp from './components/MarComp.vue';
 import MayComp from './components/MayComp.vue';
 import { dataScope } from './page';
 
+const popperClass = 'popper-1761056793229';
+
 interface RuleForm {
   name: string;
   region: string;
   count: string;
-  date1: string;
+  date: string;
   date2: string;
   delivery: boolean;
   location: string;
@@ -27,7 +31,7 @@ const ruleForm = reactive<RuleForm>({
   name: 'Hello',
   region: '',
   count: '',
-  date1: '',
+  date: '',
   date2: '',
   delivery: false,
   location: '',
@@ -37,6 +41,81 @@ const ruleForm = reactive<RuleForm>({
 });
 
 const locationOptions = ['Home', 'Company', 'School'];
+
+function getTimeRange(rangeType: any) {
+  const start = new Date();
+  const end = new Date();
+
+  switch (rangeType) {
+    // 今日
+    case 'today':
+      start.setHours(0, 0, 0, 0);
+      end.setHours(23, 59, 59, 999);
+      break;
+    // 昨日
+    case 'yesterday':
+      start.setDate(start.getDate() - 1);
+      start.setHours(0, 0, 0, 0);
+      end.setDate(end.getDate() - 1);
+      end.setHours(23, 59, 59, 999);
+      break;
+    // 最近七天
+    case 'last7days':
+      start.setDate(start.getDate() - 6);
+      start.setHours(0, 0, 0, 0);
+      end.setHours(23, 59, 59, 999);
+      break;
+    // 这个月
+    case 'currentMonth':
+      start.setDate(1);
+      start.setHours(0, 0, 0, 0);
+      end.setMonth(end.getMonth() + 1);
+      end.setDate(0);
+      end.setHours(23, 59, 59, 999);
+      break;
+    // 上个月
+    case 'lastMonth':
+      start.setMonth(start.getMonth() - 1);
+      start.setDate(1);
+      start.setHours(0, 0, 0, 0);
+      end.setDate(0);
+      end.setHours(23, 59, 59, 999);
+      break;
+    // 最近3个月
+    case 'before3Month':
+      start.setMonth(start.getMonth() - 2);
+      start.setDate(1);
+      start.setHours(0, 0, 0, 0);
+      end.setMonth(end.getMonth() + 1);
+      end.setDate(0);
+      end.setHours(23, 59, 59, 999);
+      break;
+    default:
+      console.error('Invalid range type');
+      return;
+  }
+  return [start, end];
+}
+
+const shortcuts = [{
+  text: '今日',
+  value: () => getTimeRange('today'),
+}, {
+  text: '昨日',
+  value: () => getTimeRange('yesterday'),
+}, {
+  text: '最近七日',
+  value: () => getTimeRange('last7days'),
+}, {
+  text: '本月',
+  value: () => getTimeRange('currentMonth'),
+}, {
+  text: '上个月',
+  value: () => getTimeRange('lastMonth'),
+}, {
+  text: '近3个月',
+  value: () => getTimeRange('before3Month'),
+}];
 
 const rules = reactive<FormRules<RuleForm>>({
   name: [
@@ -57,9 +136,9 @@ const rules = reactive<FormRules<RuleForm>>({
       trigger: 'change',
     },
   ],
-  date1: [
+  date: [
     {
-      type: 'date',
+      type: 'array',
       required: true,
       message: 'Please pick a date',
       trigger: 'change',
@@ -136,6 +215,61 @@ function getComponentByKey(key) {
   };
   return mapComp[key] ?? JanComp;
 }
+
+function visibleChange(visible: boolean) {
+  if (visible)
+    return;
+  const selectedDates = toRaw(ruleForm.date);
+  const selector = 'selected-shortcut';
+  const shortcutSelector = '.el-picker-panel__shortcut';
+  const datePopper = document.querySelector(`.${popperClass}`);
+
+  const clearShortcutSelection = () => {
+    if (datePopper) {
+      const shortcutElements = datePopper.querySelectorAll(shortcutSelector);
+      shortcutElements.forEach((el) => {
+        el.classList.remove(selector);
+      });
+    }
+  };
+
+  const ensureShortcutSelection = (text) => {
+    if (datePopper) {
+      const shortcutElements = datePopper.querySelectorAll(shortcutSelector);
+      for (let index = 0; index < shortcutElements.length; index++) {
+        const element = shortcutElements[index];
+        if (element.textContent === text) {
+          element.classList.add(selector);
+          break;
+        }
+      }
+    }
+  };
+  if (selectedDates?.length === 2) {
+    const [startTime, endTime] = selectedDates;
+    const shortcut = shortcuts.find((s) => {
+      const [start, end] = s.value().map((t) => {
+        return t.toLocaleDateString('zh', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+        }).replaceAll('/', '-');
+      });
+      return startTime === start && endTime === end;
+    });
+    if (shortcut) {
+      const { text } = shortcut;
+      clearShortcutSelection();
+      ensureShortcutSelection(text);
+    }
+    else {
+      clearShortcutSelection();
+    }
+  }
+  else {
+    clearShortcutSelection();
+  }
+}
 </script>
 
 <template>
@@ -152,26 +286,14 @@ function getComponentByKey(key) {
     <el-form-item label="Activity count" prop="count">
       <el-select-v2 v-model="ruleForm.count" placeholder="Activity count" :options="options" />
     </el-form-item>
-    <el-form-item label="Activity time" required>
-      <el-col :span="11">
-        <el-form-item prop="date1">
-          <el-date-picker
-            v-model="ruleForm.date1" type="date" aria-label="Pick a date"
-            placeholder="Pick a date" style="width: 100%"
-          />
-        </el-form-item>
-      </el-col>
-      <el-col class="text-center" :span="2">
-        <span class="text-gray-500">-</span>
-      </el-col>
-      <el-col :span="11">
-        <el-form-item prop="date2">
-          <el-time-picker
-            v-model="ruleForm.date2" aria-label="Pick a time" placeholder="Pick a time"
-            style="width: 100%"
-          />
-        </el-form-item>
-      </el-col>
+    <el-form-item label="时间范围" required>
+      <el-form-item prop="date">
+        <el-date-picker
+          v-model="ruleForm.date" value-format="YYYY-MM-DD" type="daterange" range-separator="-"
+          start-placeholder="开始时间" end-placeholder="结束时间" :shortcuts="shortcuts" style="width: 100%"
+          :popper-class="popperClass" @visible-change="visibleChange"
+        />
+      </el-form-item>
     </el-form-item>
     <el-form-item :label="dataScope.label" :prop="dataScope.key">
       <div>
@@ -204,3 +326,14 @@ function getComponentByKey(key) {
     </el-form-item>
   </el-form>
 </template>
+
+<style lang="scss">
+.popper-1761056793229 {
+  .el-picker-panel__shortcut {
+    &.selected-shortcut {
+      background-color: #409eff;
+      color: #fff;
+    }
+  }
+}
+</style>
