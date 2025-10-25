@@ -18,7 +18,7 @@ const pageTotal = computed(() => tableDataList.length);
 // 获取表格数据
 function getData() {
   fetchData(query).then((res) => {
-    tableDataList.value = res.list;
+    tableDataList.value = res.list || [];
     pageTotal.value = res.pageTotal || 50;
   });
 }
@@ -87,18 +87,14 @@ function handleDelete(row) {
           <el-option key="1" label="广东省" value="广东省" />
           <el-option key="2" label="湖南省" value="湖南省" />
         </el-select>
-        <el-input
-          v-model="query.name" placeholder="用户名" class="handle-input mr10"
-          @input="queryByName('test', 'test1')"
-        />
+        <el-input v-model="query.name" placeholder="用户名" class="handle-input mr10"
+          @input="queryByName('test', 'test1')" />
         <ElButton type="primary" :icon="Search" @click="handleSearch">
           搜索
         </ElButton>
       </div>
-      <el-table
-        :data="tableDataList" border stripe class="" :row-key="(row) => row.id" @filter-change="filterChange"
-        @selection-change="selectionChange"
-      >
+      <el-table :data="tableDataList" border stripe class="" :row-key="(row) => row.id" @filter-change="filterChange"
+        @selection-change="selectionChange">
         <CustomColumns :list="tableColumnList">
           <template #suffix>
             <el-table-column label="操作" width="120" :sortable="false" :resizable="false">
@@ -115,10 +111,8 @@ function handleDelete(row) {
         </CustomColumns>
       </el-table>
       <div class="pagination">
-        <el-pagination
-          background layout="total, prev, pager, next" :current-page="query.pageIndex"
-          :page-size="query.pageSize" :total="pageTotal" @current-change="handlePageChange"
-        />
+        <el-pagination background layout="total, prev, pager, next" :current-page="query.pageIndex"
+          :page-size="query.pageSize" :total="pageTotal" @current-change="handlePageChange" />
       </div>
     </div>
   </div>

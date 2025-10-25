@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getCurrentInstance, onMounted, onUnmounted, ref, unref } from 'vue';
+import { getCurrentInstance, nextTick, onMounted, onUnmounted, ref, unref, watch } from 'vue';
 
 interface Props {
   rows?: number;
@@ -11,43 +11,68 @@ const { rows = 2, content, moreText = '更多', moreClick = () => { } } = define
 
 const instance = getCurrentInstance();
 const shownContent = ref(content);
-const cachedData = { ob: null };
+const ellipsisStr = '...';
+const cachedData = { startIndex: 0, endIndex: content.length, ob: null, stopWatch: null, flagResizeObserver: false };
 
-function resizeCallback() {
-  shownContent.value = content;
-  computingShowContent();
+function addListenner(container) {
+  if (!cachedData.ob) {
+    cachedData.ob = new ResizeObserver(() => {
+      // 首次触发不处理，避免初始渲染时重复计算
+      if (!cachedData.flagResizeObserver) {
+        cachedData.flagResizeObserver = true;
+      } else {
+        resizeCallback()
+      }
+    });
+  }
+  cachedData.ob.observe(container);
+  watch(() => content, resizeCallback);
 }
 
 function computingShowContent() {
-  setTimeout(() => {
-    const container = instance.proxy.$el;
-    if (container?.scrollHeight > container?.offsetHeight) {
-      const newContent = unref(shownContent).slice(0, unref(shownContent).length - 1);
-      shownContent.value = newContent;
-      computingShowContent();
-    }
-  });
+  const container = instance.proxy.$el
+  if (cachedData.endIndex - cachedData.startIndex <= 0) {
+    addListenner(container);
+    return;
+  }
+  if (container?.scrollHeight > container?.offsetHeight) {
+    cachedData.endIndex = cachedData.startIndex + Math.floor((cachedData.endIndex - cachedData.startIndex) / 2);
+  } else {
+    const endIndex = cachedData.endIndex;
+    cachedData.endIndex = endIndex + Math.floor((endIndex - cachedData.startIndex) / 2);
+    cachedData.startIndex = endIndex;
+  }
+  shownContent.value = content.slice(0, cachedData.endIndex);
+  requestAnimationFrame(computingShowContent);
 }
-function clickEvt() {
-  if (!cachedData.ob) {
-    const container = instance.proxy.$el;
-    cachedData.ob = new ResizeObserver(resizeCallback);
-    cachedData.ob?.observe?.(container);
+
+function resizeCallback() {
+  cachedData.startIndex = 0;
+  cachedData.endIndex = content.length;
+  shownContent.value = content;
+  nextTick(init);
+}
+
+const init = () => {
+  const container = instance.proxy.$el;
+  if (container?.scrollHeight > container?.offsetHeight) {
+    requestAnimationFrame(computingShowContent);
   }
 }
-onMounted(computingShowContent);
-window.addEventListener('click', clickEvt, { once: true, capture: true });
+
+onMounted(init);
+
 onUnmounted(() => {
   cachedData.ob?.disconnect?.();
-  window.removeEventListener('click', clickEvt);
+  cachedData.stopWatch?.();
 });
 </script>
 
 <template>
   <div class="multi-text-with-more w-100">
     <span>{{ shownContent }}</span>
-    <span v-if="content.length !== shownContent.length">...</span>
-    <span class=" color-3a85ff cursor-pointer ps-1" @click.stop="moreClick">{{ moreText }}</span>
+    <span v-if="content.length !== shownContent.length">{{ ellipsisStr }}</span>
+    <span class=" color-3a85ff cursor-pointer ps-2" @click.stop="moreClick">{{ moreText }}</span>
   </div>
 </template>
 

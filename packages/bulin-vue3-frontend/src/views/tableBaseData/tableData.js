@@ -58,6 +58,7 @@ export const tableColumnList = [
   {
     prop: 'hobbies',
     label: '爱好',
+    minWidth: 180,
     slots: {
       default: ({ row }) => {
         if (!row.hobbies?.trim()) {
@@ -85,6 +86,16 @@ export const tableColumnList = [
 
 export const tableDataList = reactive([
   {
+    id: 4,
+    name: '赵六',
+    money: 1011,
+    address: '福建省厦门市鼓浪屿',
+    hobbies: '玩手机、看电视、打游戏、看小说、听音乐、旅游、美食、运动、吃鸡腿、吃零食',
+    state: '成功',
+    date: '2019-10-20',
+    thumb: 'https://cn.element-plus.org/images/buildadmin-l.png',
+  },
+  {
     id: 1,
     name: '张三',
     money: 123,
@@ -99,7 +110,7 @@ export const tableDataList = reactive([
     name: '李四',
     money: 456,
     address: '广东省广州市白云区',
-    hobbies: '1、运动类：篮球、羽毛球、、跑步、跳绳、举重；2、娱乐类：听音乐、看电影、绘画、写小说、看书；3、冒险类：做弹弓玩、做木剑玩、做橡皮枪玩；4、返老还童类：积木、用麻将',
+    hobbies: '1、冒险类：做弹弓玩、做木剑玩、做橡皮枪玩；2、娱乐类：听音乐、看电影、绘画、写小说、看书；3、运动类：篮球、羽毛球、、跑步、跳绳、举重；4、返老还童类：积木、用麻将',
     state: '成功',
     date: '2019-10-11',
     thumb: 'https://cn.element-plus.org/images/jnpfsoft.png',
@@ -109,17 +120,10 @@ export const tableDataList = reactive([
     name: '王五',
     money: 789,
     address: '湖南省长沙市',
+    hobbies: '编写js代码',
     state: '失败',
     date: '2019-11-11',
     thumb: 'https://cn.element-plus.org/images/CRMEB-l.png',
   },
-  {
-    id: 4,
-    name: '赵六',
-    money: 1011,
-    address: '福建省厦门市鼓浪屿',
-    state: '成功',
-    date: '2019-10-20',
-    thumb: 'https://cn.element-plus.org/images/buildadmin-l.png',
-  },
+  
 ]);
