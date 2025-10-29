@@ -47,10 +47,14 @@ function handleEdit(row) {
   const closeEvt = () => {
     dialogInstance?.destroy?.();
   };
+  const submitEvt = (formData) => {
+    Object.assign(row, formData);
+    ElMessage.success('编辑成功');
+  };
   const params = {
     title: '编辑',
     slots: {
-      default: () => h(editForm, { close: closeEvt, initialFormData: { ...row } }),
+      default: () => h(editForm, { close: closeEvt, initialFormData: { ...row }, onSubmit: submitEvt }),
     },
   };
   dialogInstance = showDialog(params);

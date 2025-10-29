@@ -44,6 +44,12 @@ const formList = [
     label: '地址',
   },
   {
+    key: 'hobbies',
+    type: 'ElInput',
+    props: { type: 'textarea', placeholder: '请输入爱好' },
+    label: '爱好',
+  },
+  {
     key: 'state',
     initValue: '1',
     type: 'ElxSelect',

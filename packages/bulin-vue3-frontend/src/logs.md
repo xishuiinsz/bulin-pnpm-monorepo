@@ -1,3 +1,9 @@
+### 2025-10-29
+
+- [x] 原创性实现多数据源共享check树
+  - demo 路径：左侧菜单 > 练习场 > 多数据源树
+  - 组件路径: **packages\bulin-vue3-frontend\src\pages\multi-sources-trees\index.vue**
+
 ### 2025-10-21
 
 - [x] 原创性实现ElDatePicker组件的shutcuts的回显能力
