@@ -87,11 +87,10 @@ const chatHandler = async ({ question }) => {
       stream: true
     });
 
-
     if (!inAnsweringMessage) {
       return;
     }
-    for await (let chunk of completion) {
+    for await (const chunk of completion) {
       console.log('chunk: ', chunk);
 
       // 在这里，每个 chunk 的结构都与之前的 completion 相似，但 message 字段被替换成了 delta 字段

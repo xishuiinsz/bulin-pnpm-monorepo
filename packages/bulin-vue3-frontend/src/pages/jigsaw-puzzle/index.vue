@@ -97,7 +97,7 @@ function onChange() {
   regMousemoveEvent();
 }
 
-function preCropper(file: File) {
+function preCropper(_file: File) {
   const container = upload.value?.$el as HTMLElement;
   const img = container.querySelector('img') as HTMLImageElement;
   if (!img) {
