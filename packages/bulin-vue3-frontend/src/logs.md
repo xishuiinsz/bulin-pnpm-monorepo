@@ -1,3 +1,10 @@
+### 2025-12-06
+
+- [x] 手工实现表格展开与收起
+  - demo 路径：左侧菜单 > 练习场 > 手工实现表格展开与收起
+  - 组件路径: **packages\bulin-vue3-frontend\src\pages\table-expand-collapse\index.vue**
+  - 相关能力：递归展开数组、倒序遍历、图标+tooltip与图标+label显示模式的动态切换。
+
 ### 2025-10-29
 
 - [x] 原创性实现多数据源共享check树
