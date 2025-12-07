@@ -1,6 +1,10 @@
 {
   "$schema": "https://biomejs.dev/schemas/latest/schema.json",
-  "vcs": { "enabled": false, "clientKind": "git", "useIgnoreFile": false },
+  "vcs": {
+    "enabled": false,
+    "clientKind": "git",
+    "useIgnoreFile": false
+  },
   "files": {
     "ignoreUnknown": false,
     "includes": [
@@ -71,7 +75,7 @@
       "jsxQuoteStyle": "double",
       "quoteProperties": "asNeeded",
       "trailingCommas": "none",
-      "semicolons": "asNeeded",
+      "semicolons": "always",
       "arrowParentheses": "always",
       "bracketSameLine": true,
       "quoteStyle": "single",
@@ -81,16 +85,22 @@
   },
   "json": {
     "formatter": {
-      "trailingCommas": "none"
+      "trailingCommas": "all"
     }
   },
   "assist": {
     "enabled": true,
-    "actions": { "source": { "organizeImports": "off" } }
+    "actions": {
+      "source": {
+        "organizeImports": "off"
+      }
+    }
   },
   "overrides": [
     {
-      "includes": ["**/*.vue"],
+      "includes": [
+        "**/*.vue"
+      ],
       "linter": {
         "rules": {
           "correctness": {

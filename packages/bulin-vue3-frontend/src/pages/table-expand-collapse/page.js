@@ -1,4 +1,5 @@
 import { reactive } from 'vue';
+import { generateUniqueId } from '@libc/shared';
 
 const pageData = {
   path: '/myComponents/table-expand-collapse',
@@ -14,41 +15,81 @@ export default pageData;
 
 export const tableData = reactive([
   {
-    id: 1,
+    id: generateUniqueId('id-'),
     date: '2016-05-02',
-    name: '中国人民万岁',
+    name: '布林前端开源平台布林前端开源平台',
     address: 'No. 189, Grove St, Los Angeles',
     childrenList: [
       {
-        id: 2,
+        id: generateUniqueId('id-'),
         date: '2016-05-04',
-        name: '中国人民万岁',
+        name: '布林前端开源平台布林前端开源平台',
         address: 'No. 189, Grove St, Los Angeles'
       },
       {
-        id: 3,
+        id: generateUniqueId('id-'),
         date: '2016-05-01',
-        name: '中国人民万岁',
+        name: '布林前端开源平台布林前端开源平台',
         address: 'No. 189, Grove St, Los Angeles',
         childrenList: [
           {
-            id: 31,
+            id: generateUniqueId('id-'),
             date: '2016-05-01-01',
-            name: '中国人民万岁',
+            name: '布林前端开源平台布林前端开源平台',
             address: 'No. 189, Grove St, Los Angeles'
           },
           {
-            id: 32,
+            id: generateUniqueId('id-'),
             date: '2016-05-01-02',
-            name: '中国人民万岁',
+            name: '布林前端开源平台布林前端开源平台',
             address: 'No. 189, Grove St, Los Angeles'
           }
         ]
       },
       {
-        id: 4,
+        id: generateUniqueId('id-'),
         date: '2016-05-03',
-        name: '中国人民万岁',
+        name: '布林前端开源平台布林前端开源平台',
+        address: 'No. 189, Grove St, Los Angeles'
+      }
+    ]
+  },
+  {
+    id: generateUniqueId('id-'),
+    date: '2016-05-02',
+    name: '布林前端开源平台布林前端开源平台',
+    address: 'No. 189, Grove St, Los Angeles',
+    childrenList: [
+      {
+        id: generateUniqueId('id-'),
+        date: '2016-05-04',
+        name: '布林前端开源平台布林前端开源平台',
+        address: 'No. 189, Grove St, Los Angeles'
+      },
+      {
+        id: generateUniqueId('id-'),
+        date: '2016-05-01',
+        name: '布林前端开源平台布林前端开源平台',
+        address: 'No. 189, Grove St, Los Angeles',
+        childrenList: [
+          {
+            id: generateUniqueId('id-'),
+            date: '2016-05-01-01',
+            name: '布林前端开源平台布林前端开源平台',
+            address: 'No. 189, Grove St, Los Angeles'
+          },
+          {
+            id: generateUniqueId('id-'),
+            date: '2016-05-01-02',
+            name: '布林前端开源平台布林前端开源平台',
+            address: 'No. 189, Grove St, Los Angeles'
+          }
+        ]
+      },
+      {
+        id: generateUniqueId('id-'),
+        date: '2016-05-03',
+        name: '布林前端开源平台布林前端开源平台',
         address: 'No. 189, Grove St, Los Angeles'
       }
     ]
