@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import pageData, { rootClass, tableData } from './page';
 import FirstColumn from './FirstColumn.vue';
-import { onMounted, reactive, h } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import { Plus, Minus } from '@element-plus/icons-vue';
 
 defineOptions({
@@ -24,7 +24,8 @@ interface SpanMethodProps {
 const childrenField = 'childrenList';
 
 const cachedData: { spanOptions: Record<number, number> } = { spanOptions: {} };
-const mapping = reactive<Record<number, number>>({});
+
+const expandedRowKeys = reactive<number[]>([]);
 
 const flatMapAll = (list: User[], data: User[] = []) => {
   list.forEach((item) => {
@@ -60,9 +61,14 @@ const spanMethod = ({ rowIndex, columnIndex }: SpanMethodProps) => {
   return [1, 1];
 };
 
+// 展开 动作
 const handleExpand = (row: User) => {
   if (!row.childrenList?.length) {
     return;
+  }
+  const { id } = row;
+  if (!expandedRowKeys.includes(id)) {
+    expandedRowKeys.push(id);
   }
   const index = tableData.findIndex((item: User) => item.id === row.id);
   const currentLevel = row.level || 1;
@@ -75,30 +81,28 @@ const handleExpand = (row: User) => {
   computingSpan();
 };
 
+// 收起 动作
 const handleCollapse = (row: User) => {
   if (!row.childrenList?.length) {
     return;
   }
+  const { id } = row;
+  if (expandedRowKeys.includes(id)) {
+    expandedRowKeys.splice(expandedRowKeys.indexOf(id), 1);
+  }
   const flatData = flatMapAll(row.childrenList || []);
   const ids = flatData.map((item) => item.id).map(String);
-  ids.forEach((id) => Object.assign(mapping, { [id]: false }));
+
   for (let index = tableData.length - 1; index >= 0; index--) {
     const element = tableData[index];
     if (ids.includes(String(element.id))) {
       tableData.splice(index, 1);
+      if (element.childrenList?.length) {
+        expandedRowKeys.splice(expandedRowKeys.indexOf(element.id), 1);
+      }
     }
   }
   computingSpan();
-};
-
-const handleChange = (row: User, flag: boolean) => {
-  const { id } = row;
-  Object.assign(mapping, { [id]: flag });
-  if (!flag) {
-    handleCollapse(row);
-  } else {
-    handleExpand(row);
-  }
 };
 
 const handleEdit = (row: User) => {
@@ -135,16 +139,16 @@ onMounted(() => {
             <template #default="scope">
               <div class="d-flex align-items-center" :class="scope.row.level ? `level-${scope.row.level}` : 'level-1'">
                 <template v-if="scope.row.childrenList?.length">
-                  <el-icon class="icon-size-16 cursor-pointer">
-                    <template v-if="!mapping[scope.row.id]">
-                      <Plus @click="handleChange(scope.row, true)" />
+                  <el-icon class="icon-size-16 cursor-pointer me-2">
+                    <template v-if="expandedRowKeys.includes(scope.row.id)">
+                      <Minus @click="handleCollapse(scope.row)" />
                     </template>
                     <template v-else>
-                      <Minus @click="handleChange(scope.row, false)" />
+                      <Plus @click="handleExpand(scope.row)" />
                     </template>
                   </el-icon>
                 </template>
-                <span class=" ms-2">{{ scope.row.date }}</span>
+                <span class="">{{ scope.row.date }}</span>
               </div>
             </template>
           </el-table-column>
@@ -164,11 +168,11 @@ onMounted(() => {
 .table-expand-collapse {
   .expand-collapse-table {
     .level-2 {
-      padding-left: 16px;
+      padding-left: 20px;
     }
 
     .level-3 {
-      padding-left: 32px;
+      padding-left: 40px;
     }
 
     .level-4 {
