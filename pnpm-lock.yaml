@@ -43,8 +43,8 @@ importers:
         version: 4.4.5(vue@3.5.12(typescript@5.7.2))
     devDependencies:
       '@biomejs/biome':
-        specifier: 2.3.5
-        version: 2.3.5
+        specifier: 2.3.8
+        version: 2.3.8
       '@playwright/test':
         specifier: ^1.49.1
         version: 1.49.1
@@ -193,9 +193,6 @@ importers:
       art-template:
         specifier: ^4.13.2
         version: 4.13.2
-      axios:
-        specifier: ^1.13.2
-        version: 1.13.2
       bcrypt:
         specifier: ^6.0.0
         version: 6.0.0
@@ -1088,59 +1085,59 @@ packages:
     resolution: {integrity: sha512-Z/yiTPj+lDVnF7lWeKCIJzaIkI0vYO87dMpZ4bg4TDrFe4XXLFWL1TbXU27gBP3QccxV9mZICCrnjnYlJjXHOA==}
     engines: {node: '>=6.9.0'}
 
-  '@biomejs/biome@2.3.5':
-    resolution: {integrity: sha512-HvLhNlIlBIbAV77VysRIBEwp55oM/QAjQEin74QQX9Xb259/XP/D5AGGnZMOyF1el4zcvlNYYR3AyTMUV3ILhg==}
+  '@biomejs/biome@2.3.8':
+    resolution: {integrity: sha512-Qjsgoe6FEBxWAUzwFGFrB+1+M8y/y5kwmg5CHac+GSVOdmOIqsAiXM5QMVGZJ1eCUCLlPZtq4aFAQ0eawEUuUA==}
     engines: {node: '>=14.21.3'}
     hasBin: true
 
-  '@biomejs/cli-darwin-arm64@2.3.5':
-    resolution: {integrity: sha512-fLdTur8cJU33HxHUUsii3GLx/TR0BsfQx8FkeqIiW33cGMtUD56fAtrh+2Fx1uhiCsVZlFh6iLKUU3pniZREQw==}
+  '@biomejs/cli-darwin-arm64@2.3.8':
+    resolution: {integrity: sha512-HM4Zg9CGQ3txTPflxD19n8MFPrmUAjaC7PQdLkugeeC0cQ+PiVrd7i09gaBS/11QKsTDBJhVg85CEIK9f50Qww==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [darwin]
 
-  '@biomejs/cli-darwin-x64@2.3.5':
-    resolution: {integrity: sha512-qpT8XDqeUlzrOW8zb4k3tjhT7rmvVRumhi2657I2aGcY4B+Ft5fNwDdZGACzn8zj7/K1fdWjgwYE3i2mSZ+vOA==}
+  '@biomejs/cli-darwin-x64@2.3.8':
+    resolution: {integrity: sha512-lUDQ03D7y/qEao7RgdjWVGCu+BLYadhKTm40HkpJIi6kn8LSv5PAwRlew/DmwP4YZ9ke9XXoTIQDO1vAnbRZlA==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [darwin]
 
-  '@biomejs/cli-linux-arm64-musl@2.3.5':
-    resolution: {integrity: sha512-eGUG7+hcLgGnMNl1KHVZUYxahYAhC462jF/wQolqu4qso2MSk32Q+QrpN7eN4jAHAg7FUMIo897muIhK4hXhqg==}
+  '@biomejs/cli-linux-arm64-musl@2.3.8':
+    resolution: {integrity: sha512-PShR4mM0sjksUMyxbyPNMxoKFPVF48fU8Qe8Sfx6w6F42verbwRLbz+QiKNiDPRJwUoMG1nPM50OBL3aOnTevA==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@biomejs/cli-linux-arm64@2.3.5':
-    resolution: {integrity: sha512-u/pybjTBPGBHB66ku4pK1gj+Dxgx7/+Z0jAriZISPX1ocTO8aHh8x8e7Kb1rB4Ms0nA/SzjtNOVJ4exVavQBCw==}
+  '@biomejs/cli-linux-arm64@2.3.8':
+    resolution: {integrity: sha512-Uo1OJnIkJgSgF+USx970fsM/drtPcQ39I+JO+Fjsaa9ZdCN1oysQmy6oAGbyESlouz+rzEckLTF6DS7cWse95g==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@biomejs/cli-linux-x64-musl@2.3.5':
-    resolution: {integrity: sha512-awVuycTPpVTH/+WDVnEEYSf6nbCBHf/4wB3lquwT7puhNg8R4XvonWNZzUsfHZrCkjkLhFH/vCZK5jHatD9FEg==}
+  '@biomejs/cli-linux-x64-musl@2.3.8':
+    resolution: {integrity: sha512-YGLkqU91r1276uwSjiUD/xaVikdxgV1QpsicT0bIA1TaieM6E5ibMZeSyjQ/izBn4tKQthUSsVZacmoJfa3pDA==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@biomejs/cli-linux-x64@2.3.5':
-    resolution: {integrity: sha512-XrIVi9YAW6ye0CGQ+yax0gLfx+BFOtKaNX74n+xHWla6Cl6huUmcKNO7HPx7BiKnJUzrxXY1qYlm7xMvi08X4g==}
+  '@biomejs/cli-linux-x64@2.3.8':
+    resolution: {integrity: sha512-QDPMD5bQz6qOVb3kiBui0zKZXASLo0NIQ9JVJio5RveBEFgDgsvJFUvZIbMbUZT3T00M/1wdzwWXk4GIh0KaAw==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@biomejs/cli-win32-arm64@2.3.5':
-    resolution: {integrity: sha512-DlBiMlBZZ9eIq4H7RimDSGsYcOtfOIfZOaI5CqsWiSlbTfqbPVfWtCf92wNzx8GNMbu1s7/g3ZZESr6+GwM/SA==}
+  '@biomejs/cli-win32-arm64@2.3.8':
+    resolution: {integrity: sha512-H4IoCHvL1fXKDrTALeTKMiE7GGWFAraDwBYFquE/L/5r1927Te0mYIGseXi4F+lrrwhSWbSGt5qPFswNoBaCxg==}
     engines: {node: '>=14.21.3'}
     cpu: [arm64]
     os: [win32]
 
-  '@biomejs/cli-win32-x64@2.3.5':
-    resolution: {integrity: sha512-nUmR8gb6yvrKhtRgzwo/gDimPwnO5a4sCydf8ZS2kHIJhEmSmk+STsusr1LHTuM//wXppBawvSQi2xFXJCdgKQ==}
+  '@biomejs/cli-win32-x64@2.3.8':
+    resolution: {integrity: sha512-RguzimPoZWtBapfKhKjcWXBVI91tiSprqdBYu7tWhgN8pKRZhw24rFeNZTNf6UiBfjCYCi9eFQs/JzJZIhuK4w==}
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]
@@ -3583,9 +3580,6 @@ packages:
     resolution: {integrity: sha512-w3/VNaraEcDri16lbemQWQGKfaFk9O0IZkzKlLeF5r6WWDv9TkcXkP+MWkRK8FbxwfozY/liI+qtvhV295t3HQ==}
     deprecated: Critical security vulnerability fixed in v0.21.1. For more information, see https://github.com/axios/axios/pull/3410
 
-  axios@1.13.2:
-    resolution: {integrity: sha512-VPk9ebNqPcy5lRGuSlKx752IlDatOjT9paPlm8A7yOuW2Fbvp4X3JznJtT4f0GzGLLiWE9W8onz51SqLYwzGaA==}
-
   axios@1.7.9:
     resolution: {integrity: sha512-LhLcE7Hbiryz8oMDdDptSrWowmB4Bl6RCt6sIJKpRB4XtVf0iEgewX3au/pJqm+Py1kCASkb/FFKjxQaLtxJvw==}
 
@@ -5397,10 +5391,6 @@ packages:
     resolution: {integrity: sha512-3T8uNMC3OQTHkFUsFq8r/BwAXLHvU/9O9mE0fBc/MY5iq/8H7ncvO947LmYA6ldWw9Uh8Yhf25zu6n7nML5QWQ==}
     engines: {node: '>= 0.4'}
 
-  es-set-tostringtag@2.1.0:
-    resolution: {integrity: sha512-j6vWzfrGVfyXxge+O0x5sh6cvxAog0a/4Rdd2K36zCMV5eJ+/+tOAngRO8cODMNWbVRdVlmGZQL2YS3yR8bIUA==}
-    engines: {node: '>= 0.4'}
-
   es-shim-unscopables@1.0.2:
     resolution: {integrity: sha512-J3yBRXCzDu4ULnQwxyToo/OjdMx6akgVC7K6few0a7F/0wLtmKKN7I73AH5T2836UuXRqN7Qg+IIUw/+YJksRw==}
 
@@ -6196,10 +6186,6 @@ packages:
 
   form-data@4.0.1:
     resolution: {integrity: sha512-tzN8e4TX8+kkxGPK8D5u0FNmjPUjw3lwC9lSLxxoB/+GtsJG91CO8bSWy73APlgAZzZbXEYZJuxjkHH2w+Ezhw==}
-    engines: {node: '>= 6'}
-
-  form-data@4.0.5:
-    resolution: {integrity: sha512-8RipRLol37bNs2bhoV67fiTEvdTrbMUYcFTiy3+wuuOnUog2QBHCZWXDRijWQfAkhBj2Uf5UnVaiWwA5vdd82w==}
     engines: {node: '>= 6'}
 
   forwarded@0.2.0:
@@ -11802,7 +11788,7 @@ snapshots:
       '@babel/core': 7.26.0
       '@babel/helper-compilation-targets': 7.25.9
       '@babel/helper-plugin-utils': 7.25.9
-      debug: 4.3.7(supports-color@6.1.0)
+      debug: 4.4.3(supports-color@6.1.0)
       lodash.debounce: 4.0.8
       resolve: 1.22.8
     transitivePeerDependencies:
@@ -12439,39 +12425,39 @@ snapshots:
       '@babel/helper-string-parser': 7.25.9
       '@babel/helper-validator-identifier': 7.25.9
 
-  '@biomejs/biome@2.3.5':
+  '@biomejs/biome@2.3.8':
     optionalDependencies:
-      '@biomejs/cli-darwin-arm64': 2.3.5
-      '@biomejs/cli-darwin-x64': 2.3.5
-      '@biomejs/cli-linux-arm64': 2.3.5
-      '@biomejs/cli-linux-arm64-musl': 2.3.5
-      '@biomejs/cli-linux-x64': 2.3.5
-      '@biomejs/cli-linux-x64-musl': 2.3.5
-      '@biomejs/cli-win32-arm64': 2.3.5
-      '@biomejs/cli-win32-x64': 2.3.5
+      '@biomejs/cli-darwin-arm64': 2.3.8
+      '@biomejs/cli-darwin-x64': 2.3.8
+      '@biomejs/cli-linux-arm64': 2.3.8
+      '@biomejs/cli-linux-arm64-musl': 2.3.8
+      '@biomejs/cli-linux-x64': 2.3.8
+      '@biomejs/cli-linux-x64-musl': 2.3.8
+      '@biomejs/cli-win32-arm64': 2.3.8
+      '@biomejs/cli-win32-x64': 2.3.8
 
-  '@biomejs/cli-darwin-arm64@2.3.5':
+  '@biomejs/cli-darwin-arm64@2.3.8':
     optional: true
 
-  '@biomejs/cli-darwin-x64@2.3.5':
+  '@biomejs/cli-darwin-x64@2.3.8':
     optional: true
 
-  '@biomejs/cli-linux-arm64-musl@2.3.5':
+  '@biomejs/cli-linux-arm64-musl@2.3.8':
     optional: true
 
-  '@biomejs/cli-linux-arm64@2.3.5':
+  '@biomejs/cli-linux-arm64@2.3.8':
     optional: true
 
-  '@biomejs/cli-linux-x64-musl@2.3.5':
+  '@biomejs/cli-linux-x64-musl@2.3.8':
     optional: true
 
-  '@biomejs/cli-linux-x64@2.3.5':
+  '@biomejs/cli-linux-x64@2.3.8':
     optional: true
 
-  '@biomejs/cli-win32-arm64@2.3.5':
+  '@biomejs/cli-win32-arm64@2.3.8':
     optional: true
 
-  '@biomejs/cli-win32-x64@2.3.5':
+  '@biomejs/cli-win32-x64@2.3.8':
     optional: true
 
   '@ctrl/tinycolor@3.6.1': {}
@@ -12869,7 +12855,7 @@ snapshots:
   '@eslint/config-array@0.19.1':
     dependencies:
       '@eslint/object-schema': 2.1.5
-      debug: 4.4.3
+      debug: 4.4.3(supports-color@6.1.0)
       minimatch: 3.1.2
     transitivePeerDependencies:
       - supports-color
@@ -12881,7 +12867,7 @@ snapshots:
   '@eslint/eslintrc@2.1.4':
     dependencies:
       ajv: 6.12.6
-      debug: 4.3.7(supports-color@6.1.0)
+      debug: 4.4.3(supports-color@6.1.0)
       espree: 9.6.1
       globals: 13.24.0
       ignore: 5.3.2
@@ -12895,7 +12881,7 @@ snapshots:
   '@eslint/eslintrc@3.2.0':
     dependencies:
       ajv: 6.12.6
-      debug: 4.4.3
+      debug: 4.4.3(supports-color@6.1.0)
       espree: 10.3.0
       globals: 14.0.0
       ignore: 5.3.2
@@ -12956,7 +12942,7 @@ snapshots:
   '@humanwhocodes/config-array@0.13.0':
     dependencies:
       '@humanwhocodes/object-schema': 2.0.3
-      debug: 4.3.7(supports-color@6.1.0)
+      debug: 4.4.3(supports-color@6.1.0)
       minimatch: 3.1.2
     transitivePeerDependencies:
       - supports-color
@@ -14526,7 +14512,7 @@ snapshots:
 
   agent-base@6.0.2:
     dependencies:
-      debug: 4.3.7(supports-color@6.1.0)
+      debug: 4.4.3(supports-color@6.1.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -15023,14 +15009,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
     optional: true
-
-  axios@1.13.2:
-    dependencies:
-      follow-redirects: 1.15.9(debug@4.3.7)
-      form-data: 4.0.5
-      proxy-from-env: 1.1.0
-    transitivePeerDependencies:
-      - debug
 
   axios@1.7.9:
     dependencies:
@@ -16602,9 +16580,11 @@ snapshots:
     optionalDependencies:
       supports-color: 6.1.0
 
-  debug@4.4.3:
+  debug@4.4.3(supports-color@6.1.0):
     dependencies:
       ms: 2.1.3
+    optionalDependencies:
+      supports-color: 6.1.0
 
   decamelize@1.2.0: {}
 
@@ -17255,13 +17235,6 @@ snapshots:
       has-tostringtag: 1.0.2
       hasown: 2.0.2
 
-  es-set-tostringtag@2.1.0:
-    dependencies:
-      es-errors: 1.3.0
-      get-intrinsic: 1.2.6
-      has-tostringtag: 1.0.2
-      hasown: 2.0.2
-
   es-shim-unscopables@1.0.2:
     dependencies:
       hasown: 2.0.2
@@ -17813,7 +17786,7 @@ snapshots:
       ajv: 6.12.6
       chalk: 4.1.2
       cross-spawn: 7.0.6
-      debug: 4.4.3
+      debug: 4.4.3(supports-color@6.1.0)
       escape-string-regexp: 4.0.0
       eslint-scope: 8.2.0
       eslint-visitor-keys: 4.2.0
@@ -18373,14 +18346,6 @@ snapshots:
     dependencies:
       asynckit: 0.4.0
       combined-stream: 1.0.8
-      mime-types: 2.1.35
-
-  form-data@4.0.5:
-    dependencies:
-      asynckit: 0.4.0
-      combined-stream: 1.0.8
-      es-set-tostringtag: 2.1.0
-      hasown: 2.0.2
       mime-types: 2.1.35
 
   forwarded@0.2.0: {}
@@ -19125,7 +19090,7 @@ snapshots:
     dependencies:
       '@tootallnate/once': 2.0.0
       agent-base: 6.0.2
-      debug: 4.3.7(supports-color@6.1.0)
+      debug: 4.4.3(supports-color@6.1.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -19212,7 +19177,7 @@ snapshots:
   https-proxy-agent@5.0.1:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.7(supports-color@6.1.0)
+      debug: 4.4.3(supports-color@6.1.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -21350,7 +21315,7 @@ snapshots:
   pac-proxy-agent@3.0.1:
     dependencies:
       agent-base: 4.3.0
-      debug: 4.3.7(supports-color@6.1.0)
+      debug: 4.4.3(supports-color@6.1.0)
       get-uri: 2.0.4
       http-proxy-agent: 2.1.0
       https-proxy-agent: 3.0.1
@@ -22073,7 +22038,7 @@ snapshots:
 
   read-binary-file-arch@1.0.6:
     dependencies:
-      debug: 4.3.7(supports-color@6.1.0)
+      debug: 4.4.3(supports-color@6.1.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -22995,7 +22960,7 @@ snapshots:
   socks-proxy-agent@7.0.0:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.7(supports-color@6.1.0)
+      debug: 4.4.3(supports-color@6.1.0)
       socks: 2.8.3
     transitivePeerDependencies:
       - supports-color
@@ -23075,7 +23040,7 @@ snapshots:
 
   spdy-transport@3.0.0(supports-color@6.1.0):
     dependencies:
-      debug: 4.3.7(supports-color@6.1.0)
+      debug: 4.4.3(supports-color@6.1.0)
       detect-node: 2.1.0
       hpack.js: 2.1.6
       obuf: 1.1.2
@@ -23086,7 +23051,7 @@ snapshots:
 
   spdy@4.0.2(supports-color@6.1.0):
     dependencies:
-      debug: 4.3.7(supports-color@6.1.0)
+      debug: 4.4.3(supports-color@6.1.0)
       handle-thing: 2.0.1
       http-deceiver: 1.2.7
       select-hose: 2.0.0
@@ -24155,7 +24120,7 @@ snapshots:
       '@vitest/snapshot': 4.0.9
       '@vitest/spy': 4.0.9
       '@vitest/utils': 4.0.9
-      debug: 4.4.3
+      debug: 4.4.3(supports-color@6.1.0)
       es-module-lexer: 1.7.0
       expect-type: 1.2.2
       magic-string: 0.30.21
