@@ -29,12 +29,12 @@ onMounted(init);
 </script>
 <template>
     <div class="first-column" :style="{ height: height }">
-        <el-tooltip  :disabled="flag" :content="data.name" placement="top">
+        <el-tooltip  :disabled="flag" :content="data.slogan" placement="top">
             <el-icon size="24">
                 <Setting />
             </el-icon>
         </el-tooltip>
-        <div v-if="flag" class="name-wrapper w-100 mt-2">{{ data.name }}</div>
+        <div v-if="flag" class="name-wrapper w-100 mt-2">{{ data.slogan }}</div>
     </div>
 </template>
 <style lang='scss' scoped>

@@ -13,87 +13,85 @@ export const rootClass = pageData.path.slice(pageData.path.lastIndexOf('/') + 1)
 
 export default pageData;
 
-export const tableData = reactive([
+export const tableList = [
   {
     id: generateUniqueId('id-'),
-    date: '张三丰',
-    name: '布林前端开源平台布林前端开源平台',
+    surname: '张三丰',
+    slogan: '布林前端开源平台布林前端开源平台',
     address: 'No. 189, Grove St, Los Angeles',
     childrenList: [
       {
         id: generateUniqueId('id-'),
-        date: '张启迪',
-        name: '布林前端开源平台布林前端开源平台',
+        surname: '张启迪',
+        slogan: '布林前端开源平台布林前端开源平台',
         address: 'No. 189, Grove St, Los Angeles'
       },
       {
         id: generateUniqueId('id-'),
-        date: '张明星',
-        name: '布林前端开源平台布林前端开源平台',
+        surname: '张明星',
+        slogan: '布林前端开源平台布林前端开源平台',
         address: 'No. 189, Grove St, Los Angeles',
         childrenList: [
           {
             id: generateUniqueId('id-'),
-            date: '张明天',
-            name: '布林前端开源平台布林前端开源平台',
+            surname: '张明天',
+            slogan: '布林前端开源平台布林前端开源平台',
             address: 'No. 189, Grove St, Los Angeles'
           },
           {
             id: generateUniqueId('id-'),
-            date: '张明白',
-            name: '布林前端开源平台布林前端开源平台',
+            surname: '张明白',
+            slogan: '布林前端开源平台布林前端开源平台',
             address: 'No. 189, Grove St, Los Angeles'
           }
         ]
       },
       {
         id: generateUniqueId('id-'),
-        date: '张明理',
-        name: '布林前端开源平台布林前端开源平台',
+        surname: '张明理',
+        slogan: '布林前端开源平台布林前端开源平台',
         address: 'No. 189, Grove St, Los Angeles'
       }
     ]
   },
   {
     id: generateUniqueId('id-'),
-    date: '李世民',
-    name: '张明楷是我的好宝贝呀',
+    surname: '李世民',
+    slogan: '张明楷是我的好宝贝呀',
     address: 'No. 189, Grove St, Los Angeles',
     childrenList: [
       {
         id: generateUniqueId('id-'),
-        date: '李想啥',
-        name: '张明楷是我的好宝贝呀',
+        surname: '李想啥',
+        slogan: '张明楷是我的好宝贝呀',
         address: 'No. 189, Grove St, Los Angeles'
       },
       {
         id: generateUniqueId('id-'),
-        date: '李泽楷',
-        name: '张明楷是我的好宝贝呀',
+        surname: '李泽楷',
+        slogan: '张明楷是我的好宝贝呀',
         address: 'No. 189, Grove St, Los Angeles',
         childrenList: [
           {
             id: generateUniqueId('id-'),
-            date: '李想丰富',
-            name: '张明楷是我的好宝贝呀',
+            surname: '李想丰富',
+            slogan: '张明楷是我的好宝贝呀',
             address: 'No. 189, Grove St, Los Angeles'
           },
           {
             id: generateUniqueId('id-'),
-            date: '李叫啥',
-            name: '张明楷是我的好宝贝呀',
+            surname: '李叫啥',
+            slogan: '张明楷是我的好宝贝呀',
             address: 'No. 189, Grove St, Los Angeles'
           }
         ]
       },
       {
         id: generateUniqueId('id-'),
-        date: '李是谁',
-        name: '张明楷是我的好宝贝呀',
+        surname: '李是谁',
+        slogan: '张明楷是我的好宝贝呀',
         address: 'No. 189, Grove St, Los Angeles'
       }
     ]
   }
-]);
-
-
+];

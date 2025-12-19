@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import pageData, { rootClass, tableData } from './page';
+import pageData, { rootClass, tableList } from './page';
 import FirstColumn from './FirstColumn.vue';
 import { onMounted, reactive, ref } from 'vue';
 import { Plus, Minus } from '@element-plus/icons-vue';
+import { getSpanOptions } from '@libc/shared';
 
 defineOptions({
   name: 'TableExpandCollapsePage'
@@ -10,8 +11,8 @@ defineOptions({
 
 interface User {
   id: number;
-  date: string;
-  name: string;
+  surname: string;
+  slogan: string;
   address: string;
   childrenList?: User[];
   level?: number;
@@ -21,9 +22,9 @@ interface SpanMethodProps {
   columnIndex: number;
 }
 
-const childrenField = 'childrenList';
+const tableData = reactive<User[]>(structuredClone(tableList));
 
-const cachedData: { spanOptions: Record<number, number> } = { spanOptions: {} };
+const childrenField = 'childrenList';
 
 const expandedRowKeys = reactive<number[]>([]);
 
@@ -38,21 +39,13 @@ const flatMapAll = (list: User[], data: User[] = []) => {
   return data;
 };
 
-const computingSpan = () => {
-  cachedData.spanOptions = {};
-  const nameList = tableData.map((item: User) => item.name);
-  const names = new Set(nameList);
-  for (const name of names) {
-    const index = nameList.indexOf(name);
-    const length = nameList.filter((item: User) => item === name).length;
-    Object.assign(cachedData.spanOptions, {
-      [index]: length
-    });
-  }
-};
 const spanMethod = ({ rowIndex, columnIndex }: SpanMethodProps) => {
+  const nameList = tableData.map((item: User) => item.slogan);
+  const spanOptions = getSpanOptions(nameList);
+  if (!Object.keys(spanOptions).length) {
+    return [1, 1];
+  }
   if (columnIndex === 0) {
-    const { spanOptions } = cachedData;
     if (spanOptions[rowIndex]) {
       return [spanOptions[rowIndex], 1];
     }
@@ -78,7 +71,6 @@ const handleExpand = (row: User) => {
   }));
 
   tableData.splice(index + 1, 0, ...row.childrenList);
-  computingSpan();
 };
 
 // 收起 动作
@@ -102,16 +94,11 @@ const handleCollapse = (row: User) => {
       }
     }
   }
-  computingSpan();
 };
 
 const handleEdit = (row: User) => {
   console.log('handleEdit row: ', row);
 };
-
-onMounted(() => {
-  computingSpan();
-});
 </script>
 
 <template>
@@ -130,12 +117,12 @@ onMounted(() => {
       <div>
         <el-table :span-method="spanMethod" class="expand-collapse-table mt-4" :data="tableData" style="width: 100%"
           row-key="id" border>
-          <el-table-column prop="name" align="center" label="标语" width="60" :key="tableData.length">
+          <el-table-column prop="slogan" align="center" label="标语" width="60" :key="tableData.length">
             <template #default="{ row }">
               <FirstColumn :data="row" />
             </template>
           </el-table-column>
-          <el-table-column prop="date" label="姓氏">
+          <el-table-column prop="surname" label="姓氏">
             <template #default="scope">
               <div class="d-flex align-items-center" :class="scope.row.level ? `level-${scope.row.level}` : 'level-1'">
                 <template v-if="scope.row.childrenList?.length">
@@ -148,7 +135,7 @@ onMounted(() => {
                     </template>
                   </el-icon>
                 </template>
-                <span class="">{{ scope.row.date }}</span>
+                <span class="">{{ scope.row.surname }}</span>
               </div>
             </template>
           </el-table-column>

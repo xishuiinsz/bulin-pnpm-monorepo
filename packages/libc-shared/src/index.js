@@ -3,6 +3,7 @@
  */
 
 import { uniqueId } from 'lodash';
+import { getSpanOptions } from './pure-function';
 
 // 判断是否是字符串
 export const isString = (value) => {
@@ -36,3 +37,5 @@ export const getRandomInt = (min, max) => {
   max = Math.max(min, max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
+
+export { getSpanOptions };
