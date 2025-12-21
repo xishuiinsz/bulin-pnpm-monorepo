@@ -19,17 +19,3 @@ export const getSpanOptions = (list: string[]): Record<number, number> => {
 
   return res;
 };
-
-export const isNumbericValue = (value: unknown) => {
-  if (['number', 'string'].includes(typeof value)) {
-    if (typeof value === 'string') {
-      return isNaN(parseFloat(value.trim()));
-    }
-    if (Number.isFinite(value as number)) {
-      return false;
-    }
-    return !isNaN(value as number);
-  }
-  return false;
-};
-

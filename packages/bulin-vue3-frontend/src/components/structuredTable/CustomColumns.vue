@@ -8,18 +8,31 @@ interface ColumnItemProp {
   slots?: any;
 }
 
-const { list, getConfigByProp = () => ({}), getSlotsByProp = () => ({}) } = defineProps<{
+const { list, getConfigByProp, getSlotsByProp } = defineProps<{
   list: ColumnItemProp[];
-  getConfigByProp?: (prop: ColumnItemProp['prop']) => any;
-  getSlotsByProp?: (prop: ColumnItemProp['prop']) => any;
+  getConfigByProp?: (prop: ColumnItemProp['prop']) => any | undefined;
+  getSlotsByProp?: (prop: ColumnItemProp['prop']) => any | undefined;
 }>();
+
+const getColumnProps = (data: ColumnItemProp) => {
+  const { slots, ...props } = data;
+  if (typeof getConfigByProp === 'function') {
+    Object.assign(props, getConfigByProp(data.prop))
+  }
+  return props
+};
+const getColumnSlots = (data: ColumnItemProp) => {
+  const { slots } = data;
+  if (typeof getSlotsByProp === 'function') {
+    Object.assign(slots, getSlotsByProp(data.prop))
+  }
+  return slots
+};
 </script>
 
 <template>
   <slot name="prefix" />
-  <component
-    :is="h(ElTableColumn, { ...rest, ...getConfigByProp(rest.prop) }, { ...slots, ...getSlotsByProp(rest.prop) })"
-    v-for="{ slots = {}, ...rest } in list" :key="rest.prop"
-  />
+  <component :is="h(ElTableColumn, getColumnProps(item), getColumnSlots(item))" v-for="item in list"
+    :key="item.prop" />
   <slot name="suffix" />
 </template>

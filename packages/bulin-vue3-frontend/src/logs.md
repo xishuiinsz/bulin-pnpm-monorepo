@@ -1,3 +1,10 @@
+### 2025-12-21
+
+- [x] 基于Intl.NumberFormat API 实现数字格式化
+  - demo 路径：左侧菜单 > 基础表格
+  - 组件路径: **packages\bulin-vue3-frontend\src\views\tableBaseData\tableData.js**
+  - 相关能力：**Intl.NumberFormat**。
+
 ### 2025-12-06
 
 - [x] 手工实现表格展开与收起
