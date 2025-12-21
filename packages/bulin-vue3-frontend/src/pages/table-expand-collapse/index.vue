@@ -151,8 +151,6 @@ const handleEdit = (row: User) => {
   const submit = (data: User) => {
     const copiedTablelist = updateTableList(tableList, data);
     const expandedTableList = getExpandedRows(copiedTablelist, expandedRowKeys)
-    console.log('当前 tableData: ', tableData);
-    console.log('展开后 expandedTableList: ', expandedTableList);
     tableData.length = 0;
     tableData.push(...expandedTableList);
     editCustomerInstance?.destroy?.();
