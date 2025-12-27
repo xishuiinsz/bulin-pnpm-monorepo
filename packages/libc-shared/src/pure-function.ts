@@ -19,3 +19,16 @@ export const getSpanOptions = (list: string[]): Record<number, number> => {
 
   return res;
 };
+
+// 从列表中根据过滤条件获取单个对象
+export const getItemByList = <T extends Record<string, unknown>, K extends keyof T>(
+  list: T[],
+  filter: Record<K, T[K]>
+) => {
+  const result = list.find((item) => {
+    const [key] = Object.keys(filter);
+    const [value] = Object.values(filter);
+    return item[key] === value;
+  });
+  return result;
+};

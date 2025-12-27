@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
-  testDir: './tests/e2e',
+  testDir: './tests',
   use: {
     baseURL: 'http://localhost.bulin.com:8080/',
     headless: true,
@@ -14,5 +14,10 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
+    {
+      name: 'Unit Test',
+      testDir: 'tests/unit',
+      use: { ...devices['Desktop Chrome'] },
+    }
   ],
 })

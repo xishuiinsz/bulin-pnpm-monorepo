@@ -1,3 +1,9 @@
+### 2025-12-27
+
+- [x] 基于TS泛型，输出getItemByList工具纯函数
+  - 函数功能：从列表中根据过滤条件获取单个对象
+  - 组件路径: **packages\libc-shared\src\pure-function.ts**
+
 ### 2025-12-21
 
 - [x] 基于Intl.NumberFormat API 实现数字格式化
