@@ -23,7 +23,7 @@ function setZoom(value, element = document.body) {
       <h1>js如何调用ElTooltip组件</h1>
       <div
         style="max-width: 200px" class="text-nowrap overflow-hidden text-truncate"
-        @mouseenter="showTooltip($event.target, { effect: 'light' })"
+        @mouseenter="showTooltip"
       >
         超长文本超长文本超长文本超长文本超长文本超长文本
       </div>
