@@ -1,3 +1,9 @@
+### 2025-12-29
+- [x] 动态多级表头组件初步完成
+  - demo 路径：左侧菜单 > 表格卖场 > 动态多级表头
+  - 组件路径: **packages\bulin-vue3-frontend\src\views\MultiHeaderTable**
+  - 相关能力：**h渲染函数、递归渲染**。
+
 ### 2025-12-27
 
 - [x] 基于TS泛型，输出getItemByList工具纯函数

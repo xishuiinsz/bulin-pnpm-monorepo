@@ -1,15 +1,7 @@
 <template>
   <div class="sidebar">
-    <el-menu
-      class="sidebar-el-menu"
-      :default-active="onRoutes"
-      :collapse="sidebar.collapse"
-      background-color="#324157"
-      text-color="#bfcbd9"
-      active-text-color="#20a0ff"
-      unique-opened
-      router
-    >
+    <el-menu class="sidebar-el-menu" :default-active="onRoutes" :collapse="sidebar.collapse" background-color="#324157"
+      text-color="#bfcbd9" active-text-color="#20a0ff" unique-opened router>
       <template v-for="item in items">
         <template v-if="item.subs">
           <el-sub-menu :index="item.index" :key="item.index">
@@ -110,6 +102,17 @@ const items = [
   {
     icon: 'el-icon-lx-calendar',
     index: '5',
+    title: '表格专场',
+    subs: [
+      {
+        index: '/myComponents/multiHeaderTable',
+        title: '多级表头表格',
+      },
+    ]
+  },
+  {
+    icon: 'el-icon-lx-calendar',
+    index: '6',
     title: '练习场',
     subs: [
       {
@@ -272,7 +275,7 @@ const mouseenterHandler = ({ target }) => {
   text-align: center;
 }
 
-.sidebar > ul {
+.sidebar>ul {
   height: 100%;
   overflow-y: auto;
 }
