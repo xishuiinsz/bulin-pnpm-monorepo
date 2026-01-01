@@ -1,36 +1,24 @@
 <script setup lang="ts">
-import { tableColumns, tableData } from './utils';
+import { tableColumns, tableData, type TableRow } from './utils';
 import { ElTable } from 'element-plus';
-import { h, computed } from 'vue';
+import { reactive } from 'vue';
 import DynamicColumns from './dynamic-columns.vue';
 
 defineOptions({
     name: 'MultiHeaderTableView',
 });
 
-const props = defineProps({
-    tableData: {
-        type: Array,
-        default: () => []
-    },
-    tableColumns: {
-        type: Array,
-        default: () => []
-    }
-});
-
-// 可以在这里添加列处理逻辑
-const processedColumns = computed(() => {
-    return tableColumns.map(column => ({
-        ...column,
-        align: column.align || 'center'
-    }));
-});
+const columnsList = reactive(tableColumns)
 
 const getConfigs = (key: string) => {
+    if (key === 'name') {
+        return {
+            width: 200
+        };
+    };
     return {
         slots: {
-            default: (data) => `hi: ${data.row[key]}`
+            default: (data: { row: TableRow }) => `hi: ${data.row[key]}`
         }
 
     };
@@ -38,9 +26,9 @@ const getConfigs = (key: string) => {
 </script>
 
 <template>
-    <div class="multi-header-table-view">
+    <div class="multi-header-table-view p-4">
         <el-table :data="tableData" style="width: 100%" border>
-            <dynamic-columns :list="processedColumns" :get-configs="getConfigs" />
+            <DynamicColumns :list="columnsList" :get-configs="getConfigs" />
         </el-table>
     </div>
 </template>

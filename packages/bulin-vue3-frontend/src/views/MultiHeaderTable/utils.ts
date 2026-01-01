@@ -1,19 +1,37 @@
+import { ElTableColumn } from 'element-plus';
+import { h, type ExtractPublicPropTypes } from 'vue';
+import { Calendar } from '@element-plus/icons-vue';
+
+export type ElTableColumnProps = ExtractPublicPropTypes<InstanceType<typeof ElTableColumn>> & {
+  children?: ElTableColumnProps[];
+};
+
 export const tableColumns = [
   {
-    label: 'Date',
+    label: '时间',
     prop: 'date',
-    width: 150
+    width: 150,
+    slots: {
+      header: (data: { column: ElTableColumnProps }) => {
+        return h('div', { class: 'd-flex align-items-center' }, [
+          data.column.label,
+          h(Calendar, { style: 'width: 16px; height: 16px; margin-left: 4px;' })
+        ]);
+      }
+    }
   },
   {
     label: 'Delivery Info',
+    headerAlign: 'center',
     children: [
       { label: 'Name', prop: 'name', width: 120 },
       {
         label: 'Address Info',
+        headerAlign: 'center',
         children: [
           { label: 'State', prop: 'state', width: 120 },
           { label: 'City', prop: 'city', width: 150 },
-          { label: 'Address', prop: 'address', width: 250 },
+          { label: 'Address', prop: 'address' },
           { label: 'Zip', prop: 'zip', width: 150 }
         ]
       }

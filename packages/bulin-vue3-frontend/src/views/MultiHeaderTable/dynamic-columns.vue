@@ -1,51 +1,36 @@
 <script setup lang="ts">
 import { ElTableColumn } from 'element-plus';
-import { h, computed } from 'vue';
-
-interface TableColumn {
-    prop?: string;
-    label: string;
-    width?: string | number;
-    align?: 'left' | 'center' | 'right';
-    fixed?: boolean | 'left' | 'right';
-    formatter?: (row: any, column: any, cellValue: any, index: number) => string;
-    sortable?: boolean | 'custom';
-    children?: TableColumn[];
-};
+import { h, type VNode } from 'vue';
+import { type ElTableColumnProps } from './utils';
+import { merge } from 'lodash';
 
 const props = defineProps<{
-    list: TableColumn[];
-    getConfigs?: (column: TableColumn['prop']) => TableColumn & { slots?: Record<string, (scope: any) => any>}
+    list: ElTableColumnProps[];
+    getConfigs?: (p: string) => unknown
 
 }>();
 
 // 动态列组件（使用渲染函数）
-const DynamicColumn = (data: TableColumn) => {
-    const renderColumn = (col) => {
-        const { children, ...rest } = col;
+const DynamicColumn = (data: ElTableColumnProps) => {
+    const renderColumn = (col: ElTableColumnProps): VNode => {
+        const { children, ...restData } = col;
         if (children?.length) {
             return h(
                 ElTableColumn,
-                rest,
-                () => col.children.map((child: TableColumn) => renderColumn(child))
+                restData,
+                () => children.map(renderColumn)
             );
         }
-        const { slots, ...restConfigs } = props.getConfigs?.(rest.prop) || {};
-        
+        const { slots = {}, ...restProps } = merge({}, restData, props.getConfigs?.(restData.prop as string) ?? {});
         // 叶子列
-        return h(ElTableColumn, {
-            ...rest, ...restConfigs
-        }, {
-            ...slots
-        });
+        return h(ElTableColumn, restProps, slots);
     };
-
     return renderColumn(data);
 };
 </script>
 
 <template>
     <template v-for="column in props.list" :key="column.prop || column.label">
-        <dynamic-column v-bind="column" />
+        <DynamicColumn v-bind="column" />
     </template>
 </template>
