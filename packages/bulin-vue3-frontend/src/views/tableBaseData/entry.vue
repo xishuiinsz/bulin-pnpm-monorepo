@@ -1,5 +1,4 @@
 <script setup>
-import CustomColumns from '@/components/structuredTable/CustomColumns.vue';
 import showDialog from '@/imperatives/showDialog.jsx';
 import { Search } from '@element-plus/icons-vue';
 import { fetchData } from '@i/index';
@@ -7,6 +6,7 @@ import { ElButton, ElMessage, ElMessageBox } from 'element-plus';
 import { computed, h, reactive, ref } from 'vue';
 import editForm from './editForm.vue';
 import { tableColumnList, tableDataList } from './tableData.js';
+import DynamicColumns from '@/components/dynamic-columns/DynamicColumns.vue';
 
 const query = reactive({
   address: '',
@@ -99,20 +99,17 @@ function handleDelete(row) {
       </div>
       <el-table :data="tableDataList" border stripe class="" :row-key="(row) => row.id" @filter-change="filterChange"
         @selection-change="selectionChange">
-        <CustomColumns :list="tableColumnList">
-          <template #suffix>
-            <el-table-column label="操作" width="120" :sortable="false" :resizable="false">
-              <template #default="{ row }">
-                <ElButton :link="true" type="primary" @click="handleEdit(row)">
-                  编辑
-                </ElButton>
-                <ElButton :link="true" type="danger" @click="handleDelete(row)">
-                  删除
-                </ElButton>
-              </template>
-            </el-table-column>
+        <DynamicColumns :list="tableColumnList" />
+        <el-table-column label="操作" width="120" :sortable="false" :resizable="false">
+          <template #default="{ row }">
+            <ElButton :link="true" type="primary" @click="handleEdit(row)">
+              编辑
+            </ElButton>
+            <ElButton :link="true" type="danger" @click="handleDelete(row)">
+              删除
+            </ElButton>
           </template>
-        </CustomColumns>
+        </el-table-column>
       </el-table>
       <div class="pagination">
         <el-pagination background layout="total, prev, pager, next" :current-page="query.pageIndex"

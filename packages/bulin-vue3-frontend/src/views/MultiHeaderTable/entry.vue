@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { tableColumns, tableData, type TableRow } from './utils';
+import { tableColumns, tableData, type TableRow } from '@/components/dynamic-columns/utils';
 import { ElTable } from 'element-plus';
 import { reactive } from 'vue';
-import DynamicColumns from './dynamic-columns.vue';
+import DynamicColumns from '@/components/dynamic-columns/DynamicColumns.vue';
 
 defineOptions({
     name: 'MultiHeaderTableView',

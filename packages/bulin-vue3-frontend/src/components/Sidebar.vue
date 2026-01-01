@@ -55,11 +55,7 @@ const items = [
     index: '/myComponents/dashboard',
     title: '系统首页',
   },
-  {
-    icon: 'el-icon-lx-cascades',
-    index: '/myComponents/table',
-    title: '基础表格',
-  },
+
   {
     icon: 'el-icon-lx-cascades',
     index: '/myComponents/customerTable',
@@ -105,8 +101,17 @@ const items = [
     title: '表格专场',
     subs: [
       {
+        icon: 'el-icon-lx-cascades',
+        index: '/myComponents/table',
+        title: '基础表格',
+      },
+      {
         index: '/myComponents/multiHeaderTable',
         title: '多级表头表格',
+      },
+      {
+        index: '/myComponents/simpleTable',
+        title: '简易原生表格',
       },
     ]
   },
@@ -122,10 +127,6 @@ const items = [
       {
         index: '/myComponents/imgWaterfall',
         title: '图片瀑布流',
-      },
-      {
-        index: '/myComponents/simpleTable',
-        title: '简易表格',
       },
       {
         index: '/myComponents/echartsAndVue',

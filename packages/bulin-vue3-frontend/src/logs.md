@@ -60,12 +60,6 @@
   - demo 路径：左侧菜单 - 练习场 - 拼图游戏
   - 组件路径: **packages\bulin-vue3-frontend\src\pages\jigsaw-puzzle\index.vue**
 
-### 2025-09-19
-
-- [x] 高度封装的、可定制化的表格列组件【components\structuredTable\CustomColumns.vue】
-  - demo 路径：左侧菜单 - 基础表格
-  - 组件路径: **packages\bulin-vue3-frontend\src\components\structuredTable\CustomColumns.vue**
-
 ### 2024-09-22
 
 - [x] 通过拦截Echarts实例中setOption方法来实现图表中字体大小与屏幕大小自适应的能力。
@@ -152,7 +146,6 @@
 ### 2024-03-02
 
 - [x] 基于 el-table，二次高度封装的结构化表格组件已基本成型。
-  - 组件路径：src\components\structuredTable
   - 组件组件 demo 源码：src\views\tableBaseData
   - 组件组件 demo 菜单路径：echarts 图表 - 中国地图
 
