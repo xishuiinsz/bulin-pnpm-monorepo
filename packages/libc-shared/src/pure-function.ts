@@ -32,3 +32,4 @@ export const getItemByList = <T extends Record<string, unknown>, K extends keyof
   });
   return result;
 };
+

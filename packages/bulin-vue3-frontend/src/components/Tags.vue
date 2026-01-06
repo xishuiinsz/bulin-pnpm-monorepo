@@ -3,7 +3,7 @@
     <ul>
       <li class="tags-li" v-for="(item, index) in tags.list" :class="{ active: isActive(item.path) }" :key="index">
         <router-link :to="item.path" class="tags-li-title" @mouseenter="mouseenterEvt($event)">{{
-    item.title }}</router-link>
+          item.title }}</router-link>
         <el-icon @click="closeTags(index)" class="tags-li-icon">
           <CircleCloseFilled />
         </el-icon>
