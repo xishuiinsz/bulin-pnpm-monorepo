@@ -1,3 +1,5 @@
+import { isFiniteNumber, percentToDecimal } from './number';
+
 export const getSpanOptions = (list: string[]): Record<number, number> => {
   if (!Array.isArray(list) || list.length < 2) return {};
 
@@ -53,14 +55,14 @@ export const sortListByFeild = <T extends Record<string, number | string>>(
   { field, sort }: { field: keyof T; sort: 'asc' | 'desc' }
 ) => {
   return list.sort((item1, item2) => {
-    const getValue = (num: number) => {
-      if (isNaN(num)) {
-        if (sort === 'asc') {
-          return Number.MAX_SAFE_INTEGER;
-        }
-        return -Number.MAX_SAFE_INTEGER;
+    const getValue = (num: number): number => {
+      if (isFiniteNumber(num)) {
+        return percentToDecimal(num) as number;
       }
-      return num;
+      if (sort === 'asc') {
+        return Number.MAX_SAFE_INTEGER;
+      }
+      return -Number.MAX_SAFE_INTEGER;
     };
     const value1 = getValue(item1[field] as number);
     const value2 = getValue(item2[field] as number);
