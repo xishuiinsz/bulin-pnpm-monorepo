@@ -3,7 +3,7 @@ import { computed, ref } from 'vue'
 import { numberFormat, isFiniteNumber } from '@libc/shared'
 
 const props = defineProps<{
-    value: number | string;
+    value?: number | string | undefined;
     config?: Record<string, unknown>;
     placeholder?: string;
 }>();
@@ -22,14 +22,17 @@ const formattedValue = computed(() => {
 });
 
 const disabledTootip = computed(() => {
-    return formattedValue.value === (props.placeholder || '-');
+    if (isFiniteNumber(props.value)) {
+        return String(formattedValue.value) === String(props.value)
+    }
+    return true
 });
 
 </script>
 <template>
     <div class="numberic-formatter">
         <slot name="prefix"></slot>
-        <el-tooltip :disabled="disabledTootip" :content="value" placement="top">
+        <el-tooltip :disabled="disabledTootip" :content="String(value)" placement="top">
             <span>{{ formattedValue }}</span>
         </el-tooltip>
         <slot name="suffix"></slot>

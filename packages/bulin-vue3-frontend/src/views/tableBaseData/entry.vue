@@ -7,6 +7,8 @@ import { computed, h, reactive, ref } from 'vue';
 import editForm from './editForm.vue';
 import { tableColumnList, tableDataList } from './tableData.js';
 import DynamicColumns from '@/components/dynamic-columns/DynamicColumns.vue';
+import { cloneDeep } from 'lodash';
+import { sortListByFeild } from '@libc/shared'
 
 const query = reactive({
   address: '',
@@ -14,18 +16,27 @@ const query = reactive({
   pageIndex: 1,
   pageSize: 10,
 });
+
+const tableData = ref(cloneDeep(tableDataList))
+
 const pageTotal = computed(() => tableDataList.length);
 // 获取表格数据
 function getData() {
-  fetchData(query).then((res) => {
-    tableDataList.value = res.list || [];
-    pageTotal.value = res.pageTotal || 50;
-  });
+  tableData.value = cloneDeep(tableDataList);
 }
 
 function selectionChange(rows) {
   console.log('selectionChange rows:', rows);
 }
+
+// 前端排序
+function sortChange(props) {
+  const { order, prop } = props;
+  const copiedList = cloneDeep(tableDataList)
+  tableData.value = sortListByFeild(copiedList, { field: prop, sort: order }, -1)
+
+}
+
 function filterChange(data) {
   console.log('filterChange data:', data);
 }
@@ -67,9 +78,9 @@ function handleDelete(row) {
     type: 'warning',
   })
     .then(() => {
-      const index = tableDataList.findIndex(item => item === row);
+      const index = tableData.indexOf(row);
       ElMessage.success('删除成功');
-      tableDataList.splice(index, 1);
+      tableData.splice(index, 1);
     })
     .catch(() => { });
 }
@@ -97,8 +108,8 @@ function handleDelete(row) {
           搜索
         </ElButton>
       </div>
-      <el-table :data="tableDataList" border stripe class="" :row-key="(row) => row.id" @filter-change="filterChange"
-        @selection-change="selectionChange">
+      <el-table @sort-change="sortChange" :data="tableData" border stripe class="" :row-key="(row) => row.id"
+        @filter-change="filterChange" @selection-change="selectionChange">
         <DynamicColumns :list="tableColumnList" />
         <el-table-column label="操作" width="120" :sortable="false" :resizable="false">
           <template #default="{ row }">

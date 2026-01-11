@@ -38,9 +38,16 @@ export const tableColumnList = [
     prop: 'money',
     label: '账户余额',
     width: 120,
-    sortable: true,
+    sortable: 'custom',
     slots: {
-      default: ({ row }) => h(NumbericFormatter, { value: `${row.money}` }, { suffix: () => h('span', {}, ' ¥') })
+      default: ({ row }) => {
+        const value = row.money;
+        const slots = {};
+        if (value) {
+          Object.assign(slots, { suffix: () => h('span', {}, ' ¥') });
+        }
+        return h(NumbericFormatter, { value }, slots);
+      }
     }
   },
   {
@@ -91,7 +98,7 @@ export const tableDataList = reactive([
   {
     id: 4,
     name: '赵六',
-    money: '123456.789%',
+    money: '123456.789',
     address: '福建省厦门市鼓浪屿',
     hobbies: '玩手机、看电视、打游戏、看小说、听音乐、旅游、美食、运动、吃鸡腿、吃零食',
     state: '成功',
@@ -126,6 +133,16 @@ export const tableDataList = reactive([
     address: '湖南省长沙市',
     hobbies: '编写js代码',
     state: '失败',
+    date: '2019-11-11',
+    thumb: 'https://cn.element-plus.org/images/CRMEB-l.png'
+  },
+  {
+    id: 4,
+    name: '合计',
+    money: 247702.578,
+    address: '-',
+    hobbies: '',
+    state: '-',
     date: '2019-11-11',
     thumb: 'https://cn.element-plus.org/images/CRMEB-l.png'
   }

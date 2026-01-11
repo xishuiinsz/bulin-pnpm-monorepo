@@ -52,23 +52,31 @@ export const getItemByList = <T extends Record<string, unknown>, K extends keyof
  */
 export const sortListByFeild = <T extends Record<string, number | string>>(
   list: T[],
-  { field, sort }: { field: keyof T; sort: 'asc' | 'desc' }
+  { field, sort }: { field: keyof T; sort: 'ascending' | 'descending' | null },
+  tailRows?: number
 ) => {
-  return list.sort((item1, item2) => {
+  if (!sort) {
+    return list;
+  }
+  const lastRows = Number.isInteger(tailRows) && tailRows < 0 ? list.splice(tailRows!) : [];
+  const sortedList = list.sort((item1, item2) => {
     const getValue = (num: number): number => {
       if (isFiniteNumber(num)) {
-        return percentToDecimal(num) as number;
+        return parseFloat(String(num)) as number;
       }
-      if (sort === 'asc') {
+      if (sort === 'ascending') {
         return Number.MAX_SAFE_INTEGER;
       }
       return -Number.MAX_SAFE_INTEGER;
     };
     const value1 = getValue(item1[field] as number);
     const value2 = getValue(item2[field] as number);
-    if (sort === 'asc') {
+    if (sort === 'ascending') {
       return value1 - value2;
     }
     return value2 - value1;
   });
+
+  const result = [...sortedList, ...lastRows];
+  return result;
 };
