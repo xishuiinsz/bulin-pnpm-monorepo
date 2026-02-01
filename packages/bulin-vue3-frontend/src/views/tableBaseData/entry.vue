@@ -9,6 +9,7 @@ import { tableColumnList, tableDataList } from './tableData.js';
 import DynamicColumns from '@/components/dynamic-columns/DynamicColumns.vue';
 import { cloneDeep } from 'lodash';
 import { sortListByFeild } from '@libc/shared'
+import { ElWatermark } from 'element-plus';
 
 const query = reactive({
   address: '',
@@ -78,55 +79,69 @@ function handleDelete(row) {
     type: 'warning',
   })
     .then(() => {
-      const index = tableData.indexOf(row);
+      const index = tableData.value.indexOf(row);
       ElMessage.success('删除成功');
-      tableData.splice(index, 1);
+      tableData.value.splice(index, 1);
     })
     .catch(() => { });
+}
+
+
+const svgToDataUri = (text) => {
+  const defaultSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200">
+  <text transform="rotate(-19 150 100) matrix(1 0 0 1 0 0)" opacity="0.15" xml:space="preserve" text-anchor="start" font-family="Noto Sans JP" font-size="24" id="svg_1" y="110.4" x="55.34375" stroke-width="0" stroke="#000" fill="#000000">${text}</text>
+</svg>`
+  const encoded = encodeURIComponent(defaultSvg)
+    .replace(/'/g, '%27')
+    .replace(/"/g, '%22')
+  return `data:image/svg+xml,${encoded}`
+
 }
 </script>
 
 <template>
   <div>
-    <div class="crumbs">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item>
-          <i class="el-icon-lx-cascades" />
-          基础表格
-        </el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
-    <div class="container">
-      <div class="handle-box">
-        <el-select v-model="query.address" placeholder="地址" class="handle-select mr10">
-          <el-option key="1" label="广东省" value="广东省" />
-          <el-option key="2" label="湖南省" value="湖南省" />
-        </el-select>
-        <el-input v-model="query.name" placeholder="用户名" class="handle-input mr10"
-          @input="queryByName('test', 'test1')" />
-        <ElButton type="primary" :icon="Search" @click="handleSearch">
-          搜索
-        </ElButton>
+    <ElWatermark :width="300" :height="200" :image="svgToDataUri('张明楷 KaiZhang')">
+      <div class="crumbs">
+        <el-breadcrumb separator="/">
+          <el-breadcrumb-item>
+            <i class="el-icon-lx-cascades" />
+            基础表格
+          </el-breadcrumb-item>
+        </el-breadcrumb>
       </div>
-      <el-table @sort-change="sortChange" :data="tableData" border stripe class="" :row-key="(row) => row.id"
-        @filter-change="filterChange" @selection-change="selectionChange">
-        <DynamicColumns :list="tableColumnList" />
-        <el-table-column label="操作" width="120" :sortable="false" :resizable="false">
-          <template #default="{ row }">
-            <ElButton :link="true" type="primary" @click="handleEdit(row)">
-              编辑
-            </ElButton>
-            <ElButton :link="true" type="danger" @click="handleDelete(row)">
-              删除
-            </ElButton>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div class="pagination">
-        <el-pagination background layout="total, prev, pager, next" :current-page="query.pageIndex"
-          :page-size="query.pageSize" :total="pageTotal" @current-change="handlePageChange" />
+      <div class="container">
+        <div class="handle-box">
+          <el-select v-model="query.address" placeholder="地址" class="handle-select mr10">
+            <el-option key="1" label="广东省" value="广东省" />
+            <el-option key="2" label="湖南省" value="湖南省" />
+          </el-select>
+          <el-input v-model="query.name" placeholder="用户名" class="handle-input mr10"
+            @input="queryByName('test', 'test1')" />
+          <ElButton type="primary" :icon="Search" @click="handleSearch">
+            搜索
+          </ElButton>
+        </div>
+        <el-table @sort-change="sortChange" :data="tableData" border stripe class="" :row-key="(row) => row.id"
+          @filter-change="filterChange" @selection-change="selectionChange">
+          <DynamicColumns :list="tableColumnList" />
+          <el-table-column label="操作" width="120" :sortable="false" :resizable="false">
+            <template #default="{ row }">
+              <ElButton :link="true" type="primary" @click="handleEdit(row)">
+                编辑
+              </ElButton>
+              <ElButton :link="true" type="danger" @click="handleDelete(row)">
+                删除
+              </ElButton>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="pagination">
+          <el-pagination background layout="total, prev, pager, next" :current-page="query.pageIndex"
+            :page-size="query.pageSize" :total="pageTotal" @current-change="handlePageChange" />
+        </div>
       </div>
-    </div>
+    </ElWatermark>
   </div>
 </template>
 
