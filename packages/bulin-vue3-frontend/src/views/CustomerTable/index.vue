@@ -6,6 +6,7 @@ import { h, onMounted, reactive, readonly, ref, toRaw } from 'vue';
 import editCustomer from './editCustomer.vue';
 import TheaderInputFilter from '@/tables/TheaderInputFilter.vue';
 import TheaderSelectFilter from '@/tables/TheaderSelectFilter.vue';
+import { Search, Refresh } from '@element-plus/icons-vue'
 
 defineOptions({
   name: 'CustomerTable',
@@ -23,7 +24,7 @@ const queryInit = {
 
 const rowData = reactive({});
 
-const query = reactive({ ...queryInit });
+const query = reactive(structuredClone(queryInit));
 const tableData = ref([]);
 const pageTotal = ref(0);
 // 获取表格数据
@@ -37,7 +38,7 @@ function getData() {
 // 重置操作
 function handleReset() {
   Object.assign(query, {
-    ...queryInit,
+    ...structuredClone(queryInit)
   });
   handleSearch();
 }
@@ -171,16 +172,15 @@ onMounted(getData);
     <div class="container">
       <div class="handle-box">
         <el-form :inline="true">
-
           <el-form-item label="地址">
-            <el-input v-model="query.address" placeholder="请输入地址" class="handle-input" />
+            <el-input v-model="query.address" placeholder="请输入地址" class="w248 handle-input" />
           </el-form-item>
           <el-form-item>
             <el-button-group>
-              <el-button type="primary" icon="el-icon-search" @click="handleReset">
+              <el-button type="primary" :icon="Refresh" @click="handleReset">
                 重置
               </el-button>
-              <el-button type="primary" icon="el-icon-search" @click="handleSearch">
+              <el-button type="primary" :icon="Search" @click="handleSearch">
                 搜索
               </el-button>
             </el-button-group>
