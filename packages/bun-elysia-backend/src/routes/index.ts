@@ -3,6 +3,7 @@
  */
 import { Elysia } from 'elysia'
 import path from 'node:path'
+import { countriesListRouter } from './countriesList'
 import { creditInfoRouter } from './creditInfo'
 import { customerInfoRouter } from './customerInfo'
 import { imagesRouter } from './images'
@@ -24,3 +25,5 @@ export const appRouter = new Elysia()
   .use(myPosterRouter)
   // 图片墙
   .use(imagesRouter)
+  // 国家列表
+  .use(countriesListRouter)

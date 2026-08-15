@@ -33,6 +33,7 @@ pnpm --filter bun-elysia-backend typecheck
 | DELETE | /upload/:fileId    | 删除已上传文件目录                                          |
 | GET    | /myPoster/list     | 在线海报图层数据（layerData.json）                          |
 | GET    | /images/list       | 图片墙列表（读取 public/images 目录 + 分页）                |
+| GET    | /queryCountriesList | 国家列表（chinook.db Customer.Country 去重，支持 searchKey 模糊查询） |
 
 ## 技术映射
 

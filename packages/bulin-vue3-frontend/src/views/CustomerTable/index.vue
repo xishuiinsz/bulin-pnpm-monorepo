@@ -1,18 +1,22 @@
 <script setup name="CustomerTable">
 import showDialog from '@/imperatives/showDialog';
-import { deleteCustomerData, fetchCustomerData, updateCustomerData } from '@i';
+import { deleteCustomerData, fetchCustomerData, updateCustomerData, fetchCountriesData } from '@i';
 import { ElLoading, ElMessage, ElMessageBox } from 'element-plus';
 import { h, onMounted, reactive, readonly, ref, toRaw } from 'vue';
 import editCustomer from './editCustomer.vue';
 import TheaderInputFilter from '@/tables/TheaderInputFilter.vue';
+import TheaderSelectFilter from '@/tables/TheaderSelectFilter.vue';
 
 defineOptions({
   name: 'CustomerTable',
 });
 
+const pageSizes = [10, 20, 50, 100];
+
 const queryInit = {
   address: '',
   name: '',
+  countryList: [],
   pageIndex: 1,
   pageSize: 10,
 };
@@ -45,6 +49,13 @@ function handleSearch() {
 // 分页导航
 function handlePageChange(val) {
   query.pageIndex = val;
+  getData();
+}
+
+// 分页大小改变
+function handleSizeChange(val) {
+  query.pageSize = val;
+  query.pageIndex = 1;
   getData();
 }
 
@@ -132,6 +143,18 @@ function mouseenterEvt(data) {
 function closePopover(instance) {
   instance.hide();
 }
+
+const fetchCountryOptions = async (searchKey) => {
+  const resp = await fetchCountriesData({ country: searchKey });
+  if (Array.isArray(resp?.list) && resp.list.length > 0) {
+    return resp.list.map((item) => ({
+      value: item,
+      label: item,
+    }));
+  }
+  return [];
+};
+
 onMounted(getData);
 </script>
 
@@ -173,18 +196,21 @@ onMounted(getData);
               <TheaderInputFilter v-model="query.name" @confirm="handleSearch" @reset="handleSearch" :data="data" />
             </template>
             <template #default="{ row }">
-              <div @mouseenter.stop="mouseenterEvt(row)">
-                <div :ref="el => map.set(row, el)">
-                  {{ row.firstName }} {{ row.lastName }}
-                </div>
-              </div>
+              <span>
+                {{ row.firstName }} {{ row.lastName }}
+              </span>
             </template>
           </el-table-column>
           <el-table-column prop="company" label-class-name="label-nowrap" label="客户公司" />
           <el-table-column prop="address" label="客户地址" />
           <el-table-column prop="city" label="城市" />
           <el-table-column prop="state" label-class-name="label-nowrap" label="省|州" />
-          <el-table-column prop="country" label="国家" />
+          <el-table-column prop="country" label="国家">
+            <template #header="data">
+              <TheaderSelectFilter :fetchOptions="fetchCountryOptions" v-model="query.countryList" :data="data"
+                @confirm="handleSearch" @reset="handleSearch" />
+            </template>
+          </el-table-column>
           <el-table-column prop="email" label="邮件" />
           <el-table-column label="操作" align="center">
             <template #default="scope">
@@ -204,8 +230,9 @@ onMounted(getData);
         </el-table>
       </div>
       <div class="pagination">
-        <el-pagination background layout="total, prev, pager, next" :current-page="query.pageIndex"
-          :page-size="query.pageSize" :total="pageTotal" @current-change="handlePageChange" />
+        <el-pagination background layout="total, sizes, prev, pager, next" :current-page="query.pageIndex"
+          v-model:page-size="query.pageSize" :page-sizes="pageSizes" :total="pageTotal"
+          @current-change="handlePageChange" @size-change="handleSizeChange" />
       </div>
     </div>
     <el-popover ref="popoverRef" :virtual-ref="buttonRef" placement="right" trigger="hover" virtual-triggering>

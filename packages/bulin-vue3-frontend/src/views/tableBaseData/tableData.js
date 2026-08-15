@@ -5,7 +5,6 @@ import { ElImage, ElMessage } from 'element-plus';
 import { h, reactive } from 'vue';
 import detailsForm from './detailsForm.vue';
 import NumbericFormatter from '@/components/NumbericFormatter.vue';
-import TheaderFilter from '@/tables/TheaderFilter.vue';
 
 function nameClick(data) {
   let drawerInstance = null;
@@ -45,8 +44,6 @@ export const tableColumnList = [
     label: '用户名',
     width: 120,
     slots: {
-      header: (data) => h(TheaderFilter, { data, options, modelValue: theaderFilter.users, 'onUpdate:modelValue': (val) => theaderFilter.users = val })
-      ,
       default: ({ row }) => h('span', { class: 'cursor-pointer color-0d6efd', onClick: () => nameClick(row) }, row.name)
     }
   },

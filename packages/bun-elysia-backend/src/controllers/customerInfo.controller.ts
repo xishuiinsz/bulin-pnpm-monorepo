@@ -27,6 +27,18 @@ interface CustomerMutationResult {
   msg: string
 }
 
+/**
+ * 客户信息列表查询参数（POST /customerInfo 的 JSON 请求体）
+ */
+interface CustomerListQuery {
+  pageIndex?: number
+  pageSize?: number
+  name?: string
+  address?: string
+  /** 按国家列表过滤，如 { countryList: ['China'] }；未传或空数组表示不过滤 */
+  countryList?: string[]
+}
+
 const toCamelCaseKeys = (row: Record<string, unknown>): CustomerInfo => {
   const customerOption: CustomerInfo = {}
   for (const key in row) {
@@ -39,11 +51,18 @@ const toCamelCaseKeys = (row: Record<string, unknown>): CustomerInfo => {
 
 /**
  * 获取客户信息列表数据
+ * 支持 name（姓名模糊）、address（地址模糊）、countryList（国家多选）过滤
  */
 export const getCustomerInfoList = (
-  query: Record<string, string | undefined>,
+  query: CustomerListQuery,
 ): { list: CustomerInfo[], pageTotal: number } => {
-  const { pageIndex = '1', pageSize = '10', name = '', address = '' } = query
+  const {
+    pageIndex = 1,
+    pageSize = 10,
+    name = '',
+    address = '',
+    countryList = [],
+  } = query ?? {}
   const pageNumber = Number(pageIndex) || 1
   const sizeNumber = Number(pageSize) || 10
 
@@ -75,6 +94,19 @@ export const getCustomerInfoList = (
     customerInfo = customerInfo.filter(customer =>
       String(customer.address ?? '').toLowerCase().includes(addressQuery),
     )
+  }
+  // 国家多选过滤：仅保留 country 命中 countryList 的客户（不区分大小写）
+  if (Array.isArray(countryList) && countryList.length > 0) {
+    const countryQuery = new Set(
+      countryList
+        .map(country => String(country).trim().toLowerCase())
+        .filter(Boolean),
+    )
+    if (countryQuery.size > 0) {
+      customerInfo = customerInfo.filter(customer =>
+        countryQuery.has(String(customer.country ?? '').trim().toLowerCase()),
+      )
+    }
   }
 
   const pageTotal = customerInfo.length
