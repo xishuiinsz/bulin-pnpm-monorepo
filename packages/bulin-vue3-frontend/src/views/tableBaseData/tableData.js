@@ -5,6 +5,7 @@ import { ElImage, ElMessage } from 'element-plus';
 import { h, reactive } from 'vue';
 import detailsForm from './detailsForm.vue';
 import NumbericFormatter from '@/components/NumbericFormatter.vue';
+import TheaderFilter from '@/tables/TheaderFilter.vue';
 
 function nameClick(data) {
   let drawerInstance = null;
@@ -18,6 +19,24 @@ function nameClick(data) {
   drawerInstance = showDrawer(params);
 }
 
+const theaderFilter = reactive({
+  users: ['1', '2']
+})
+
+const options = [{
+  value: '1',
+  label: '张三'
+}, {
+  value: '2',
+  label: '李四'
+}, {
+  value: '3',
+  label: '王五'
+}, {
+  value: '4',
+  label: '赵六'
+}];
+
 export const tableColumnList = [
   { type: 'selection', width: 55 },
   { prop: 'id', label: 'ID', width: 55 },
@@ -26,11 +45,8 @@ export const tableColumnList = [
     label: '用户名',
     width: 120,
     slots: {
-      header: (data) =>
-        h('span', { class: 'd-flex align-items-center' }, [
-          data.column.label,
-          h(User, { class: 'ml8', style: { width: '16px', height: '16px' } })
-        ]),
+      header: (data) => h(TheaderFilter, { data, options, modelValue: theaderFilter.users, 'onUpdate:modelValue': (val) => theaderFilter.users = val })
+      ,
       default: ({ row }) => h('span', { class: 'cursor-pointer color-0d6efd', onClick: () => nameClick(row) }, row.name)
     }
   },

@@ -1,0 +1,21 @@
+{
+  "name": "bun-elysia-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "serve as API, based on bun + elysia + typescript (migrated from bulin-express)",
+  "module": "src/index.ts",
+  "scripts": {
+    "dev": "bun run --watch src/index.ts",
+    "start": "bun run src/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@elysiajs/static": "^1.4.10",
+    "elysia": "^1.4.29"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.3.14",
+    "typescript": "^5.9.3"
+  }
+}
