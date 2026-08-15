@@ -4,6 +4,7 @@ import { deleteCustomerData, fetchCustomerData, updateCustomerData } from '@i';
 import { ElLoading, ElMessage, ElMessageBox } from 'element-plus';
 import { h, onMounted, reactive, readonly, ref, toRaw } from 'vue';
 import editCustomer from './editCustomer.vue';
+import TheaderInputFilter from '@/tables/TheaderInputFilter.vue';
 
 defineOptions({
   name: 'CustomerTable',
@@ -147,11 +148,9 @@ onMounted(getData);
     <div class="container">
       <div class="handle-box">
         <el-form :inline="true">
-          <el-form-item label="用户名">
-            <el-input v-model="query.name" placeholder="请输入用户名" class="handle-input mr10" />
-          </el-form-item>
+
           <el-form-item label="地址">
-            <el-input v-model="query.address" placeholder="请输入地址" class="handle-input mr10" />
+            <el-input v-model="query.address" placeholder="请输入地址" class="handle-input" />
           </el-form-item>
           <el-form-item>
             <el-button-group>
@@ -170,6 +169,9 @@ onMounted(getData);
           header-cell-class-name="table-header">
           <el-table-column prop="customerId" label="客户编号" label-class-name="label-nowrap" align="center" />
           <el-table-column prop="fullName" label="客户代表">
+            <template #header="data">
+              <TheaderInputFilter v-model="query.name" @confirm="handleSearch" @reset="handleSearch" :data="data" />
+            </template>
             <template #default="{ row }">
               <div @mouseenter.stop="mouseenterEvt(row)">
                 <div :ref="el => map.set(row, el)">
@@ -224,11 +226,6 @@ onMounted(getData);
 
 .handle-select {
   width: 120px;
-}
-
-.handle-input {
-  width: 300px;
-  display: inline-block;
 }
 
 .table {
