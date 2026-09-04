@@ -121,13 +121,17 @@ const onShow = () => {
                     <el-input v-model="searchKey" placeholder="请输入内容" size="small" clearable></el-input>
                 </div>
                 <div v-loading="loading" class=" min-h-6 mt-2 pb-2" style="max-height: 200px; overflow-y: auto;">
-                    <el-checkbox v-model="selectAll" :indeterminate="isIndeterminate">全选</el-checkbox>
+                    <el-checkbox v-if="filteredOptions.length" v-model="selectAll"
+                        :indeterminate="isIndeterminate">全选</el-checkbox>
                     <el-checkbox-group v-model="selected" class="d-flex flex-column">
                         <el-checkbox v-for="option in filteredOptions" :key="option[valueField]"
                             :label="option[valueField]">{{
                                 option[labelField]
                             }}</el-checkbox>
                     </el-checkbox-group>
+                    <div v-if="!filteredOptions.length" class="d-flex justify-content-center align-items-center h-6">
+                        <span class="text-gray-500">暂无数据</span>
+                    </div>
                 </div>
                 <div class=" mt-2 text-end">
                     <el-button type="primary" size="small" @click="confirm">确定</el-button>

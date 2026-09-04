@@ -7,10 +7,13 @@ import editCustomer from './editCustomer.vue';
 import TheaderInputFilter from '@/tables/TheaderInputFilter.vue';
 import TheaderSelectFilter from '@/tables/TheaderSelectFilter.vue';
 import { Search, Refresh } from '@element-plus/icons-vue'
+import { usePagination } from '@/hooks/common';
 
 defineOptions({
   name: 'CustomerTable',
 });
+
+const rowIndexValue = 5;
 
 const pageSizes = [10, 20, 50, 100];
 
@@ -18,45 +21,57 @@ const queryInit = {
   address: '',
   name: '',
   countryList: [],
-  pageIndex: 1,
-  pageSize: 10,
 };
 
 const rowData = reactive({});
 
 const query = reactive(structuredClone(queryInit));
+
+const { paginationState, resetPagination, total, handlePageIndexChange, handlePageSizeChange } = usePagination({ handleSearch: getData });
+
 const tableData = ref([]);
-const pageTotal = ref(0);
+
+const getParams = () => {
+  const params = {
+    ...query,
+    ...paginationState
+  };
+  return params;
+}
+
 // 获取表格数据
 function getData() {
-  fetchCustomerData(query).then((res) => {
-    tableData.value = res?.list || [];
-    pageTotal.value = res?.pageTotal ?? 0;
+  const params = getParams();
+  fetchCustomerData(params).then((res) => {
+    const list = res?.list || [];
+    list.splice(rowIndexValue, 0, {
+      customerId: '',
+      firstName: '',
+      lastName: '',
+      company: '',
+      address: '',
+      city: '',
+      state: '',
+      country: '',
+      email: '',
+    });
+    tableData.value = list;
+    total.value = res?.pageTotal ?? 0;
   });
 }
 
 // 重置操作
 function handleReset() {
+  resetPagination();
   Object.assign(query, {
     ...structuredClone(queryInit)
   });
   handleSearch();
 }
+
 // 查询操作
 function handleSearch() {
-  query.pageIndex = 1;
-  getData();
-}
-// 分页导航
-function handlePageChange(val) {
-  query.pageIndex = val;
-  getData();
-}
-
-// 分页大小改变
-function handleSizeChange(val) {
-  query.pageSize = val;
-  query.pageIndex = 1;
+  paginationState.pageIndex = 1;
   getData();
 }
 
@@ -156,6 +171,33 @@ const fetchCountryOptions = async (searchKey) => {
   return [];
 };
 
+const spanMethod = ({ row, column, rowIndex, columnIndex, table }) => {
+  if (rowIndex === rowIndexValue) {
+    if (columnIndex === 0) {
+      return {
+        rowspan: 1,
+        colspan: 10
+      }
+
+    }
+    return {
+      rowspan: 0,
+      colspan: 0
+    }
+  }
+  return {
+    rowspan: 1,
+    colspan: 1
+  }
+};
+
+const rowClassName = ({ row, rowIndex }) => {
+  if (rowIndex === rowIndexValue) {
+    return 'row-span-class';
+  }
+  return '';
+};
+
 onMounted(getData);
 </script>
 
@@ -188,8 +230,8 @@ onMounted(getData);
         </el-form>
       </div>
       <div class="el-table-container">
-        <el-table ref="customerTable" table-layout="auto" :data="tableData" border class="table"
-          header-cell-class-name="table-header">
+        <el-table :row-class-name="rowClassName" ref="customerTable" table-layout="auto" :data="tableData" border
+          class="table" :span-method="spanMethod" header-cell-class-name="table-header">
           <el-table-column prop="customerId" label="客户编号" label-class-name="label-nowrap" align="center" />
           <el-table-column prop="fullName" label="客户代表">
             <template #header="data">
@@ -227,12 +269,18 @@ onMounted(getData);
               </div>
             </template>
           </el-table-column>
+          <template #empty>
+            <div class="custom-empty">
+              <i class="el-icon-warning"></i>
+              <span>暂无数据，请稍后再试！</span>
+            </div>
+          </template>
         </el-table>
       </div>
       <div class="pagination">
-        <el-pagination background layout="total, sizes, prev, pager, next" :current-page="query.pageIndex"
-          v-model:page-size="query.pageSize" :page-sizes="pageSizes" :total="pageTotal"
-          @current-change="handlePageChange" @size-change="handleSizeChange" />
+        <el-pagination background layout="total, sizes, prev, pager, next" :current-page="paginationState.pageIndex"
+          v-model:page-size="paginationState.pageSize" :page-sizes="pageSizes" :total="total"
+          @current-change="handlePageIndexChange" @size-change="handlePageSizeChange" />
       </div>
     </div>
     <el-popover ref="popoverRef" :virtual-ref="buttonRef" placement="right" trigger="hover" virtual-triggering>
@@ -273,5 +321,19 @@ onMounted(getData);
   margin: auto;
   width: 40px;
   height: 40px;
+}
+
+:deep(.el-table__body-wrapper) {
+  tr {
+    &:has(+ .row-span-class) {
+      background-color: #fff3cd;
+      /* 浅黄 */
+    }
+
+    &.row-span-class+tr {
+      background-color: pink;
+      /* 浅黄 */
+    }
+  }
 }
 </style>

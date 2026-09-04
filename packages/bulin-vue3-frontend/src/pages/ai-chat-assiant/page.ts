@@ -23,7 +23,7 @@ export const cachedData = {
   hasScroll: false,
 };
 
-export const messageList = reactive([]);
+export const messageList = reactive<Record<string, any>[]>([]);
 
 // 是否有应答中的消息
 export const hasAnswering = computed(() => {
@@ -99,7 +99,7 @@ export function focusInput() {
   }
 }
 
-export function getMarkedAnswer(answer) {
+export function getMarkedAnswer(answer: string) {
   marked.use({
     pedantic: false,
     gfm: true,

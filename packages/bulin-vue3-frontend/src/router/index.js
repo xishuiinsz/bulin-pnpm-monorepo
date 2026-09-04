@@ -1,7 +1,7 @@
 import Home from '@v/Home.vue';
 import { createRouter, createWebHashHistory } from 'vue-router';
 
-const pages = import.meta.glob('@p/**/page.js', {
+const pages = import.meta.glob('@p/**/page.ts', {
   eager: true,
   import: 'default'
 });
