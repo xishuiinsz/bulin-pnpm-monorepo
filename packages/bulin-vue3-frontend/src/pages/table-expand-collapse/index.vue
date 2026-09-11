@@ -68,16 +68,23 @@ const handleExpand = (row: User) => {
   if (!row.childrenList?.length) {
     return;
   }
-  const { id } = row;
-  if (!expandedRowKeys.includes(id)) {
-    expandedRowKeys.push(id);
+  // 统一用 getRowKey 作为唯一标识（兼容没有 id 的行），避免直接用 row.id 匹配失败
+  const rowKey = getRowKey(row);
+  // 已展开则直接返回：保证函数幂等，重复点击 / 重复调用都不会重复插入子行
+  if (expandedRowKeys.includes(rowKey)) {
+    return;
   }
-  const index = tableData.findIndex((item: User) => item.id === row.id);
+  const index = tableData.findIndex((item: User) => getRowKey(item) === rowKey);
+  // 定位不到当前行（例如传入的是不在表格里的数据）时，不修改任何状态
+  if (index < 0) {
+    return;
+  }
   const currentLevel = row.level || 1;
-  row.childrenList = row.childrenList.map((item) => ({
-    ...item,
-    level: currentLevel + 1
-  }));
+  // 就地写入 level，避免每次展开都重建 childrenList 对象（行对象身份保持稳定）
+  row.childrenList.forEach((item) => {
+    item.level = currentLevel + 1;
+  });
+  expandedRowKeys.push(rowKey);
 
   tableData.splice(index + 1, 0, ...row.childrenList);
 };
@@ -87,20 +94,26 @@ const handleCollapse = (row: User) => {
   if (!row.childrenList?.length) {
     return;
   }
-  const { id } = row;
-  if (expandedRowKeys.includes(id)) {
-    expandedRowKeys.splice(expandedRowKeys.indexOf(id), 1);
+  const rowKey = getRowKey(row);
+  const selfKeyIndex = expandedRowKeys.indexOf(rowKey);
+  if (selfKeyIndex > -1) {
+    expandedRowKeys.splice(selfKeyIndex, 1);
   }
-  const flatData = flatMapAll(row.childrenList || []);
-  const ids = flatData.map((item) => item.id).map(String);
+  // 递归收集整棵子树的 key（flatMapAll 会把所有子孙平铺出来）
+  const descendantKeys = flatMapAll(row.childrenList || []).map((item) => getRowKey(item));
 
   for (let index = tableData.length - 1; index >= 0; index--) {
-    const element = tableData[index];
-    if (ids.includes(String(element.id))) {
-      tableData.splice(index, 1);
-      if (element.childrenList?.length) {
-        expandedRowKeys.splice(expandedRowKeys.indexOf(element.id), 1);
-      }
+    const element = tableData[index] as User;
+    const elementKey = getRowKey(element);
+    if (!descendantKeys.includes(elementKey)) {
+      continue;
+    }
+    tableData.splice(index, 1);
+    // 先判断 indexOf > -1 再删除：否则 indexOf 返回 -1 时 splice(-1, 1)
+    // 会误删 expandedRowKeys 的最后一个元素（其它已展开节点的 key）
+    const keyIndex = expandedRowKeys.indexOf(elementKey);
+    if (keyIndex > -1) {
+      expandedRowKeys.splice(keyIndex, 1);
     }
   }
 };
@@ -133,7 +146,7 @@ function getExpandedRows(
     if (shouldShow) {
       res.push({ ...node, level: depth }); // depth 此时从 1 开始
     }
-    const childrenShouldShow = shouldShow && expandedSet.has(node.id);
+    const childrenShouldShow = shouldShow && expandedSet.has(getRowKey(node));
     if (node.childrenList) {
       node.childrenList.forEach(child =>
         dfs(child, depth + 1, childrenShouldShow)
@@ -195,7 +208,7 @@ const handleEdit = (row: User) => {
               <div class="d-flex align-items-center" :class="scope.row.level ? `level-${scope.row.level}` : 'level-1'">
                 <template v-if="scope.row.childrenList?.length">
                   <el-icon class="icon-size-16 cursor-pointer me-2">
-                    <template v-if="expandedRowKeys.includes(scope.row.id)">
+                    <template v-if="expandedRowKeys.includes(getRowKey(scope.row))">
                       <Minus @click="handleCollapse(scope.row)" />
                     </template>
                     <template v-else>

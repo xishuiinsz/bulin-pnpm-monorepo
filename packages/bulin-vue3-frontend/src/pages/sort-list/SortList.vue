@@ -4,7 +4,7 @@ import Sortable from 'sortablejs';
 import TreeItem from './TreeItem.vue';
 
 interface SortListItem {
-    id: number;
+    id: string;
     text: string;
     children?: SortListItem[];
 }
@@ -19,9 +19,9 @@ const props = defineProps<Props>();
 const rootContainer = useTemplateRef('root');
 
 // 在树中按 id 查找数据项
-const findItemById = (items: SortListItem[], id: number): SortListItem | undefined => {
+const findItemById = (items: SortListItem[], id: string): SortListItem | undefined => {
     for (const item of items) {
-        if (item.id === id) {
+        if (String(item.id) === String(id)) {
             return item;
         }
         if (item.children) {
@@ -41,7 +41,7 @@ const getListByContainer = (containerEl: HTMLElement): SortListItem[] | null => 
     if (containerEl === rootEl) {
         return props.list;
     }
-    const parent = findItemById(props.list, Number(containerEl.id));
+    const parent = findItemById(props.list, containerEl.id);
     if (!parent) return null;
     parent.children = parent.children ?? [];
     return parent.children;

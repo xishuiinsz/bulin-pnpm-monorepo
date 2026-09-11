@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 interface SortListItem {
-    id: number;
+    id: string;
     text: string;
     children?: SortListItem[];
 }

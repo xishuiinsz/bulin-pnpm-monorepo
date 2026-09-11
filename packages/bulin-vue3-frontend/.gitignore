@@ -4,6 +4,9 @@ RESTClient
 demo
 /dist
 
+# vitest 浏览器模式失败截图产物
+__screenshots__
+
 
 # local env files
 .env.local
