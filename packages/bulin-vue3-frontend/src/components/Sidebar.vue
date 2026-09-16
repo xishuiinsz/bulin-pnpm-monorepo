@@ -113,6 +113,10 @@ const items = [
         index: '/myComponents/simpleTable',
         title: '简易原生表格',
       },
+      {
+        index: '/myComponents/table-expand-collapse',
+        title: '手工实现表格展开与收起',
+      },
     ]
   },
   {

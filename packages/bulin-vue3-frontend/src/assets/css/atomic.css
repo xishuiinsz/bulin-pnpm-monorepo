@@ -29,15 +29,28 @@
 .flex-fill {
   flex: 1 1 auto;
 }
+.justify-content-end {
+  justify-content: flex-end !important;
+}
 
 .h40 {
   height: 40px !important;
+}
+.place-content-center {
+  place-content: center !important;
 }
 
 .hover-color-3a85ff:hover {
   color: #3a85ff;
 }
 
+.hover-color-2f6fdb:hover {
+  color: #2f6fdb;
+}
+
+.ml4 {
+  margin-left: 4px !important;
+}
 .ml8 {
   margin-left: 8px !important;
 }

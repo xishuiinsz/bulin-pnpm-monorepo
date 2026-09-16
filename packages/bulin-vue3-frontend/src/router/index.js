@@ -256,6 +256,14 @@ const routes = [
         },
         component: () => import(/* webpackChunkName: "multiHeaderTable" */ '@v/MultiHeaderTable/entry.vue')
       },
+      {
+        path: 'table-expand-collapse',
+        name: 'tableExpandCollapse',
+        meta: {
+          title: '手工实现表格展开与收起'
+        },
+        component: () => import(/* webpackChunkName: "tableExpandCollapse" */ '@v/table-expand-collapse/index.vue')
+      },
       ...routesPages
     ]
   },
