@@ -5,22 +5,43 @@ const pages = import.meta.glob('@p/**/page.ts', {
   eager: true,
   import: 'default'
 });
-// 自动生成的菜单数据
+// 自动生成的菜单数据之默认分组，page.ts 中未声明 menuGroup 的页面都归入该分组
+export const DEFAULT_MENU_GROUP = '练习场';
+// 自动生成的菜单数据（默认分组，即“练习场”）
 export const menuList = [];
+// 自动生成的菜单数据，按 page.ts 中声明的 menuGroup 分组存放
+const menuGroupMap = {};
+
+/**
+ * 获取指定分组下自动生成的菜单数据
+ * @param {string} group 菜单分组名称，如“表格专场”
+ * @returns {Array} 该分组下的菜单项数组
+ */
+export function getMenuListByGroup(group) {
+  return menuGroupMap[group] || [];
+}
+
 // 生成生成的路由数据
 const routesPages = Object.values(pages).map((item) => {
-  const { path, title, order, hasChild, component, icon = 'favor' } = item;
+  const { path, title, order, hasChild, component, icon = 'favor', menuGroup = DEFAULT_MENU_GROUP } = item;
   let pathStr = path;
   if (path.includes('?')) {
     const index = path.indexOf('?');
     pathStr = path.slice(0, index);
   }
-  const meta = { title, order, hasChild };
-  menuList.push({
+  const meta = { title, order, hasChild, menuGroup };
+  const menuItem = {
     icon,
     index: path,
     title
-  });
+  };
+  if (!menuGroupMap[menuGroup]) {
+    menuGroupMap[menuGroup] = [];
+  }
+  menuGroupMap[menuGroup].push(menuItem);
+  if (menuGroup === DEFAULT_MENU_GROUP) {
+    menuList.push(menuItem);
+  }
   return {
     path: pathStr,
     component,

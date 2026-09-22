@@ -1,3 +1,11 @@
+### 2026-09-22
+
+- [x] 自动生成的菜单支持按分组挂载，并将【卡片化表格】菜单项从“练习场”迁移至“表格专场”
+  - demo 路径：左侧菜单 > 表格专场 > 卡片化表格
+  - 相关代码路径: **packages\bulin-vue3-frontend\src\router\index.js**、**packages\bulin-vue3-frontend\src\components\Sidebar.vue**
+  - 用法：在 **src\pages\xxx\page.ts** 中声明 `menuGroup`（如 `menuGroup: '表格专场'`），未声明时默认归入“练习场”。
+  - 相关能力：**import.meta.glob、getMenuListByGroup 按分组取菜单数据**。
+
 ### 2025-12-29
 - [x] 动态多级表头组件初步完成
   - demo 路径：左侧菜单 > 表格卖场 > 动态多级表头
@@ -120,7 +128,7 @@
 
 - [x] 卡片化 el-table 表格组件，某项目组的需求从标准化的 table 变更为卡片化的 table.
   - 完善了卡片化风格，借用 el-table--scrollable-y 类名、has 伪类选择器实现了分页器的动态 shadow 效果。- 20240726
-  - demo 路径：左侧菜单 - 练习场 - 卡片化表格
+  - demo 路径：左侧菜单 - 表格专场 - 卡片化表格
   - 组件路径: **src\assets\css\el-table.scss**
 
 ### 2024-07-04

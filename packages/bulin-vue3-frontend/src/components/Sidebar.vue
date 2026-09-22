@@ -48,7 +48,7 @@ import { computed } from 'vue';
 import { useSidebarStore } from '@/store/sidebar';
 import { useRoute } from 'vue-router';
 import { computePosition, offset, arrow } from '@floating-ui/dom';
-import { menuList } from '@/router';
+import { menuList, getMenuListByGroup } from '@/router';
 const items = [
   {
     icon: 'el-icon-lx-home',
@@ -117,6 +117,8 @@ const items = [
         index: '/myComponents/table-expand-collapse',
         title: '手工实现表格展开与收起',
       },
+      // 由 src/pages/**/page.ts 中声明 menuGroup: '表格专场' 的页面自动生成
+      ...getMenuListByGroup('表格专场'),
     ]
   },
   {
