@@ -35,9 +35,7 @@ const depositFormatter = (row, column, cellValue) => {
   return h(ElTooltip, { effect: 'dark', content: cellValue, placement: 'top' }, () => value);
 };
 
-const setColSpan = (span: number) => (column) => {
-  console.log('setColSpan span: ', span);
-  console.log('setColSpan column: ', column);
+const setColSpan = (span: number) => (column: { colSpan?: number }) => {
   Object.assign(column, {
     colSpan: span
   });
@@ -77,7 +75,7 @@ const setColSpan = (span: number) => (column) => {
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column label-class-name ="hidden-current-element" prop="zip" label="Zip" width="150">
+        <el-table-column label-class-name="hidden-current-element" prop="zip" label="Zip" width="150">
         </el-table-column>
         <el-table-column prop="deposit" label="存款" width="180" :formatter="depositFormatter" />
         <el-table-column label="Operations" min-width="120">
