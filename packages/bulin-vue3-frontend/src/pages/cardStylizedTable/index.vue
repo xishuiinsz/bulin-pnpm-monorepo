@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { computed, ref, h } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { tableData } from './data';
@@ -34,6 +34,14 @@ const depositFormatter = (row, column, cellValue) => {
   }
   return h(ElTooltip, { effect: 'dark', content: cellValue, placement: 'top' }, () => value);
 };
+
+const setColSpan = (span: number) => (column) => {
+  console.log('setColSpan span: ', span);
+  console.log('setColSpan column: ', column);
+  Object.assign(column, {
+    colSpan: span
+  });
+}
 </script>
 
 <template>
@@ -60,13 +68,17 @@ const depositFormatter = (row, column, cellValue) => {
         <el-table-column prop="state" label="State" width="150" />
         <el-table-column prop="city" label="City" width="150" />
         <el-table-column prop="address" width="150" label-class-name="label-nowrap" label="Address">
+          <template #header="{ column }">
+            <div class="text-center" @vue:mounted="setColSpan(2)(column)">{{ column.label }}</div>
+          </template>
           <template #default="scope">
             <el-tooltip effect="dark" :content="scope.row.address" placement="top">
               <div class="text-truncate">{{ scope.row.address }}</div>
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column prop="zip" label="Zip" width="150" />
+        <el-table-column label-class-name ="hidden-current-element" prop="zip" label="Zip" width="150">
+        </el-table-column>
         <el-table-column prop="deposit" label="存款" width="180" :formatter="depositFormatter" />
         <el-table-column label="Operations" min-width="120">
           <template #default>
