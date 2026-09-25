@@ -1,3 +1,10 @@
+### 2026-09-25
+
+- [x] 将【客户表格】菜单项从左侧菜单的一级位置迁移至“表格专场”分组下
+  - demo 路径：左侧菜单 > 表格专场 > 客户表格
+  - 相关代码路径: **packages\bulin-vue3-frontend\src\components\Sidebar.vue**
+  - 说明：路由 `/myComponents/customerTable`、页面组件 **src\views\CustomerTable** 均未改动，仅调整菜单挂载位置，原有链接与 e2e 用例不受影响。
+
 ### 2026-09-22
 
 - [x] 自动生成的菜单支持按分组挂载，并将【卡片化表格】菜单项从“练习场”迁移至“表格专场”

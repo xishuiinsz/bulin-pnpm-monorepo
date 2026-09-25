@@ -57,11 +57,6 @@ const items = [
   },
 
   {
-    icon: 'el-icon-lx-cascades',
-    index: '/myComponents/customerTable',
-    title: '客户表格',
-  },
-  {
     icon: 'el-icon-lx-copy',
     index: '/myComponents/tabs',
     title: 'tab选项卡',
@@ -100,6 +95,11 @@ const items = [
     index: '5',
     title: '表格专场',
     subs: [
+      {
+        icon: 'el-icon-lx-cascades',
+        index: '/myComponents/customerTable',
+        title: '客户表格',
+      },
       {
         icon: 'el-icon-lx-cascades',
         index: '/myComponents/table',
