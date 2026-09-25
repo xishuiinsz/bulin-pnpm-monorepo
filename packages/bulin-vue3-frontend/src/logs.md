@@ -5,6 +5,20 @@
   - 相关代码路径: **packages\bulin-vue3-frontend\src\components\Sidebar.vue**
   - 说明：路由 `/myComponents/customerTable`、页面组件 **src\views\CustomerTable** 均未改动，仅调整菜单挂载位置，原有链接与 e2e 用例不受影响。
 
+- [x] 优化《多级表头表格》的合并单元格算法与编辑弹窗链路
+  - demo 路径：左侧菜单 > 表格专场 > 多级表头表格
+  - 组件路径: **packages\bulin-vue3-frontend\src\views\MultiHeaderTable\entry.vue**
+  - 主要改动：`span-method` 从“渲染期读写模块级临时数组 + 硬编码行号 `[0, 1]` + 固定 `rowspan: 2`”改为“基于数据源预计算合并表（`computed` + `Map`）”，查表 O(1)、支持连续 N 行同值合并、重复渲染不残留脏状态；年龄列改为 `sortable: 'custom'` 并复用 **sortListByFeild** 自行排序，修复排序后合并单元格失效的问题；表格数据改用 `structuredClone` 本地副本，编辑保存回写行数据 + 成功提示 + 关闭弹窗（对齐【基础表格】的编辑约定），合并结果随数据变化自动重算。
+  - 相关能力：**computed 预计算 + Map 查表、structuredClone 数据副本、sortable custom 与 sort-change、ElMessage**。
+
+- [x] 修复《动态列》组件把 `children` / `slots` 透传到 DOM 引发的 Vue 告警
+  - demo 路径：左侧菜单 > 表格专场 > 多级表头表格；左侧菜单 > 表格专场 > 基础表格
+  - 组件路径: **packages\bulin-vue3-frontend\src\components\dynamic-columns\DynamicColumns.vue**
+  - 问题：`children`（多级表头子列）、`slots`（自定义单元格）是列配置自有字段，el-table-column 并未把它们声明成 props，整份列配置被透传后，这两个字段会以 attrs 的形式落到 el-table-column render 出来的根 `div` 上，而 `div.children` 是只读属性，控制台报 `[Vue warn]: Failed setting prop "children" on <div>: value [object Object],[object Object] is invalid. TypeError: Cannot set property children of #<Element> which has only a getter`。
+  - 主要改动：`children` 由组件消费为父列的默认插槽（递归渲染子列），`slots` 原样透传给 el-table-column（顺带修复【基础表格】里 `slots.default` 自定义单元格失效的问题）；模板从「函数式组件 + `v-bind="column"`」改为 `<component :is="renderColumn(column)">` 直接输出 el-table-column 的 vnode，避免无 props 声明的函数式组件把整份列配置作为 attrs 二次透传到根 div，同时 `key` 也能落到列本身（el-table-column 用它做 `rawColumnKey`）；`getConfig` 的返回值由「整体替换列 props」改为「合并覆盖」，避免只返回局部配置时把 `label` / `prop` 清空。
+  - 相关能力：**h 渲染函数、attrs 透传（fallthrough）与 inheritAttrs、el-table-column 的插槽协议、递归渲染**。
+  - 测试: **packages\bulin-vue3-frontend\src\components\dynamic-columns\DynamicColumns.test.ts**（Vitest 浏览器模式，9 个用例：告警回归、占位 div 属性断言、三级表头结构、自定义插槽、selection 列、getConfig 覆盖，以及 views\MultiHeaderTable 真实列配置的回归）。
+
 ### 2026-09-22
 
 - [x] 自动生成的菜单支持按分组挂载，并将【卡片化表格】菜单项从“练习场”迁移至“表格专场”
