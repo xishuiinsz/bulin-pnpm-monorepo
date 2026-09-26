@@ -1,46 +1,47 @@
-import { onUnmounted, reactive, ref } from "vue"
+import { onUnmounted, reactive, ref } from "vue";
 export const pageSizes = [10, 20, 50, 100];
 export const defaultPagination = {
-    pageIndex: 1,
-    pageSize: 10,
-}
+  pageIndex: 1,
+  pageSize: 10,
+};
 
-export const usePagination = (data = {
+export const usePagination = (
+  data = {
     ...defaultPagination,
-    handleSearch: () => { }
-}) => {
-    const paginationState = reactive({
-        pageIndex: data.pageIndex,
-        pageSize: data.pageSize,
-    })
+    handleSearch: () => {},
+  },
+) => {
+  const paginationState = reactive({
+    pageIndex: data.pageIndex,
+    pageSize: data.pageSize,
+  });
 
-    const total = ref(0)
+  const total = ref(0);
 
-    const resetPagination = () => {
-        paginationState.pageIndex = defaultPagination.pageIndex
-        paginationState.pageSize = defaultPagination.pageSize
-    }
+  const resetPagination = () => {
+    paginationState.pageIndex = defaultPagination.pageIndex;
+    paginationState.pageSize = defaultPagination.pageSize;
+  };
 
-    const handlePageIndexChange = (newPageIndex: number) => {
-        paginationState.pageIndex = newPageIndex;
-        data.handleSearch?.();
-    }
+  const handlePageIndexChange = (newPageIndex: number) => {
+    paginationState.pageIndex = newPageIndex;
+    data.handleSearch?.();
+  };
 
-    const handlePageSizeChange = (newPageSize: number) => {
-        paginationState.pageSize = newPageSize
-        paginationState.pageIndex = defaultPagination.pageIndex
-        data.handleSearch?.();
-    }
+  const handlePageSizeChange = (newPageSize: number) => {
+    paginationState.pageSize = newPageSize;
+    paginationState.pageIndex = defaultPagination.pageIndex;
+    data.handleSearch?.();
+  };
 
-    return {
-        paginationState,
-        resetPagination,
-        total,
-        handlePageIndexChange,
-        handlePageSizeChange
-
-    }
-}
+  return {
+    paginationState,
+    resetPagination,
+    total,
+    handlePageIndexChange,
+    handlePageSizeChange,
+  };
+};
 
 export const useExpandCollapseColumns = () => {
   const expandedColumns = reactive<Record<string, any>>({});
@@ -69,8 +70,9 @@ export const useLinkUpSearch = () => {
       const preName = searchMap.get(handler);
       if (String(preName) !== String(name)) {
         handlerList.forEach((item) => {
-          if (item !== handler && typeof item === "function") {
-            item(name);
+          searchMap.set(item, name);
+          if (item !== handler) {
+            item?.(name);
           }
         });
       }
