@@ -1,4 +1,3 @@
-import { onUnmounted, reactive, toValue, type MaybeRefOrGetter } from "vue";
 
 export const columns = [
   {
@@ -143,46 +142,3 @@ export const tableData = [
   },
 ];
 
-export const useExpandCollapseColumns = () => {
-  const expandedColumns = reactive<Record<string, any>>({});
-  const columnClick = (data: { name: string; children: any[] }) => {
-    if (Object.keys(expandedColumns).includes(data.name)) {
-      const restChildren = Reflect.get(expandedColumns, data.name);
-      data.children.push(...restChildren);
-      Reflect.deleteProperty(expandedColumns, data.name);
-    } else {
-      const restChildren = data.children.splice(1);
-      expandedColumns[data.name] = restChildren;
-    }
-  };
-  return {
-    expandedColumns,
-    columnClick,
-  };
-};
-
-export const useLinkUpSearch = () => {
-  const searchMap = new Map<Function, string>();
-
-  const linkUpSearch = (handler: Function, name: string) => {
-    const handlerList = [...searchMap.keys()];
-    if (handlerList.includes(handler)) {
-      const preName = searchMap.get(handler);
-      if (String(preName) !== String(name)) {
-        handlerList.forEach((item) => {
-          if (item !== handler && typeof item === "function") {
-            item(name);
-          }
-        });
-      }
-    } else {
-      searchMap.set(handler, name);
-    }
-  };
-
-  onUnmounted(() => {
-    searchMap.clear();
-  });
-
-  return linkUpSearch;
-};
