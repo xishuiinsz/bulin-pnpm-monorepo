@@ -54,18 +54,15 @@ export const useExpandCollapseRows = <T extends { id: string; level: number }, K
     tableData.splice(index + 1, 0, ...row?.[childKey]);
   };
 
-  const getIdListByParent = (data: T, ids: string[] = []) => {
+  const getIdListByParent = (data: T, ids = new Set<string>()) => {
     const list = Reflect.get(data, childKey) as T[];
-    list.forEach((item) => {
-      const id = getRowKey(item);
-      if (!ids.includes(id)) {
-        ids.push(id);
-      }
-      if (Reflect.has(item, childKey)) {
+    if (Array.isArray(list)) {
+      list.forEach((item) => {
+        const id = getRowKey(item);
+        ids.add(id);
         getIdListByParent(item, ids);
-      }
-    });
-
+      });
+    }
     return ids;
   };
 
@@ -88,7 +85,7 @@ export const useExpandCollapseRows = <T extends { id: string; level: number }, K
     for (let index = tableData.length - 1; index >= 0; index--) {
       const element = tableData[index] as T;
       const elementKey = getRowKey(element);
-      if (ids.includes(elementKey)) {
+      if (ids.has(elementKey)) {
         tableData.splice(index, 1);
         removeExpandedKey(elementKey);
       }
