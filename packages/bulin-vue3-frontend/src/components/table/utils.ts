@@ -54,33 +54,47 @@ export const useExpandCollapseRows = <T extends { id: string; level: number }, K
     tableData.splice(index + 1, 0, ...row?.[childKey]);
   };
 
+  const getIdListByParent = (data: T, ids: string[] = []) => {
+    const list = Reflect.get(data, childKey) as T[];
+    list.forEach((item) => {
+      const id = getRowKey(item);
+      if (!ids.includes(id)) {
+        ids.push(id);
+      }
+      if (Reflect.has(item, childKey)) {
+        getIdListByParent(item, ids);
+      }
+    });
+
+    return ids;
+  };
+
+  const removeExpandedKey = (id: string) => {
+    const index = expandedRowKeys.indexOf(id);
+    if (index > -1) {
+      expandedRowKeys.splice(index, 1);
+    }
+  };
+
   const handleCollapse = (row: T) => {
     if (!row?.[childKey]?.length) {
       return;
     }
+
+    const ids = getIdListByParent(row);
     const rowKey = getRowKey(row);
-    const selfKeyIndex = expandedRowKeys.indexOf(rowKey);
-    if (selfKeyIndex > -1) {
-      expandedRowKeys.splice(selfKeyIndex, 1);
-    }
-    // 递归收集整棵子树的 key（flatMapAll 会把所有子孙平铺出来）
-    const descendantKeys = flatMapAll(row?.[childKey] || []).map((item) => getRowKey(item));
+    removeExpandedKey(rowKey);
 
     for (let index = tableData.length - 1; index >= 0; index--) {
       const element = tableData[index] as T;
       const elementKey = getRowKey(element);
-      if (!descendantKeys.includes(elementKey)) {
-        continue;
-      }
-      tableData.splice(index, 1);
-      // 先判断 indexOf > -1 再删除：否则 indexOf 返回 -1 时 splice(-1, 1)
-      // 会误删 expandedRowKeys 的最后一个元素（其它已展开节点的 key）
-      const keyIndex = expandedRowKeys.indexOf(elementKey);
-      if (keyIndex > -1) {
-        expandedRowKeys.splice(keyIndex, 1);
+      if (ids.includes(elementKey)) {
+        tableData.splice(index, 1);
+        removeExpandedKey(elementKey);
       }
     }
   };
+
   const handleExpandAll = () => {};
   const handleCollapseAll = () => {};
   const expandedRowKeys = reactive([...defaultExpandedKeys]);
