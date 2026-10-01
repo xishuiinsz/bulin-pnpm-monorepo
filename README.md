@@ -93,8 +93,6 @@ pnpm-monorepo/
 ├── packages/
 │   ├── libc-shared/
 │   ├── libc-ui/
-│   ├── vue-dome1/
-│   └── vue-dome2/
 ├── package.json
 └── pnpm-workspace.yaml
 ```
