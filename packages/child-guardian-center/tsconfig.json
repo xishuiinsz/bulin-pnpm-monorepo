@@ -13,7 +13,7 @@
     "types": ["node"],
 
     // 输入输出：src -> dist，配合 package.json 的 "main": "dist/main.js"
-    "rootDir": "src",
+    "rootDir": "main",
     "outDir": "dist",
     "sourceMap": true,
     "declaration": false,
@@ -35,6 +35,6 @@
     "isolatedModules": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*"],
+  "include": ["main/**/*"],
   "exclude": ["node_modules", "dist"]
 }
