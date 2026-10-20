@@ -1,3 +1,10 @@
 packages:
   # all packages in direct subdirs of packages/
   - 'packages/*'
+
+# pnpm 10 默认拦截依赖的 install/postinstall 脚本。
+# electron 必须执行 postinstall 才会下载 dist/electron.exe，
+# 否则 `electron .` 会报 "Electron failed to install correctly"。
+# 影响 packages/child-guardian-center 与 packages/bulin-electron-vite。
+onlyBuiltDependencies:
+  - electron

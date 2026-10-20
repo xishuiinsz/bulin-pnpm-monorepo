@@ -1,0 +1,40 @@
+{
+  // Node 侧小程序（与 Windows 11 交互）的独立配置。
+  // 故意不 extends 根目录的 tsconfig.base.json：base 是给前端包用的，
+  // 里面的 types:["element-plus/global"]、jsx:"react-jsx"、declaration:true
+  // 会把 element-plus 全局组件类型注入 Node 主流程并强制产出 .d.ts，不适用。
+  "compilerOptions": {
+    // 运行环境：Node 22（本机 node -v = v22.22.0）
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "moduleDetection": "force",
+    "types": ["node"],
+
+    // 输入输出：src -> dist，配合 package.json 的 "main": "dist/main.js"
+    "rootDir": "src",
+    "outDir": "dist",
+    "sourceMap": true,
+    "declaration": false,
+    "declarationMap": false,
+    "resolveJsonModule": true,
+
+    // 互操作：本包无 "type": "module"，产物是 CJS。
+    // 这里不开 verbatimModuleSyntax，否则 import 语法在 CJS 文件中会报 TS1286，
+    // 后续写 import { exec } from 'node:child_process' 之类会编译不过。
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+
+    // 严格性（对齐仓库 base 的严格程度）
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "isolatedModules": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
