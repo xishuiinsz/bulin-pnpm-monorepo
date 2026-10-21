@@ -2,6 +2,17 @@
   "extends": "../../tsconfig.base.json", // 继承根目录配置文件
   "compilerOptions": {
     // 编译选项
+    // 关闭 exactOptionalPropertyTypes：
+    // element-plus 用 buildProp 生成的 prop 定义形如
+    //   { readonly type: PropType<T>; readonly required: false;
+    //     readonly validator: ((val: unknown) => boolean) | undefined; __epPropKey: true }
+    // 其中 validator 是「必填但可能为 undefined」，而 vue 的 PropOptions.validator? 在
+    // exactOptionalPropertyTypes 下不允许 undefined，导致 InferPropType 推导失败、
+    // 退化成返回 prop 定义对象本身，于是模板里所有 el-xxx 的
+    // size="small" / type="primary" / placeholder="xxx" / :size="16"
+    // 都会报 TS2322「不能将类型 string 分配给类型 { ... __epPropKey: true }」。
+    // vue / element-plus 目前均不支持该选项，这里在本包内单独关闭（不影响其它包）。
+    "exactOptionalPropertyTypes": false,
     "paths": {
       // 设置应用别名
       "package1": ["./src/index.ts"],

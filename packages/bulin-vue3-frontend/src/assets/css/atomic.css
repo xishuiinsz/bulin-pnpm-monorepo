@@ -40,6 +40,15 @@
   place-content: center !important;
 }
 
+.px0 {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.px16 {
+  padding: 0 16px !important;
+}
+
 .hover-color-3a85ff:hover {
   color: #3a85ff;
 }
